@@ -16,3 +16,6 @@ target_link_libraries(game_text game m)
 
 add_executable(game_test_zziane game_test_zziane.c)
 add_test(test_zziane_dummy ./game_test_zziane dummy)
+
+add_executable(game_test_waggoun game_test_waggoun.c)
+add_test(test_waggoun_dummy ./game_test_waggoun dummy)
