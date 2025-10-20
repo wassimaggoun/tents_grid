@@ -19,6 +19,7 @@ add_test(test_zziane_dummy ./game_test_zziane dummy)
 
 add_executable(game_test_waggoun game_test_waggoun.c)
 add_test(test_waggoun_dummy ./game_test_waggoun dummy)
+add_test(test_waggoun_game_new_empty ./game_test_waggoun game_new_empty)
 
 add_executable(game_test_sgoksu game_test_sgoksu.c)
 add_test(test_sgoksu_dummy ./game_test_sgoksu dummy)
