@@ -4,7 +4,7 @@ project(game_text C)
 include(CTest)
 enable_testing()
 
-set(CMAKE_C_FLAGS "-std=c99 -Wall")
+set(CMAKE_C_FLAGS "-std=c99 -Wall -g")
 
 
 link_directories(${CMAKE_SOURCE_DIR})
