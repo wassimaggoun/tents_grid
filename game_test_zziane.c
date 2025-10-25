@@ -25,6 +25,35 @@ bool test_check_move(void) {
 
     return t1 && t2 && t3 && t5 && t6 && t8 && t9 ;
 }
+
+bool test_play_move(void) {
+    game g = game_new_empty(); // grille vide
+    game_play_move(g, 0, 0, TENT);
+    bool t1 = (game_get_square(g, 0, 0) == TENT);
+    bool t2 = (game_get_current_nb_tents_row(g, 0) == 1);
+    bool t3 = (game_get_current_nb_tents_col(g, 0) == 1);
+    bool t4 = (game_get_current_nb_tents_all(g) == 1);
+
+    
+    game_play_move(g, 0, 1, GRASS);
+    bool t5 = (game_get_square(g, 0, 1) == GRASS);
+    bool t6 = (game_get_current_nb_tents_row(g, 0) == 1); 
+    bool t7 = (game_get_current_nb_tents_col(g, 1) == 0);
+
+    
+    game_play_move(g, 0, 0, EMPTY);
+    bool t8 = (game_get_square(g, 0, 0) == EMPTY);
+    bool t9 = (game_get_current_nb_tents_row(g, 0) == 0);
+    bool t10 = (game_get_current_nb_tents_col(g, 0) == 0);
+    bool t11 = (game_get_current_nb_tents_all(g) == 0);
+
+    game_delete(g);
+
+   
+    return t1 && t2 && t3 && t4 &&
+           t5 && t6 && t7 &&
+           t8 && t9 && t10 && t11;
+}
 int main(int argc, char *argv[])
 
 {
@@ -46,6 +75,11 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
     }
+    if (strcmp(argv[1], "game_play_move") == 0)
+        return test_play_move() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+
+
     printf("ERREUR\n ");
     return EXIT_FAILURE;
 }

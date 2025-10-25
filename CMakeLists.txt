@@ -19,6 +19,7 @@ add_executable(game_test_zziane game_test_zziane.c)
 target_link_libraries(game_test_zziane game m)
 add_test(test_zziane_dummy ./game_test_zziane dummy)
 add_test(test_zziane_game_check_move ./game_test_zziane game_check_move)
+add_test(test_zziane_game_play_move ./game_test_zziane game_play_move)
 
 
 add_executable(game_test_waggoun game_test_waggoun.c)
