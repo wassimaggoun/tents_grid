@@ -17,10 +17,13 @@ bool test_check_move(void) {
     bool t2 = !game_check_move(g, 0, 0, TENT);       
     bool t3 = !game_check_move(g, 4, 4, TENT);         
     bool t5 = !game_check_move(g, 5, 2, GRASS); 
-    bool t6 = !game_check_move(g, 100, 100, TENT);  
+    bool t8 = game_check_move(g, 5, 3, GRASS); 
+    bool t6 = !game_check_move(g, 100, 100, TENT);
+    bool t9 = !game_check_move(g, 1, 1, TREE);
+
     game_delete(g);
 
-    return t1 && t2 && t3 && t5 && t6 ;
+    return t1 && t2 && t3 && t5 && t6 && t8 && t9 ;
 }
 int main(int argc, char *argv[])
 
