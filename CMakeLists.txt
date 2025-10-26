@@ -28,6 +28,7 @@ target_link_libraries(game_test_waggoun game m)
 add_test(test_waggoun_dummy ./game_test_waggoun dummy)
 add_test(test_waggoun_game_new_empty ./game_test_waggoun game_new_empty)
 add_test(test_waggoun_game_delete ./game_test_waggoun game_delete)
+add_test(test_waggoun_game_set_square ./game_test_waggoun game_set_square)
 
 add_executable(game_test_sgoksu game_test_sgoksu.c)
 target_link_libraries(game_test_sgoksu game m)
