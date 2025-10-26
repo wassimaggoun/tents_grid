@@ -10,7 +10,7 @@ int test_dummy (){
     return EXIT_SUCCESS;
 } 
 
-bool test_check_move(void) {
+bool test_check_move() {
     game g = game_default();
 
     bool t1 = game_check_move(g, 2, 3, TENT);      
@@ -26,7 +26,7 @@ bool test_check_move(void) {
     return t1 && t2 && t3 && t5 && t6 && t8 && t9 ;
 }
 
-bool test_play_move(void) {
+bool test_play_move() {
     game g = game_new_empty(); 
     game_play_move(g, 0, 0, TENT);
     bool t1 = (game_get_square(g, 0, 0) == TENT);
@@ -55,7 +55,7 @@ bool test_play_move(void) {
            t8 && t9 && t10 && t11;
 }
 
-bool test_default_solution(void) {
+bool test_default_solution() {
     game g = game_default_solution();
 
     bool t1 = (g != NULL);
@@ -79,7 +79,35 @@ bool test_default_solution(void) {
     return t1 && t2 && t3;
 }
 
+bool test_default() {
+    game g = game_default();
 
+    bool t1 = (g != NULL);
+
+ 
+    bool hastree = false;
+    bool hasempty = false;
+    bool hastentougrass = false;
+
+    for (unsigned int i = 0; i < DEFAULT_SIZE; i++) {
+        for (unsigned int j = 0; j < DEFAULT_SIZE; j++) {
+            square s = game_get_square(g, i, j);
+            if (s == TREE) hastree = true;
+            if (s == EMPTY) hasempty = true;
+            if (s == TENT || s == GRASS) hastentougrass = true;
+        }
+    }
+
+    bool t2 =hastree;
+    bool t3 = hasempty;
+    bool t4 = !hastentougrass;
+
+    bool t5 = !game_won(g);
+
+    game_delete(g);
+
+    return t1 && t2 && t3 && t4 && t5;
+}
 
 int main(int argc, char *argv[])
 
@@ -107,6 +135,8 @@ int main(int argc, char *argv[])
 
     if (strcmp(argv[1], "game_default_solution") == 0)
         return test_default_solution() ? EXIT_SUCCESS : EXIT_FAILURE;
+    if (strcmp(argv[1], "game_default") == 0)
+        return test_default() ? EXIT_SUCCESS : EXIT_FAILURE;
 
     printf("ERREUR\n ");
     return EXIT_FAILURE;
