@@ -154,6 +154,70 @@ bool test_game_new(void) {
 }
 
 
+bool test_game_copy(void) {
+    square squares[SIZE * SIZE];
+    uint tents_row[SIZE];
+    uint tents_col[SIZE];
+
+    // on remplit le tableau squres
+    for (uint i = 0; i < SIZE * SIZE; i++) {
+        squares[i] = (i % 4 == 0) ? TREE : EMPTY;
+    }
+
+    for (uint i = 0; i < SIZE; i++) {
+        tents_row[i] = i % 2;         // 0,1,0,1,...
+        tents_col[i] = (i + 1) % 2;   // 1,0,1,0,...
+    }
+
+    game g1 = game_new(squares, tents_row, tents_col);
+    if (g1 == NULL) {
+        fprintf(stderr, "Erreur.\n");
+        return false;
+    }
+
+    // on créer une copie de g1
+    game g2 = game_copy(g1);
+    if (g2 == NULL) {
+        fprintf(stderr, "Erreur\n");
+        game_delete(g1);
+        return false;
+    }
+
+    for (uint i = 0; i < SIZE; i++) {
+        if (game_get_expected_nb_tents_row(g1, i) != game_get_expected_nb_tents_row(g2, i) ||
+            game_get_expected_nb_tents_col(g1, i) != game_get_expected_nb_tents_col(g2, i)) {
+            fprintf(stderr, "Erreur\n");
+            game_delete(g1);
+            game_delete(g2);
+            return false;
+        }
+
+        for (uint j = 0; j < SIZE; j++) {
+            if (game_get_square(g1, i, j) != game_get_square(g2, i, j)) {
+                fprintf(stderr, "Erreur\n");
+                game_delete(g1);
+                game_delete(g2);
+                return false;
+            }
+        }
+    }
+
+    game_set_square(g1, 0, 0, TENT);
+    if (game_get_square(g2, 0, 0) == TENT) {
+        fprintf(stderr, "Erreur : la copie a été modifiée en même temps que l’original.\n");
+        game_delete(g1);
+        game_delete(g2);
+        return false;
+    }
+
+    
+    game_delete(g1);
+    game_delete(g2);
+    return true;
+}
+
+
+
 int main(int argc, char *argv[]){
     if (argc < 2){
         fprintf(stderr, "ERROR missing test name argument\n");
