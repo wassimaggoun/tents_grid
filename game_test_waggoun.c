@@ -249,6 +249,41 @@ bool test_game_won(void) {
 }
 
 
+bool test_game_equal(void) {
+    game g1 = game_new_empty();
+    if (!g1) {
+        fprintf(stderr, "Erreur\n");
+        return false;
+    }
+
+    game g2 = game_copy(g1);
+    if (!g2) {
+        fprintf(stderr, "Erreur\n");
+        game_delete(g1);
+        return false;
+    }
+
+    if (!game_equal(g1, g2)) {
+        fprintf(stderr, "Erreur\n");
+        game_delete(g1);
+        game_delete(g2);
+        return false;
+    }
+
+    game_play_move(g2, 0, 0, TENT);
+    if (game_equal(g1, g2)) {
+        fprintf(stderr, "Erreur\n");
+        game_delete(g1);
+        game_delete(g2);
+        return false;
+    }
+
+    game_delete(g1);
+    game_delete(g2);
+    return true;
+}
+
+
 
 int main(int argc, char *argv[]){
     if (argc < 2){
