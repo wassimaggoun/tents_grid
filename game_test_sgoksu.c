@@ -8,6 +8,8 @@ int test_dummy(void){
     return EXIT_SUCCESS;
 }
 
+
+
 /*bool test_is_empty(void)
 {
   game g = game_default();
