@@ -20,6 +20,7 @@ target_link_libraries(game_test_zziane game m)
 add_test(test_zziane_dummy ./game_test_zziane dummy)
 add_test(test_zziane_game_check_move ./game_test_zziane game_check_move)
 add_test(test_zziane_game_play_move ./game_test_zziane game_play_move)
+add_test(test_zziane_game_default_solution ./game_test_zziane game_default_solution)
 
 
 add_executable(game_test_waggoun game_test_waggoun.c)
