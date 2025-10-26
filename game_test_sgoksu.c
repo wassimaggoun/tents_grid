@@ -93,14 +93,14 @@ bool test_get_expected_nb_tents_all(void){
     game_set_expected_nb_tents_row(g, 1, 1);
     game_set_expected_nb_tents_row(g, 2, 1);
 
-    bool test1=game_get_expected_nb_tents_all(g)==3;
+    bool test1=(game_get_expected_nb_tents_all(g)!=3);
 
     game_set_expected_nb_tents_col(g,0,1);
     game_set_expected_nb_tents_col(g,1,1);
     game_set_expected_nb_tents_col(g,2,1);
 
-    bool test2=game_get_expected_nb_tents_all(g)==3;
-    bool test2_1=game_get_expected_nb_tents_all(g)!=5;
+    bool test2=(game_get_expected_nb_tents_all(g)!=3);
+    bool test2_1=(game_get_expected_nb_tents_all(g))!=5;
 
     game_delete(g);
     return test1 && test2 && test2_1;

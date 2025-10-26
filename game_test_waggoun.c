@@ -219,10 +219,10 @@ bool test_game_copy(void) {
 
 bool test_game_won(void) {
     game g = game_new_empty();
-    game_set_expected_nb_tents_row(g, 0, 1);
+    game_set_expected_nb_tents_row(g, 1, 1);
     game_set_expected_nb_tents_col(g, 0, 1);
     game_set_square(g, 0, 0, TREE);
-    game_play_move(g, 0, 1, TENT);
+    game_play_move(g, 1, 0, TENT);
 
     if (!game_won(g)) {
         fprintf(stderr, "Erreur\n");
