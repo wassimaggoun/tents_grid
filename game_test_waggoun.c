@@ -217,6 +217,38 @@ bool test_game_copy(void) {
 }
 
 
+bool test_game_won(void) {
+    game g = game_new_empty();
+    game_set_expected_nb_tents_row(g, 0, 1);
+    game_set_expected_nb_tents_col(g, 0, 1);
+    game_set_square(g, 0, 0, TREE);
+    game_play_move(g, 0, 1, TENT);
+
+    if (!game_won(g)) {
+        fprintf(stderr, "Erreur\n");
+        game_delete(g);
+        return false;
+    }
+
+    game g2 = game_new_empty();
+    game_set_expected_nb_tents_row(g2, 0, 1);
+    game_set_expected_nb_tents_col(g2, 0, 1);
+    game_set_square(g2, 0, 0, TREE);
+
+    if (game_won(g2)) {
+        fprintf(stderr, "Erreur\n");
+        game_delete(g);
+        game_delete(g2);
+        return false;
+    }
+
+    game_delete(g);
+    game_delete(g2);
+
+    return true;
+}
+
+
 
 int main(int argc, char *argv[]){
     if (argc < 2){
