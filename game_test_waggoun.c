@@ -101,6 +101,59 @@ bool test_game_set_square(void) {
 }
 
 
+bool test_game_new(void) {
+    square squares[SIZE * SIZE];
+    uint tents_row[SIZE];
+    uint tents_col[SIZE];
+    for (uint i = 0; i < SIZE * SIZE; i++) {
+        squares[i] = EMPTY;
+    }
+
+    squares[0] = TREE;                     // coin en haut a gauche
+    squares[1] = TENT;                     // prochaine colonne
+    squares[SIZE + 2] = GRASS;             // prochaine ligne
+    squares[( SIZE * SIZE - 1 ) ] = TREE; // coin en bas a droite
+
+    for (uint i = 0; i < SIZE; i++) {
+        tents_row[i] = i % 2;    // 0,1,0,1,...
+        tents_col[i] = (i + 1) % 2; // 1,0,1,0,...
+    }
+
+    game g = game_new(squares, tents_row, tents_col);
+    if (g == NULL) {
+        fprintf(stderr, "Erreur\n");
+        return false;
+    }
+
+    for (uint i = 0; i < SIZE; i++) {
+        for (uint j = 0; j < SIZE; j++) {
+            square expected = squares[i * SIZE + j];  //position dans le tableau en 1 dimension
+            if (game_get_square(g, i, j) != expected) {
+                fprintf(stderr, "Erreur\n");
+                game_delete(g);
+                return false;
+            }
+        }
+    }
+
+    for (uint i = 0; i < SIZE; i++) {
+        if (game_get_expected_nb_tents_row(g, i) != tents_row[i]) {
+            fprintf(stderr, "Erreur\n", i);
+            game_delete(g);
+            return false;
+        }
+        if (game_get_expected_nb_tents_col(g, i) != tents_col[i]) {
+            fprintf(stderr, "Erreur\n", i);
+            game_delete(g);
+            return false;
+        }
+    }
+
+    game_delete(g);
+    return true;
+}
+
+
 int main(int argc, char *argv[]){
     if (argc < 2){
         fprintf(stderr, "ERROR missing test name argument\n");
