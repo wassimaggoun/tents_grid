@@ -284,6 +284,42 @@ bool test_game_equal(void) {
 }
 
 
+bool test_game_restart(void) {
+    game g = game_new_empty();
+    if (!g) {
+        fprintf(stderr, "Erreur\n");
+        return false;
+    }
+
+    game_set_square(g, 0, 0, TREE);
+    game_play_move(g, 0, 1, TENT);
+    game_play_move(g, 1, 1, GRASS);
+
+    game_restart(g);
+
+    if (game_get_square(g, 0, 0) != TREE) {
+        fprintf(stderr, "Erreur\n");
+        game_delete(g);
+        return false;
+    }
+
+    if (game_get_square(g, 0, 1) != EMPTY) {
+        fprintf(stderr, "Erreur\n");
+        game_delete(g);
+        return false;
+    }
+
+    if (game_get_square(g, 1, 1) != EMPTY) {
+        fprintf(stderr, "Erreur\n");
+        game_delete(g);
+        return false;
+    }
+
+    game_delete(g);
+    return true;
+}
+
+
 
 int main(int argc, char *argv[]){
     if (argc < 2){
