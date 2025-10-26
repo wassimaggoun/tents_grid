@@ -368,6 +368,33 @@ int main(int argc, char *argv[]){
         return test_dummy();
     }
 
+    if (strcmp(argv[1], "game_new_empty") == 0)
+        return test_game_new_empty() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    if (strcmp(argv[1], "game_delete") == 0)
+        return test_game_delete() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    if (strcmp(argv[1], "game_set_square") == 0)
+        return test_game_set_square() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    if (strcmp(argv[1], "game_new") == 0)
+        return test_game_new() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    if (strcmp(argv[1], "game_copy") == 0)
+        return test_game_copy() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    if (strcmp(argv[1], "game_won") == 0)
+        return test_game_won() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    if (strcmp(argv[1], "game_equal") == 0)
+        return test_game_equal() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    if (strcmp(argv[1], "game_restart") == 0)
+        return test_game_restart() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+    if (strcmp(argv[1], "game_get_adjacent_square") == 0)
+        return test_game_get_adjacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
+
     fprintf(stderr, "Test \"%s\" finished: FAILURE\n", argv[1]);
     return EXIT_FAILURE;
 

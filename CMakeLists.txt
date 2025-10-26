@@ -23,7 +23,8 @@ add_test(test_zziane_game_play_move ./game_test_zziane game_play_move)
 add_test(test_zziane_game_default_solution ./game_test_zziane game_default_solution)
 add_test(test_zziane_game_default ./game_test_zziane game_default)
 add_test(test_zziane_game_fill_grass ./game_test_zziane game_fill_grass)
-
+add_test(test_zziane_game_get_square ./game_test_zziane game_get_square)
+add_test(test_zziane_game_print ./game_test_zziane game_print)
 
 add_executable(game_test_waggoun game_test_waggoun.c)
 target_link_libraries(game_test_waggoun game m)

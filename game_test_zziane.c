@@ -143,6 +143,42 @@ bool test_fill_grass() {
 
     return t1 && t2 && t3 && t4 && t5;
 }
+bool test_get_square(void) {
+    game g = game_new_empty();
+
+    game_set_square(g, 0, 0, TREE);
+    game_set_square(g, 1, 2, TENT);
+    game_set_square(g, 3, 3, GRASS);
+
+  
+    bool t1 = (game_get_square(g, 0, 0) == TREE);
+    bool t2 = (game_get_square(g, 1, 2) == TENT);
+    bool t3 = (game_get_square(g, 3, 3) == GRASS);
+
+ 
+    bool t4 = (game_get_square(g, 5, 5) == EMPTY);
+
+    
+    game_set_square(g, 5, 5, TENT);
+    bool t5 = (game_get_square(g, 5, 5) == TENT);
+
+    game_delete(g);
+
+    return t1 && t2 && t3 && t4 && t5;
+}
+
+bool test_print(void) {
+    
+    game g1 = game_default();
+    game_print(g1);
+    
+    bool t1 = true;
+
+    game_delete(g1);
+
+    return t1;
+}
+
 
 int main(int argc, char *argv[])
 
@@ -174,6 +210,10 @@ int main(int argc, char *argv[])
         return test_default() ? EXIT_SUCCESS : EXIT_FAILURE;
     if (strcmp(argv[1], "game_fill_grass") == 0)
         return test_fill_grass() ? EXIT_SUCCESS : EXIT_FAILURE;
+    if (strcmp(argv[1], "game_get_square") == 0)
+        return test_get_square() ? EXIT_SUCCESS : EXIT_FAILURE;
+    if (strcmp(argv[1], "game_print") == 0)
+        return test_print() ? EXIT_SUCCESS : EXIT_FAILURE;
     printf("ERREUR\n ");
     return EXIT_FAILURE;
 }

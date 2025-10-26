@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "game.h"
-
+#include "game_aux.h"
 int test_dummy(void){
     return EXIT_SUCCESS;
 }
