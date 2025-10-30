@@ -138,12 +138,12 @@ bool test_game_new(void) {
 
     for (uint i = 0; i < SIZE; i++) {
         if (game_get_expected_nb_tents_row(g, i) != tents_row[i]) {
-            fprintf(stderr, "Erreur\n", i);
+            fprintf(stderr, "Erreur\n");
             game_delete(g);
             return false;
         }
         if (game_get_expected_nb_tents_col(g, i) != tents_col[i]) {
-            fprintf(stderr, "Erreur\n", i);
+            fprintf(stderr, "Erreur\n");
             game_delete(g);
             return false;
         }
@@ -171,7 +171,7 @@ bool test_game_copy(void) {
 
     game g1 = game_new(squares, tents_row, tents_col);
     if (g1 == NULL) {
-        fprintf(stderr, "Erreur.\n");
+        fprintf(stderr, "Erreur\n");
         return false;
     }
 
@@ -395,7 +395,7 @@ int main(int argc, char *argv[]){
     if (strcmp(argv[1], "game_get_adjacent_square") == 0)
         return test_game_get_adjacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-    fprintf(stderr, "Erreur\n", argv[1]);
+    fprintf(stderr, "Erreur\n");
     return EXIT_FAILURE;
 
 }
