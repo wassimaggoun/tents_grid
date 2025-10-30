@@ -204,7 +204,7 @@ bool test_game_copy(void) {
 
     game_set_square(g1, 0, 0, TENT);
     if (game_get_square(g2, 0, 0) == TENT) {
-        fprintf(stderr, "Erreur : la copie a été modifiée en même temps que l’original.\n");
+        fprintf(stderr, "Erreur\n");
         game_delete(g1);
         game_delete(g2);
         return false;
@@ -360,7 +360,7 @@ bool test_game_get_adjacent_square(void) {
 
 int main(int argc, char *argv[]){
     if (argc < 2){
-        fprintf(stderr, "ERROR missing test name argument\n");
+        fprintf(stderr, "Erreur\n");
         return EXIT_FAILURE;
     }
 
@@ -395,7 +395,7 @@ int main(int argc, char *argv[]){
     if (strcmp(argv[1], "game_get_adjacent_square") == 0)
         return test_game_get_adjacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-    fprintf(stderr, "Test \"%s\" finished: FAILURE\n", argv[1]);
+    fprintf(stderr, "Erreur\n", argv[1]);
     return EXIT_FAILURE;
 
 }
