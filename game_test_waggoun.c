@@ -233,13 +233,18 @@ bool test_game_won(void) {
 
     //verification regle 1
     g = game_new_empty();
-    game_set_square(g, 0, 0, TREE);
-    game_set_square(g, 0, 3, TREE);
-    game_set_expected_nb_tents_row(g, 0, 2);
-    game_set_expected_nb_tents_col(g, 0, 1);
+    game_set_square(g, 1, 0, TREE);
+    game_set_square(g, 3, 1, TREE);
+    game_set_square(g, 3, 2, TREE);
+
+    game_set_expected_nb_tents_row(g, 0, 0);
+    game_set_expected_nb_tents_col(g, 0, 2);
     game_set_expected_nb_tents_col(g, 1, 1);
-    game_play_move(g, 0, 1, TENT);
-    game_play_move(g, 0, 2, TENT);
+
+    game_play_move(g, 1, 1, TENT);
+    game_play_move(g, 2, 1, TENT);
+    game_play_move(g, 2, 2, TENT);
+    
     if (game_won(g)) {
         fprintf(stderr, "Erreur (rule 1)\n");
         game_delete(g);
