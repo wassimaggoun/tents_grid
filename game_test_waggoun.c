@@ -229,22 +229,65 @@ bool test_game_won(void) {
         game_delete(g);
         return false;
     }
+    game_delete(g);
 
-    game g2 = game_new_empty();
-    game_set_expected_nb_tents_row(g2, 0, 1);
-    game_set_expected_nb_tents_col(g2, 0, 1);
-    game_set_square(g2, 0, 0, TREE);
-
-    if (game_won(g2)) {
-        fprintf(stderr, "Erreur\n");
+    //verification regle 1
+    g = game_new_empty();
+    game_set_square(g, 0, 0, TREE);
+    game_set_square(g, 0, 3, TREE);
+    game_set_expected_nb_tents_row(g, 0, 2);
+    game_set_expected_nb_tents_col(g, 0, 1);
+    game_set_expected_nb_tents_col(g, 1, 1);
+    game_play_move(g, 0, 1, TENT);
+    game_play_move(g, 0, 2, TENT);
+    if (game_won(g)) {
+        fprintf(stderr, "Erreur (rule 1)\n");
         game_delete(g);
-        game_delete(g2);
         return false;
     }
-
     game_delete(g);
-    game_delete(g2);
 
+    //regle 2
+    g = game_new_empty();
+    game_set_expected_nb_tents_row(g, 0, 1);
+    game_set_expected_nb_tents_col(g, 0, 1);
+    game_set_square(g, 0, 0, TREE);
+    if (game_won(g)) {
+        fprintf(stderr, "Erreur (regle2)\n");
+        game_delete(g);
+        return false;
+    }
+    game_delete(g);
+
+    //regle 3
+    g = game_new_empty();
+    game_set_expected_nb_tents_row(g, 0, 2);
+    game_set_expected_nb_tents_col(g, 0, 1);
+    game_set_expected_nb_tents_col(g, 1, 1);
+    game_set_square(g, 0, 0, TREE);
+    game_play_move(g, 0, 1, TENT);
+    game_play_move(g, 1, 0, TENT);
+    if (game_won(g)) {
+        fprintf(stderr, "Erreur (regle3)\n");
+        game_delete(g);
+        return false;
+    }
+    game_delete(g);
+
+    //regle4
+    g = game_new_empty();
+    game_set_expected_nb_tents_row(g, 1, 1);
+    game_set_expected_nb_tents_col(g, 1, 1);
+    game_set_square(g, 0, 0, TREE);
+    game_play_move(g, 2, 2, TENT);
+    if (game_won(g)) {
+        fprintf(stderr, "Erreur  (regle 4).\n");
+        game_delete(g);
+        return false;
+    }
+    game_delete(g);
+
+    
     return true;
 }
 
