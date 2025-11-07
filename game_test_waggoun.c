@@ -233,13 +233,6 @@ bool test_game_won(void) {
 
     //verification regle 1
     g = game_new_empty();
-    game_set_square(g, 0, 0, TREE);
-    game_set_square(g, 1, 1, TREE);
-
-    game_set_expected_nb_tents_row(g, 0, 1);
-    game_set_expected_nb_tents_col(g, 1, 1);
-    game_set_expected_nb_tents_row(g, 1, 1);
-    game_set_expected_nb_tents_col(g, 2, 1);
 
     game_play_move(g, 1, 0, TENT);
     game_play_move(g, 2, 1, TENT);
@@ -280,8 +273,8 @@ bool test_game_won(void) {
 
     //regle4
     g = game_new_empty();
-    game_set_expected_nb_tents_row(g, 1, 1);
-    game_set_expected_nb_tents_col(g, 1, 1);
+    game_set_expected_nb_tents_row(g, 1, 1); // add the same code but without the expected 
+    game_set_expected_nb_tents_col(g, 1, 1); //
     game_set_square(g, 0, 0, TREE);
     game_play_move(g, 2, 2, TENT);
     if (game_won(g)) {
