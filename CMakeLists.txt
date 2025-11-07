@@ -12,8 +12,8 @@ link_directories(${CMAKE_SOURCE_DIR})
 
 
 add_executable(game_text game_text.c)
-//add_executable(game game.c)
-//add_executable(game_aux game_aux.c)
+#add_executable(game game.c)
+#add_executable(game_aux game_aux.c)
 
 
 
