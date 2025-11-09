@@ -1,24 +1,22 @@
-#ifndef __GAME_STRUCT_H__
-#define __GAME_STRUCT_H__
+#ifndef GAME_STRUCT_H
+#define GAME_STRUCT_H
 
-struct game_s{
+#include <stdbool.h>
+#include "game.h"  
 
-}
+struct game_s {
+    uint width;   
+    uint height;  
 
+    square **grid;  
 
+    uint *expected_nb_tents_row;  
+    uint *expected_nb_tents_col;  
 
+    bool wrapping;  
+};
 
-
-
-
-
-
-
-
-
-
-
-
+#endif
 
 
 
@@ -30,4 +28,16 @@ struct game_s{
 
 
 
-#endif  // __GAME_STRUCT_H__
+
+
+
+
+
+
+
+
+
+
+
+
+

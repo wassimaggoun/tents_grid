@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include "game.h"
 #include "game_aux.h"
-
+#include "game_struct.h"
 int main(void) {
     game g = game_default();
     if (g == NULL) {

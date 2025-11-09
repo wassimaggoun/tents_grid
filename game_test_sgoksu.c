@@ -4,6 +4,7 @@
 #include <string.h>
 #include "game.h"
 #include "game_aux.h"
+#include "game_struct.h"
 int test_dummy(void){
     return EXIT_SUCCESS;
 }
