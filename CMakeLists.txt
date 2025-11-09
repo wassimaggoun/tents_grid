@@ -1,21 +1,15 @@
-
 cmake_minimum_required(VERSION 3.10)
 project(game_text C)
 
 include(CTest)
 enable_testing()
 
-set(CMAKE_C_FLAGS "-std=c99 -Wall -g")
+set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -g")
 
-
-link_directories(${CMAKE_SOURCE_DIR})
-
+add_library(game game.c game_aux.c)
 
 add_executable(game_text game_text.c)
-add_executable(game game.c)
-add_executable(game_aux game_aux.c)
-
-
+target_link_libraries(game_text game m)
 
 add_executable(game_test_zziane game_test_zziane.c)
 target_link_libraries(game_test_zziane game m)
@@ -53,5 +47,7 @@ add_test(test_sgoksu_get_current_row ./game_test_sgoksu get_current_nb_tents_row
 add_test(test_sgoksu_get_current_col ./game_test_sgoksu get_current_nb_tents_col)
 add_test(test_sgoksu_get_current_all ./game_test_sgoksu get_current_nb_tents_all)
 add_test(test_sgoksu_game_is_neigh ./game_test_sgoksu game_is_neigh)
+
+
 
 
