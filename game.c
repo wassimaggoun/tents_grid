@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "game_struct.h"
+
 
 game game_new(square* squares, uint* nb_tents_row, uint* nb_tents_col) {
     return NULL;
@@ -116,6 +116,3 @@ void game_restart(game g) {
 }
  
 
-int main(int argc, char *argv[]){
-    return EXIT_SUCCESS;
-}

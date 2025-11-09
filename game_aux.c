@@ -39,6 +39,3 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
 }
 
 
-int main(int argc, char *argv[]){
-    return EXIT_SUCCESS;
-}
