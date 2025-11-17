@@ -101,11 +101,23 @@ void game_play_move(game g, uint i, uint j, square s) {
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
-    (void)g;
-    (void)i;
-    (void)j;
-    (void)s;
-    return false;
+    square mtn = game_get_square(g,i,j);
+    if (mtn == TREE  ){
+        return false;
+    }
+
+    if (s==GRASS){
+        return mtn !=TENT;
+    }
+    
+    if (s==TENT){
+        if (mtn==TENT || mtn ==TREE){
+            return false;
+        
+        
+        }
+    }
+    return true;
 }
 
 bool game_won(cgame g) {
@@ -114,7 +126,13 @@ bool game_won(cgame g) {
 }
 
 void game_fill_grass(game g) {
-    (void)g;
+    for (unsigned int i = 0; i < DEFAULT_SIZE; i++) {
+        for (unsigned int j = 0; j < DEFAULT_SIZE; j++) {
+            if (game_get_square(g, i, j) == EMPTY) {
+                game_set_square(g,i,j,GRASS);
+            }
+        }
+    }
 }
 
 void game_restart(game g) {
