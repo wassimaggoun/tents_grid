@@ -42,7 +42,13 @@ square game_get_square(cgame g, uint i, uint j) {
 }
 
 void game_set_expected_nb_tents_row(game g, uint i, uint nb_tents) {
-    (void)g;
+    game* g=game_default();
+    if(g==NULL){
+        return NULL;
+    }
+    if(i>g->width){
+        return NULL;
+    }
     (void)i;
     (void)nb_tents;
 }
