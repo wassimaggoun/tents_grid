@@ -78,14 +78,11 @@ uint game_get_expected_nb_tents_col(cgame g, uint j) {
 }
 
 uint game_get_expected_nb_tents_all(cgame g) {
-    uint res_rows = 0, res_col =0;
+    uint res =0;
     for (int i = 0 ; i < g->width ; i++){
-        res_rows += g->expected_nb_tents_row[i];
+        res += g->expected_nb_tents_row[i];
     }
-    for (int j = 0 ; j < g->height ; j++){
-        res_col += g->expected_nb_tents_col[j];
-    }
-    return res_rows + res_col;
+    return res;
 }
 
 uint game_get_current_nb_tents_row(cgame g, uint i) {
