@@ -67,9 +67,14 @@ uint game_get_expected_nb_tents_row(cgame g, uint i) {
 }
 
 uint game_get_expected_nb_tents_col(cgame g, uint j) {
-  (void)g;
-  (void)j;
-  return 0;
+  if (g == NULL) {
+    return NULL;
+  }
+  if (j > g->width){
+    return NULL;
+  }
+
+  return g->expected_nb_tents_col[j];
 }
 
 uint game_get_expected_nb_tents_all(cgame g) {
