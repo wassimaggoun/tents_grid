@@ -18,7 +18,12 @@ game game_copy(cgame g) { return NULL; }
 
 bool game_equal(cgame g1, cgame g2) { return false; }
 
-void game_delete(game g) { (void)g; }
+void game_delete(game g) {
+  if (g == NULL) {
+    return;
+  }
+  free(g);
+}
 
 void game_set_square(game g, uint i, uint j, square s) {
   (void)g;
@@ -58,19 +63,18 @@ uint game_get_expected_nb_tents_row(cgame g, uint i) {
   if (g == NULL) {
     return NULL;
   }
-  if (i > g->height){
+  if (i > g->height) {
     return NULL;
   }
 
   return g->expected_nb_tents_row[i];
-
 }
 
 uint game_get_expected_nb_tents_col(cgame g, uint j) {
   if (g == NULL) {
     return NULL;
   }
-  if (j > g->width){
+  if (j > g->width) {
     return NULL;
   }
 
@@ -78,11 +82,11 @@ uint game_get_expected_nb_tents_col(cgame g, uint j) {
 }
 
 uint game_get_expected_nb_tents_all(cgame g) {
-    uint res =0;
-    for (int i = 0 ; i < g->width ; i++){
-        res += g->expected_nb_tents_row[i];
-    }
-    return res;
+  uint res = 0;
+  for (int i = 0; i < g->width; i++) {
+    res += g->expected_nb_tents_row[i];
+  }
+  return res;
 }
 
 uint game_get_current_nb_tents_row(cgame g, uint i) {
@@ -110,23 +114,21 @@ void game_play_move(game g, uint i, uint j, square s) {
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
-    square mtn = game_get_square(g,i,j);
-    if (mtn == TREE  ){
-        return false;
-    }
+  square mtn = game_get_square(g, i, j);
+  if (mtn == TREE) {
+    return false;
+  }
 
-    if (s==GRASS){
-        return mtn !=TENT;
+  if (s == GRASS) {
+    return mtn != TENT;
+  }
+
+  if (s == TENT) {
+    if (mtn == TENT || mtn == TREE) {
+      return false;
     }
-    
-    if (s==TENT){
-        if (mtn==TENT || mtn ==TREE){
-            return false;
-        
-        
-        }
-    }
-    return true;
+  }
+  return true;
 }
 
 bool game_won(cgame g) {
@@ -135,18 +137,15 @@ bool game_won(cgame g) {
 }
 
 void game_fill_grass(game g) {
-    for (unsigned int i = 0; i < DEFAULT_SIZE; i++) {
-        for (unsigned int j = 0; j < DEFAULT_SIZE; j++) {
-            if (game_get_square(g, i, j) == EMPTY) {
-                game_set_square(g,i,j,GRASS);
-            }
-        }
+  for (unsigned int i = 0; i < DEFAULT_SIZE; i++) {
+    for (unsigned int j = 0; j < DEFAULT_SIZE; j++) {
+      if (game_get_square(g, i, j) == EMPTY) {
+        game_set_square(g, i, j, GRASS);
+      }
     }
+  }
 }
 
-void game_restart(game g) {
-    (void)g;
-}
- 
+void game_restart(game g) { (void)g; }
 
 void game_restart(game g) { (void)g; }
