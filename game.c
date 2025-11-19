@@ -76,15 +76,19 @@ uint game_get_expected_nb_tents_all(cgame g) {
 }
 
 uint game_get_current_nb_tents_row(cgame g, uint i) {
-  (void)g;
-  (void)i;
-  return 0;
+  uint result = 0;
+  for (uint j=0 ; j < g->width ; j++) {
+    if (g->grid[i][j] == TENT) result ++ ;
+  }
+  return result;
 }
 
 uint game_get_current_nb_tents_col(cgame g, uint j) {
-  (void)g;
-  (void)j;
-  return 0;
+  uint result = 0;
+  for (uint i=0 ; i < g->height ; i++) {
+    if (g->grid[i][j] == TENT) result ++ ;
+  }
+  return result;
 }
 
 uint game_get_current_nb_tents_all(cgame g) {
