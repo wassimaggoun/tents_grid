@@ -93,10 +93,16 @@ uint game_get_current_nb_tents_all(cgame g) {
 }
 
 void game_play_move(game g, uint i, uint j, square s) {
-  (void)g;
-  (void)i;
-  (void)j;
-  (void)s;
+  if(g==NULL || i>= g->height || j >= g->width ){
+    return;
+  }
+  if(s==TREE){
+    return;
+  }
+  if(s!=EMPTY && s!=GRASS && s!= TENT){
+    return;
+  }
+  g->grid[i][j] = s;
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
