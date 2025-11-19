@@ -69,7 +69,7 @@ uint game_get_expected_nb_tents_col(cgame g, uint j) {
 
 uint game_get_expected_nb_tents_all(cgame g) {
   uint res = 0;
-  for (int i = 0; i < g->width; i++) {
+  for (int i = 0; i < g->height; i++) {
     res += g->expected_nb_tents_row[i];
   }
   return res;
