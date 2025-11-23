@@ -60,7 +60,7 @@ bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,
     return true;
 
 }
-}
+
 
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
     bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag){
