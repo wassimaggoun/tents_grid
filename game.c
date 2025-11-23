@@ -151,17 +151,18 @@ void game_delete(game g) {
 }
 
 void game_set_square(game g, uint i, uint j, square s) {
-  (void)g;
-  (void)i;
-  (void)j;
-  (void)s;
+  if (!g) return;
+  if (i >= g->height || j >= g->width) return;
+  if (s != EMPTY && s != TREE && s != TENT && s != GRASS) return;
+
+  g->grid[i][j] = s;
 }
 
 square game_get_square(cgame g, uint i, uint j) {
-  (void)g;
-  (void)i;
-  (void)j;
-  return EMPTY;
+  if (!g) return EMPTY;
+  if (i >= g->height || j >= g->width) return EMPTY;
+
+  return g->grid[i][j];
 }
 
 void game_set_expected_nb_tents_row(game g, uint i, uint nb_tents) {

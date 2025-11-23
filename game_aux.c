@@ -7,15 +7,135 @@
 
 
 void game_print(cgame g) {
-    (void)g;
+     if (!g) return;
+
+    uint width  = g->width;
+    uint height = g->height;
+
+    printf("   ");
+    for (uint j = 0; j < width; j++) {
+        printf("%u", j);
+    }
+    printf("\n");
+
+    printf("   ");
+    for (uint j = 0; j < width; j++) {
+        printf("-");
+    }
+    printf("\n");
+
+    for (uint i = 0; i < height; i++) {
+        printf("%u |", i);
+        for (uint j = 0; j < width; j++) {
+            square s = game_get_square(g, i, j);
+            char c;
+
+            if (s == EMPTY) {
+                c = ' ';
+            } else if (s == TREE) {
+                c = 'x';
+            } else if (s == TENT) {
+                c = '*';
+            } else if (s == GRASS) {
+                c = '-';
+            }
+
+            printf("%c", c);
+        }
+        printf(" | %u\n", game_get_expected_nb_tents_row(g, i));
+    }
+
+    printf("   ");
+    for (uint j = 0; j < width; j++) {
+        printf("-");
+    }
+    printf("\n");
+
+    printf("   ");
+    for (uint j = 0; j < width; j++) {
+        printf("%u", game_get_expected_nb_tents_col(g, j));
+    }
+    printf("\n");
 }
 
 game game_default(void) {
-    return NULL;
+    game g = game_new_empty();  
+
+    if (!g) return NULL;
+
+
+
+    game_set_square(g, 0, 0, TREE);
+    game_set_square(g, 0, 5, TREE);
+    game_set_square(g, 0, 6, TREE);
+
+
+    game_set_square(g, 2, 6, TREE);
+
+
+    game_set_square(g, 3, 0, TREE);
+    game_set_square(g, 3, 3, TREE);
+
+    game_set_square(g, 4, 5, TREE);
+
+    game_set_square(g, 5, 3, TREE);
+
+
+    game_set_square(g, 7, 1, TREE);
+    game_set_square(g, 7, 2, TREE);
+    game_set_square(g, 7, 5, TREE);
+    game_set_square(g, 7, 6, TREE);
+
+    game_set_expected_nb_tents_row(g, 0, 1);
+    game_set_expected_nb_tents_row(g, 1, 2);
+    game_set_expected_nb_tents_row(g, 2, 1);
+    game_set_expected_nb_tents_row(g, 3, 2);
+    game_set_expected_nb_tents_row(g, 4, 2);
+    game_set_expected_nb_tents_row(g, 5, 0);
+    game_set_expected_nb_tents_row(g, 6, 1);
+    game_set_expected_nb_tents_row(g, 7, 3);
+
+ 
+    game_set_expected_nb_tents_col(g, 0, 3);
+    game_set_expected_nb_tents_col(g, 1, 0);
+    game_set_expected_nb_tents_col(g, 2, 2);
+    game_set_expected_nb_tents_col(g, 3, 1);
+    game_set_expected_nb_tents_col(g, 4, 2);
+    game_set_expected_nb_tents_col(g, 5, 1);
+    game_set_expected_nb_tents_col(g, 6, 2);
+    game_set_expected_nb_tents_col(g, 7, 1);
+
+    return g;
 }
 
 game game_default_solution(void) {
-    return NULL;
+    game g = game_default();
+    if (!g) return NULL;
+
+
+    game_set_square(g, 0, 4, TENT);
+
+    game_set_square(g, 1, 0, TENT);
+    game_set_square(g, 1, 6, TENT);
+
+    game_set_square(g, 2, 5, TENT);
+
+    game_set_square(g, 3, 2, TENT);
+    game_set_square(g, 3, 6, TENT);
+
+    game_set_square(g, 4, 0, TENT);
+    game_set_square(g, 4, 4, TENT);
+
+
+    game_set_square(g, 6, 2, TENT);
+
+    game_set_square(g, 7, 0, TENT);
+    game_set_square(g, 7, 3, TENT);
+    game_set_square(g, 7, 7, TENT);
+
+    game_fill_grass(g);
+
+    return g;
 }
 
 bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,
@@ -63,7 +183,7 @@ bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,
 
 
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
-    bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag){
+   
     assert(g != NULL);
     assert(i < g->height);
     assert(j < g->width);
@@ -72,7 +192,7 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
 
     int n_dirs = diag ? 8 : 4;
 
-    for (uint = 0; i < n_dirs; k++) {
+    for (uint k = 0; i < n_dirs; k++) {
         uint ni, nj;
         if (game_get_ajacent_square(g, i, j, dirs[i], &ni, &nj)) {
             if (game_get_square(g, ni, nj) == s)
@@ -82,7 +202,7 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
 
     return false;
 
-}
+
 }
 
 
