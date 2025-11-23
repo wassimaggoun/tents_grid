@@ -20,13 +20,60 @@ game game_default_solution(void) {
 
 bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,
                              uint* pi_next, uint* pj_next) {
-    (void)g;
-    (void)i;
-    (void)j;
-    (void)d;
-    (void)pi_next;
-    (void)pj_next;
-    return false;
+    /**
+ * @brief Gets the coordinate of the adjacent square in a given direction.
+ * @param g the game
+ * @param i row index
+ * @param j column index
+ * @param d the direction
+ * @param[out] pi_next the row index of the adjacent square (output)
+ * @param[out] pj_next the column index of the adjacent square (output)
+ * @pre @p g must be a valid pointer toward a game structure
+ * @pre @p i < game height
+ * @pre @p j < game width
+ * @return true if the adjacent square is inside the grid, false otherwise
+ */
+
+bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,uint* pi_next, uint* pj_next){
+    assert(g != NULL);
+    assert(i < g->height);
+    assert(j < g->width);
+    assert(pi_next != NULL);
+    assert(pj_next != NULL);
+
+    int di = 0, dj = 0;
+
+    switch (d) {
+        case HERE:        di =  0; dj =  0; break;
+        case UP:          di = -1; dj =  0; break;
+        case DOWN:        di = +1; dj =  0; break;
+        case LEFT:        di =  0; dj = -1; break;
+        case RIGHT:       di =  0; dj = +1; break;
+        case UP_LEFT:     di = -1; dj = -1; break;
+        case UP_RIGHT:    di = -1; dj = +1; break;
+        case DOWN_LEFT:   di = +1; dj = -1; break;
+        case DOWN_RIGHT:  di = +1; dj = +1; break;
+        default: return false;
+    }
+
+    int ni = (int)i + di;
+    int nj = (int)j + dj;
+
+    if (g->wrapping) {
+        if (ni < 0) ni += g->height;
+        if (ni >= (int)g->height) ni -= g->height;
+        if (nj < 0) nj += g->width;
+        if (nj >= (int)g->width) nj -= g->width;
+    } else {
+        if (ni < 0 || ni >= (int)g->height || nj < 0 || nj >= (int)g->width)
+            return false;
+    }
+
+    *pi_next = (uint)ni;
+    *pj_next = (uint)nj;
+    return true;
+
+}
 }
 
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
