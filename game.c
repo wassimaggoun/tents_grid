@@ -142,8 +142,14 @@ uint game_get_current_nb_tents_col(cgame g, uint j) {
 }
 
 uint game_get_current_nb_tents_all(cgame g) {
-  (void)g;
-  return 0;
+  assert(g != NULL);
+  uint cpt = 0;
+  for(uint i=0 ; i < g->height ; i++){
+    for(uint j=0 ; j< g->width ; j++){
+      if (game_get_square(g,i,j) == TENT) cpt++ ;
+    }
+  }
+  return cpt;
 }
 
 void game_play_move(game g, uint i, uint j, square s) {
