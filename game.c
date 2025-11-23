@@ -24,6 +24,7 @@ game game_new(square* squares, uint* nb_tents_row, uint* nb_tents_col) {
 
   g->width=width;
   g->height=height;
+  g->wrapping=false;
   
   g->expected_nb_tents_row=malloc(height*sizeof(uint));
   g->expected_nb_tents_col=malloc(width*sizeof(uint));
@@ -63,6 +64,7 @@ game game_new_empty(void) {
 
   g->width=width;
   g->height=height;
+  g->wrapping=false;
   
   g->expected_nb_tents_row=malloc(height*sizeof(uint));
   g->expected_nb_tents_col=malloc(width*sizeof(uint));
