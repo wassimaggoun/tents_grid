@@ -359,7 +359,7 @@ bool test_game_restart(void) {
     return true;
 }
 
-bool test_game_get_adjacent_square(void) {
+bool test_game_get_ajacent_square(void) {
     game g = game_new_empty();
     if (!g) {
         fprintf(stderr, "Erreur\n");

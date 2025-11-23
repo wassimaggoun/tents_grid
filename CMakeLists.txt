@@ -33,7 +33,7 @@ add_test(test_waggoun_game_copy ./game_test_waggoun game_copy)
 add_test(test_waggoun_game_restart ./game_test_waggoun game_restart)
 add_test(test_waggoun_game_won ./game_test_waggoun game_won)
 add_test(test_waggoun_game_equal ./game_test_waggoun game_equal)
-add_test(test_waggoun_game_get_adjacent_square ./game_test_waggoun game_get_adjacent_square)
+add_test(test_waggoun_game_get_ajacent_square ./game_test_waggoun game_get_adjacent_square)
 
 add_executable(game_test_sgoksu game_test_sgoksu.c)
 target_link_libraries(game_test_sgoksu game m)
