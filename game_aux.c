@@ -20,21 +20,7 @@ game game_default_solution(void) {
 
 bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,
                              uint* pi_next, uint* pj_next) {
-    /**
- * @brief Gets the coordinate of the adjacent square in a given direction.
- * @param g the game
- * @param i row index
- * @param j column index
- * @param d the direction
- * @param[out] pi_next the row index of the adjacent square (output)
- * @param[out] pj_next the column index of the adjacent square (output)
- * @pre @p g must be a valid pointer toward a game structure
- * @pre @p i < game height
- * @pre @p j < game width
- * @return true if the adjacent square is inside the grid, false otherwise
- */
 
-bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,uint* pi_next, uint* pj_next){
     assert(g != NULL);
     assert(i < g->height);
     assert(j < g->width);
