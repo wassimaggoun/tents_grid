@@ -194,7 +194,7 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
 
     for (uint k = 0; k < n_dirs; k++) {
         uint ni, nj;
-        if (game_get_ajacent_square(g, i, j, dirs[i], &ni, &nj)) {
+        if (game_get_ajacent_square(g, i, j, dirs[k], &ni, &nj)) {
             if (game_get_square(g, ni, nj) == s)
                 return true;
         }
