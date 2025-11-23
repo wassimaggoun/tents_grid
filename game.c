@@ -188,7 +188,7 @@ void game_set_expected_nb_tents_row(game g, uint i, uint nb_tents) {
   if (g == NULL) {
     return;
   }
-  if (i > g->width) {
+  if (i >= g->height) {
     return;
   }
   g->expected_nb_tents_row[i] = nb_tents;
@@ -198,7 +198,7 @@ void game_set_expected_nb_tents_col(game g, uint j, uint nb_tents) {
   if (g == NULL) {
     return;
   }
-  if (j > g->width) {
+  if (j >= g->width) {
     return;
   }
   g->expected_nb_tents_col[j] = nb_tents;
