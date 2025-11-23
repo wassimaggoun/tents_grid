@@ -60,53 +60,73 @@ void game_print(cgame g) {
 }
 
 game game_default(void) {
-    game g = game_new_empty();  
+    uint size = DEFAULT_SIZE;  // 8
+    square squares[DEFAULT_SIZE * DEFAULT_SIZE];
 
-    if (!g) return NULL;
+    // Initialiser tout à EMPTY
+    for (uint i = 0; i < size * size; i++) {
+        squares[i] = EMPTY;
+    }
 
+    // Petit macro local pour l'indexation ligne-major
+    #define IDX(i,j) ((i) * size + (j))
 
+    // Placement des arbres ('x' dans l'affichage de la doc)
 
-    game_set_square(g, 0, 0, TREE);
-    game_set_square(g, 0, 5, TREE);
-    game_set_square(g, 0, 6, TREE);
+    // Ligne 0 : "x    xx"
+    squares[IDX(0,0)] = TREE;
+    squares[IDX(0,5)] = TREE;
+    squares[IDX(0,6)] = TREE;
 
+    // Ligne 1 : "        " (rien)
 
-    game_set_square(g, 2, 6, TREE);
+    // Ligne 2 : "      x "
+    squares[IDX(2,6)] = TREE;
 
+    // Ligne 3 : "x  x    "
+    squares[IDX(3,0)] = TREE;
+    squares[IDX(3,3)] = TREE;
 
-    game_set_square(g, 3, 0, TREE);
-    game_set_square(g, 3, 3, TREE);
+    // Ligne 4 : "     x  "
+    squares[IDX(4,5)] = TREE;
 
-    game_set_square(g, 4, 5, TREE);
+    // Ligne 5 : "   x    "
+    squares[IDX(5,3)] = TREE;
 
-    game_set_square(g, 5, 3, TREE);
+    // Ligne 6 : "        " (rien)
 
+    // Ligne 7 : " xx  xx"
+    squares[IDX(7,1)] = TREE;
+    squares[IDX(7,2)] = TREE;
+    squares[IDX(7,5)] = TREE;
+    squares[IDX(7,6)] = TREE;
 
-    game_set_square(g, 7, 1, TREE);
-    game_set_square(g, 7, 2, TREE);
-    game_set_square(g, 7, 5, TREE);
-    game_set_square(g, 7, 6, TREE);
+    // Nombres de tentes attendues par ligne (colonne de droite dans l'exemple)
+    uint nb_tents_row[DEFAULT_SIZE] = {
+        1, // ligne 0
+        2, // ligne 1
+        1, // ligne 2
+        2, // ligne 3
+        2, // ligne 4
+        0, // ligne 5
+        1, // ligne 6
+        3  // ligne 7
+    };
 
-    game_set_expected_nb_tents_row(g, 0, 1);
-    game_set_expected_nb_tents_row(g, 1, 2);
-    game_set_expected_nb_tents_row(g, 2, 1);
-    game_set_expected_nb_tents_row(g, 3, 2);
-    game_set_expected_nb_tents_row(g, 4, 2);
-    game_set_expected_nb_tents_row(g, 5, 0);
-    game_set_expected_nb_tents_row(g, 6, 1);
-    game_set_expected_nb_tents_row(g, 7, 3);
+    // Nombres de tentes attendues par colonne (ligne du bas "30212121")
+    uint nb_tents_col[DEFAULT_SIZE] = {
+        3, // col 0
+        0, // col 1
+        2, // col 2
+        1, // col 3
+        2, // col 4
+        1, // col 5
+        2, // col 6
+        1  // col 7
+    };
 
- 
-    game_set_expected_nb_tents_col(g, 0, 3);
-    game_set_expected_nb_tents_col(g, 1, 0);
-    game_set_expected_nb_tents_col(g, 2, 2);
-    game_set_expected_nb_tents_col(g, 3, 1);
-    game_set_expected_nb_tents_col(g, 4, 2);
-    game_set_expected_nb_tents_col(g, 5, 1);
-    game_set_expected_nb_tents_col(g, 6, 2);
-    game_set_expected_nb_tents_col(g, 7, 1);
-
-    return g;
+    // Création du jeu à partir de ces données
+    return game_new(squares, nb_tents_row, nb_tents_col);
 }
 
 game game_default_solution(void) {
