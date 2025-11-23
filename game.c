@@ -159,7 +159,14 @@ void game_delete(game g) {
   if (g == NULL) {
     return;
   }
+  for(uint i=0; i<g->height;i++){
+    free(g->grid[i]);
+  }
+  free(g->grid);
+  free(g->expected_nb_tents_row);
+  free(g->expected_nb_tents_col);
   free(g);
+
 }
 
 void game_set_square(game g, uint i, uint j, square s) {
