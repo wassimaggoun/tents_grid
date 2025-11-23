@@ -41,6 +41,12 @@ game game_new(square* squares, uint* nb_tents_row, uint* nb_tents_col) {
     g->grid[i]= malloc(width*sizeof(square));
   }
 
+  for(int i=0;i <height ;i++){
+    for(int j=0; j< width; j++){
+      g->grid[i][j]= squares[i *width+j];
+    }
+  }
+
   return g;
 }
 
