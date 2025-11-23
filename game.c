@@ -50,7 +50,45 @@ game game_new(square* squares, uint* nb_tents_row, uint* nb_tents_col) {
   return g;
 }
 
-game game_new_empty(void) { return NULL; }
+game game_new_empty(void) { 
+  
+  game g=malloc(sizeof(struct game_s));
+
+  if(g==NULL){
+    return NULL;
+  }
+
+  uint width=DEFAULT_SIZE;
+  uint height=DEFAULT_SIZE;
+
+  g->width=width;
+  g->height=height;
+  
+  g->expected_nb_tents_row=malloc(height*sizeof(uint));
+  g->expected_nb_tents_col=malloc(width*sizeof(uint));
+
+  for(int i=0; i<height; i++){
+    g->expected_nb_tents_row[i]= 0;
+  }
+  for(int i=0; i<width; i++){
+    g->expected_nb_tents_col[i]= 0;
+  }
+
+  g->grid= malloc(height*sizeof(square*));
+
+  for(int i=0;i<height; i++){
+    g->grid[i]= malloc(width*sizeof(square));
+  }
+
+  for(int i=0;i <height ;i++){
+    for(int j=0; j< width; j++){
+      g->grid[i][j]= EMPTY;
+    }
+  }
+
+  return g;
+
+}
 
 game game_copy(cgame g) {
   game gc = malloc(sizeof(struct game_s));
