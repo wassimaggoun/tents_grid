@@ -64,7 +64,6 @@ bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,
 
 
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
-    bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag){
     assert(g != NULL);
     assert(i < g->height);
     assert(j < g->width);
@@ -84,6 +83,4 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
     return false;
 
 }
-}
-
 
