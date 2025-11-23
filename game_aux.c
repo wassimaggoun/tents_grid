@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "game.h"
 #include "game_aux.h"
-#include <asssert.h>
+#include <assert.h>
 
 
 void game_print(cgame g) {
