@@ -154,7 +154,7 @@ void game_delete(game g) {
 
 void game_set_square(game g, uint i, uint j, square s) {
   if (!g) return;
-  if (i > g->height || j > g->width) return;
+  if (i >= g->height || j >= g->width) return;
   if (s != EMPTY && s != TREE && s != TENT && s != GRASS) return;
 
   g->grid[i][j] = s;
