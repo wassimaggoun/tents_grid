@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "game.h"
 #include "game_aux.h"
+#include <assert.h>
 
 
 void game_print(cgame g) {
@@ -183,7 +184,6 @@ bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,
 
 
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
-   
     assert(g != NULL);
     assert(i < g->height);
     assert(j < g->width);
@@ -192,7 +192,7 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
 
     int n_dirs = diag ? 8 : 4;
 
-    for (uint k = 0; i < n_dirs; k++) {
+    for (uint i = 0; i < n_dirs; i++) {
         uint ni, nj;
         if (game_get_ajacent_square(g, i, j, dirs[i], &ni, &nj)) {
             if (game_get_square(g, ni, nj) == s)
@@ -202,7 +202,5 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
 
     return false;
 
-
 }
-
 

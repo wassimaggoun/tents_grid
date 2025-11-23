@@ -432,8 +432,8 @@ int main(int argc, char *argv[]){
     if (strcmp(argv[1], "game_restart") == 0)
         return test_game_restart() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-    if (strcmp(argv[1], "game_get_adjacent_square") == 0)
-        return test_game_get_adjacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
+    if (strcmp(argv[1], "game_get_ajacent_square") == 0)
+        return test_game_get_ajacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
 
     fprintf(stderr, "Erreur\n");
     return EXIT_FAILURE;
