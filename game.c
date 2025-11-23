@@ -142,6 +142,10 @@ void game_fill_grass(game g) {
   }
 }
 
-void game_restart(game g) { (void)g; }
-
-void game_restart(game g) { (void)g; }
+void game_restart(game g) {
+  for (uint i=0 ; i < g->height ; i++){
+    for (uint j=0 ; j < g->width ; j++){
+      if (g->grid[i][j] != TREE) game_set_square(g, i, j, EMPTY);
+    }
+  }
+}
