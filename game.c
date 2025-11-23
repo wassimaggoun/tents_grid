@@ -152,7 +152,7 @@ void game_delete(game g) {
 
 void game_set_square(game g, uint i, uint j, square s) {
   if (!g) return;
-  if (i >= g->height || j >= g->width) return;
+  if (i > g->height || j > g->width) return;
   if (s != EMPTY && s != TREE && s != TENT && s != GRASS) return;
 
   g->grid[i][j] = s;
@@ -303,8 +303,8 @@ bool game_won(cgame g) {
 }
 
 void game_fill_grass(game g) {
-  for (unsigned int i = 0; i < DEFAULT_SIZE; i++) {
-    for (unsigned int j = 0; j < DEFAULT_SIZE; j++) {
+  for (unsigned int i = 0; i < g->height; i++) {
+    for (unsigned int j = 0; j < g->width; j++) {
       if (game_get_square(g, i, j) == EMPTY) {
         game_set_square(g, i, j, GRASS);
       }
