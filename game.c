@@ -53,42 +53,25 @@ game game_new(square* squares, uint* nb_tents_row, uint* nb_tents_col) {
 
 game game_new_empty(void) { 
   
-  game g=malloc(sizeof(struct game_s));
+  uint size = DEFAULT_SIZE;
 
-  if(g==NULL){
-    return NULL;
-  }
-
-  uint width=DEFAULT_SIZE;
-  uint height=DEFAULT_SIZE;
-
-  g->width=width;
-  g->height=height;
-  g->wrapping=false;
-  
-  g->expected_nb_tents_row=malloc(height*sizeof(uint));
-  g->expected_nb_tents_col=malloc(width*sizeof(uint));
-
-  for(uint i=0; i<height; i++){
-    g->expected_nb_tents_row[i]= 0;
-  }
-  for(uint i=0; i<width; i++){
-    g->expected_nb_tents_col[i]= 0;
-  }
-
-  g->grid= malloc(height*sizeof(square*));
-
-  for(uint i=0;i<height; i++){
-    g->grid[i]= malloc(width*sizeof(square));
-  }
-
-  for(uint i=0;i <height ;i++){
-    for(uint j=0; j< width; j++){
-      g->grid[i][j]= EMPTY;
+    
+    square squares[DEFAULT_SIZE * DEFAULT_SIZE];
+    for (uint i = 0; i < size * size; i++) {
+        squares[i] = EMPTY;
     }
-  }
 
-  return g;
+    
+    uint nb_tents_row[DEFAULT_SIZE];
+    uint nb_tents_col[DEFAULT_SIZE];
+
+    for (uint i = 0; i < size; i++) {
+        nb_tents_row[i] = 0;
+        nb_tents_col[i] = 0;
+    }
+
+    
+    return game_new(squares, nb_tents_row, nb_tents_col);
 
 }
 
