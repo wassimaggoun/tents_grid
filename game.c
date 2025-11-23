@@ -31,7 +31,7 @@ game game_new(square* squares, uint* nb_tents_row, uint* nb_tents_col) {
   for(int i=0; i<height; i++){
     g->expected_nb_tents_row[i]= nb_tents_row[i];
   }
-  for(int i=0; i<height; i++){
+  for(int i=0; i<width; i++){
     g->expected_nb_tents_col[i]= nb_tents_col[i];
   }
 
