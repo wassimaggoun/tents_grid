@@ -155,10 +155,17 @@ bool game_equal(cgame g1, cgame g2) {
   return true;
 }
 
-void game_delete(game g) {
+
+ void game_delete(game g) {
   if (g == NULL) {
     return;
   }
+  for(uint i=0; i<g->height;i++){
+    free(g->grid[i]);
+  }
+  free(g->grid);
+  free(g->expected_nb_tents_row);
+  free(g->expected_nb_tents_col);
   free(g);
 }
 
