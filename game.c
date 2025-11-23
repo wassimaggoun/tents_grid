@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "game_aux.h"
 #include "game_struct.h"
@@ -14,7 +15,39 @@ game game_new(square* squares, uint* nb_tents_row, uint* nb_tents_col) {
 
 game game_new_empty(void) { return NULL; }
 
-game game_copy(cgame g) { return NULL; }
+game game_copy(cgame g) {
+  game gc = malloc(sizeof(struct game_s));
+  assert(gc != NULL);
+
+  gc->width = g->width;
+  gc->height = g->height;
+  gc->wrapping = g->wrapping;
+
+  gc->expected_nb_tents_row = malloc(g->height * sizeof(uint));
+  gc->expected_nb_tents_col = malloc(g->width * sizeof(uint));
+  assert(gc->expected_nb_tents_row != NULL);
+  assert(gc->expected_nb_tents_col != NULL);
+
+  for (uint i = 0; i < g->height; i++){
+        gc->expected_nb_tents_row[i] = g->expected_nb_tents_row[i];
+  }
+  for (uint j = 0; j < g->width; j++){
+        gc->expected_nb_tents_col[j] = g->expected_nb_tents_col[j];
+  }
+
+  gc->grid = malloc(g->height * sizeof(square*));
+  assert(gc->grid != NULL);
+
+  for (uint i = 0; i < g->height; i++) {
+        gc->grid[i] = malloc(g->width * sizeof(square));
+        assert(gc->grid[i] != NULL);
+        for (uint j = 0; j < g->width; j++) {
+            gc->grid[i][j] = g->grid[i][j];
+        }
+    }
+
+    return gc;
+}
 
 bool game_equal(cgame g1, cgame g2) {
   if (g1->width != g2->width || g1->height != g2->height || g1->wrapping != g2->wrapping) return false;
@@ -145,8 +178,39 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
 }
 
 bool game_won(cgame g) {
-  (void)g;
-  return false;
+  assert(g != NULL);
+
+  uint h = g->height;
+  uint w = w->weight;
+
+  for(uint i=0 ; i<h ; i++){
+    for(uint j=0 ; j<w ; j++){
+      square s = game_get_square(g,i,j);
+
+      if (s == TENT){
+        // regle 1
+        if (game_is_neigh(g, i, j, TENT, true)) return false;
+
+        // regle 4
+        if (!game_is_neigh(g, i, j, TREE, false)) return false;
+      }
+      //regle 4
+      if (s == TREE && !game_is_neigh(g, i, j, TENT, false)) return false;
+    }
+    //regle 2
+    for (uint i = 0; i < h; i++)
+        if (game_get_current_nb_tents_row(g, i) != game_get_expected_nb_tents_row(g, i))
+            return false;
+
+    for (uint j = 0; j < w; j++)
+        if (game_get_current_nb_tents_col(g, j) != game_get_expected_nb_tents_col(g, j))
+            return false;
+  }
+
+  //regle 3
+  if (game_get_current_nb_tents_all(g) != game_get_expected_nb_tents_all(g)) return false;
+  
+  return true;
 }
 
 void game_fill_grass(game g) {
