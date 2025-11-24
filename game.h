@@ -24,10 +24,11 @@ typedef unsigned int uint;
  * @brief Different kinds of square used in the game.
  **/
 typedef enum {
-  EMPTY = 0, /**< empty square */
-  TREE = 1,  /**< tree square */
-  TENT = 2,  /**< tent square */
-  GRASS = 3, /**< grass square */
+  EMPTY = 0,   /**< empty square */
+  TREE = 1,    /**< tree square */
+  TENT = 2,    /**< tent square */
+  GRASS = 3,   /**< grass square */
+  BIGTREE = 4, /**< big tree square */
 } square;
 
 /**
@@ -159,6 +160,7 @@ uint game_get_expected_nb_tents_col(cgame g, uint j);
  * @brief Gets the expected number of tents on the whole grid.
  * @param g the game
  * @return the expected number of tents on this game
+ * @details This is computed by summing the number of trees on the grid.
  * @pre @p g must be a valid pointer toward a game structure.
  **/
 uint game_get_expected_nb_tents_all(cgame g);
@@ -177,7 +179,7 @@ uint game_get_current_nb_tents_row(cgame g, uint i);
  * @brief Gets the current number of tents in a given column.
  * @param g the game
  * @param j column index
- * @return the expected number of tents on this column
+ * @return the current number of tents on this column
  * @pre @p g must be a valid pointer toward a game structure.
  * @pre @p j < game width
  **/
