@@ -6,7 +6,7 @@ enable_testing()
 
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -g")
 
-add_library(game game.c game_aux.c)
+add_library(game game.c game_aux.c game_ext.c)
 
 add_executable(game_text game_text.c)
 target_link_libraries(game_text game m)
