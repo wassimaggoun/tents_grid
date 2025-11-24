@@ -4,6 +4,8 @@
 #include "game.h"
 #include "game_aux.h"
 #include "game_struct.h"
+#include "game_ext.h"
+
 int main(void) {
     game g = game_default();
     if (g == NULL) {
@@ -58,6 +60,12 @@ int main(void) {
             game_print(g);
             game_delete(g);
             return EXIT_SUCCESS;
+        }
+        else if (c == 'z'){
+            game_undo(g);
+        }
+        else if (c == 'y'){
+            game_redo(g);
         }
         else {
           
