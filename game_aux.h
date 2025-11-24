@@ -26,8 +26,9 @@ typedef enum {
 
 /**
  * @brief Prints a game as text on the standard output stream.
- * @details The different squares EMPTY, TREE, TENT, and GRASS are respectively
- * displayed with the following characters ' ', 'x', '*', '-'.
+ * @details The different squares EMPTY, TREE, TENT, GRASS and BIGTREE are
+respectively
+ * displayed with the following characters ' ', 'x', '*', '-', '#'.
  * Here is the attempted output for the default game:
 @verbatim
    01234567
