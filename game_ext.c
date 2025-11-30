@@ -15,20 +15,27 @@ game game_new_ext(uint nb_rows, uint nb_cols, square* squares,uint* nb_tents_row
     }
 
   game g = malloc(sizeof(struct game_s));
-  if (!g) {
+    if (!g) {
       return NULL;
-  }
+    }
 
-  g->width = nb_cols;
-  g->height = nb_rows;
-  g->wrapping = wrapping;  
+    g->width = nb_cols;
+    g->height = nb_rows;
+    g->wrapping = wrapping;  
 }
 
 
 
 
 game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping){
-    return;
+    game g = malloc(sizeof(struct game_s));
+    if (!g) {
+      return NULL;
+    }
+
+    g->width = nb_cols;
+    g->height = nb_rows;
+    g->wrapping = wrapping; 
 }
 
 
