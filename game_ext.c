@@ -10,7 +10,18 @@
 #include "game_struct.h"
 
 game game_new_ext(uint nb_rows, uint nb_cols, square* squares,uint* nb_tents_row, uint* nb_tents_col, bool wrapping){
-    return;
+    if (!squares || !nb_tents_row || !nb_tents_col) {
+        return NULL;
+    }
+
+  game g = malloc(sizeof(struct game_s));
+  if (!g) {
+      return NULL;
+  }
+
+  g->width = nb_cols;
+  g->height = nb_rows;
+  g->wrapping = wrapping;  
 }
 
 
