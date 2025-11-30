@@ -81,11 +81,29 @@ game game_default_solution(void);
  * @pre @p j < game width
  * @return true if the adjacent square is inside the grid, false otherwise
  */
-bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,
-                             uint* pi_next, uint* pj_next);
+bool game_get_adjacent_square(cgame g, uint i, uint j, direction d,
+                              uint* pi_next, uint* pj_next);
 
 /**
- * @brief Determines if a neighboring square has a given value.
+ * @brief Counts the number of neighboring squares with a given value.
+ * @details The square at position (i,j) is not included in the count.
+ * @param g the game
+ * @param i row index
+ * @param j column index
+ * @param s the square value
+ * @param diag if true, include diagonal neighbors; otherwise, only count
+ * orthogonal neighbors
+ * @pre @p g is a valid pointer to a game structure
+ * @pre @p i < game height
+ * @pre @p j < game width
+ * @return the number of neighboring squares with value @p s
+ */
+uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag);
+
+/**
+ * @brief Determines if there is at least one neighboring square with a given
+ * value.
+ * @details The square at position (i,j) is not included in the check.
  * @param g the game
  * @param i row index
  * @param j column index
