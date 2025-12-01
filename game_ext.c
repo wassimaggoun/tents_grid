@@ -43,7 +43,14 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping){
 
 
 uint game_nb_rows(cgame g){
-    return 0;
+    if(g==NULL){
+        fprintf(stderr,"JEU VIDE");
+        exit(EXIT_FAILURE);
+    }
+        
+        
+    
+    return g->width;
 }
 
 
@@ -51,14 +58,27 @@ uint game_nb_rows(cgame g){
 
 
 uint game_nb_cols(cgame g){
-    return 0;
+    if(g==NULL){
+        fprintf(stderr,"JEU VIDE");
+        exit(EXIT_FAILURE);
+    }
+        
+        
+    
+    return g->height;
+    
 }
 
 
 
 
 bool game_is_wrapping(cgame g){
-    return 0;
+    if(g==NULL){
+        fprintf(stderr,"JEU VIDE");
+        exit(EXIT_FAILURE);
+    }
+
+    return g->wrapping;
 }
 
 
