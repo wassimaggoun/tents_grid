@@ -139,7 +139,7 @@ game game_default_solution(void) {
     return g;
 }
 
-bool game_get_ajacent_square(cgame g, uint i, uint j, direction d,
+bool game_get_adjacent_square(cgame g, uint i, uint j, direction d,
                              uint* pi_next, uint* pj_next) {
 
     assert(g != NULL);
@@ -194,7 +194,7 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
 
     for (uint k = 0; k < n_dirs; k++) {
         uint ni, nj;
-        if (game_get_ajacent_square(g, i, j, dirs[k], &ni, &nj)) {
+        if (game_get_adjacent_square(g, i, j, dirs[k], &ni, &nj)) {
             if (game_get_square(g, ni, nj) == s)
                 return true;
         }
