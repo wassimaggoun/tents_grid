@@ -87,6 +87,16 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
                       wrapping);
 }
 
+uint game_nb_rows(cgame g){
+    if(g==NULL){
+        fprintf(stderr,"JEU VIDE");
+        exit(EXIT_FAILURE);
+    }
+    
+    return g->width;
+}
+
+
 uint game_nb_cols(cgame g) {
   if (g == NULL) {
     fprintf(stderr, "JEU VIDE");
