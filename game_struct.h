@@ -9,6 +9,8 @@ struct game_s {
     uint height;  
 
     square **grid;  
+    square last_mv;
+    square last_cl;
 
     uint *expected_nb_tents_row;  
     uint *expected_nb_tents_col;  
