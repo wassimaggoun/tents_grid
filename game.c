@@ -156,36 +156,28 @@ bool game_equal(cgame g1, cgame g2) {
 }
 
 void game_delete(game g) {
-  if (!g) return;
-  if(g->grid){
-    for(uint i=0; i<g->height;i++){
-      for(uint j=0; j<g->width; j++){
-        free(g->grid[i][j]);
-      }
-    }
-    free(g->grid);
-  }
+    if (!g) return;
 
-  if(g->expected_nb_tents_row){
-    for(uint i=0; i< g->height ; i++){
-      free(g->expected_nb_tents_row[i]);
+    if (g->grid) {
+        for (uint i = 0; i < g->height; i++) {
+            free(g->grid[i]);
+        }
+        free(g->grid);
     }
+
     free(g->expected_nb_tents_row);
-  }
-  
-  if(g->expected_nb_tents_col){
-    for(uint j=0; j< g->width ; j++){
-      free(g->expected_nb_tents_row[j]);
-    }
     free(g->expected_nb_tents_col);
-  }
-  free(g);
+
+    if (g->undo_stack) queue_free_full(g->undo_stack, free);
+    if (g->redo_stack) queue_free_full(g->redo_stack, free);
+
+    free(g);
 }
 
 void game_set_square(game g, uint i, uint j, square s) {
   if (!g) return;
   if (i >= g->height || j >= g->width) return;
-  if (s != EMPTY && s != TREE && s != TENT && s != GRASS) return;
+  if (s != EMPTY && s != TREE && s != TENT && s != GRASS && s != BIGTREE) return;
 
   g->grid[i][j] = s;
 }
@@ -264,7 +256,7 @@ void game_play_move(game g, uint i, uint j, square s) {
   if(g==NULL || i>= g->height || j >= g->width ){
     return;
   }
-  if(s==TREE){
+  if(g->grid[i][j]==TREE || g->grid[i][j]== BIGTREE){
     return;
   }
   if(s!=EMPTY && s!=GRASS && s!= TENT){
@@ -275,7 +267,7 @@ void game_play_move(game g, uint i, uint j, square s) {
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
   square mtn = game_get_square(g, i, j);
-  if (mtn == TREE) {
+  if (mtn == TREE || mtn == BIGTREE) {
     return false;
   }
 
@@ -284,54 +276,70 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
   }
 
   if (s == TENT) {
-    if (mtn == TENT || mtn == TREE) {
+    if (mtn == TENT || mtn == TREE || mtn == BIGTREE) {
       return false;
     }
   }
+
+  if (s == TREE || s == BIGTREE) {
+    return false;
+  }
+
   return true;
 }
 
 bool game_won(cgame g) {
-  assert(g != NULL);
+    assert(g != NULL);
 
-  uint nb_trees = 0; //compteur de nombre d'arbres
-  uint nb_tents =0; //compteur d enombre de tents
+    uint nb_trees = 0; // compteur de TREE et BIGTREE
+    uint nb_tents = 0; // compteur de TENT
 
-  uint h = g->height;
-  uint w = g->width;
+    uint h = g->height;
+    uint w = g->width;
 
-  // regle 2 pour les colonnes
-  for(uint j=0 ; j<w ; j++){
-    if (game_get_current_nb_tents_col(g, j) != g->expected_nb_tents_col[j]) return false;
-  }
-
-  for(uint i=0 ; i<h ; i++){
-    //relge 2 pour les lignes
-    if (game_get_current_nb_tents_row(g, i) != g->expected_nb_tents_row[i]) return false;
-
-    for(uint j=0 ; j<w ; j++){
-      square s = game_get_square(g,i,j);
-      
-      if (s == TENT){
-        nb_tents ++;
-        // regle 1
-        if (game_is_neigh(g, i, j, TENT, true)) return false;
-
-        // regle 4
-        if (!game_is_neigh(g, i, j, TREE, false)) return false;
-      }
-
-      //regle 4
-      if (s == TREE && !game_is_neigh(g, i, j, TENT, false)) return false;
-      if (s == TREE) nb_trees++ ;
+    // règle 2 pour les colonnes
+    for (uint j = 0; j < w; j++) {
+        if (game_get_current_nb_tents_col(g, j) != g->expected_nb_tents_col[j]) return false;
     }
-  }
-  
 
-  // regle 3
-  if (nb_tents != nb_trees) return false;
-  
-  return true;
+    for (uint i = 0; i < h; i++) {
+        // règle 2 pour les lignes
+        if (game_get_current_nb_tents_row(g, i) != g->expected_nb_tents_row[i]) return false;
+
+        for (uint j = 0; j < w; j++) {
+            square s = game_get_square(g, i, j);
+
+            if (s == TENT) {
+                nb_tents++;
+                // règle 1
+                if (game_is_neigh(g, i, j, TENT, true)) return false;
+
+                // règle 4
+                if (!game_is_neigh(g, i, j, TREE, false) &&
+                    !game_is_neigh(g, i, j, BIGTREE, false)) return false;
+            }
+
+            if (s == TREE || s == BIGTREE) {
+                uint count_adj_tents = 0; //nombre de tents adjacentes a un arbre
+                // verifie toutes les direzctions (sauf diagonales)
+                if (i > 0 && game_get_square(g, i - 1, j) == TENT) count_adj_tents++;
+                if (i + 1 < h && game_get_square(g, i + 1, j) == TENT) count_adj_tents++;
+                if (j > 0 && game_get_square(g, i, j - 1) == TENT) count_adj_tents++;
+                if (j + 1 < w && game_get_square(g, i, j + 1) == TENT) count_adj_tents++;
+
+                if ((s == TREE && count_adj_tents != 1) || (s == BIGTREE && count_adj_tents != 2)) {
+                    return false;
+                }
+
+                nb_trees++;
+            }
+        }
+    }
+
+    // règle 3
+    if (nb_tents != nb_trees) return false;
+
+    return true;
 }
 
 void game_fill_grass(game g) {
@@ -347,7 +355,9 @@ void game_fill_grass(game g) {
 void game_restart(game g) {
   for (uint i=0 ; i < g->height ; i++){
     for (uint j=0 ; j < g->width ; j++){
-      if (g->grid[i][j] != TREE && g->grid[i][j] != EMPTY) game_set_square(g, i, j, EMPTY);
+      if (g->grid[i][j] != TREE && g->grid[i][j] != EMPTY && g->grid[i][j] != BIGTREE){
+         game_set_square(g, i, j, EMPTY);
+      }
     }
   }
 }
