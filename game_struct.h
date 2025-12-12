@@ -3,43 +3,21 @@
 
 #include <stdbool.h>
 #include "game.h"  
+#include "queue.h"
 
 struct game_s {
     uint width;   
     uint height;  
 
     square **grid;  
-    square last_mv;
-    square last_cl;
 
     uint *expected_nb_tents_row;  
     uint *expected_nb_tents_col;  
 
     bool wrapping;  
+
+    queue *undo_stack;   // pile des moves joués
+    queue *redo_stack;   //pile des moves annulés
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
