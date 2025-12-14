@@ -8,18 +8,20 @@
 #include "game_aux.h"
 #include "game_struct.h"
 
-game game_new_ext(uint nb_rows, uint nb_cols, square* squares,
-                  uint* nb_tents_row, uint* nb_tents_col, bool wrapping) {
-  if (!squares || !nb_tents_row || !nb_tents_col) return NULL;
+game game_new_ext(uint nb_rows, uint nb_cols, square *squares,
+                  uint *nb_tents_row, uint *nb_tents_col, bool wrapping) {
+  if (!squares || !nb_tents_row || !nb_tents_col)
+    return NULL;
 
   game g = malloc(sizeof(struct game_s));
-  if (!g) return NULL;
+  if (!g)
+    return NULL;
 
-  g->width = nb_rows;
-  g->height = nb_cols;
+  g->height = nb_rows;
+  g->width = nb_cols;
   g->wrapping = wrapping;
 
-  g->grid = malloc(g->height * sizeof(square*));
+  g->grid = malloc(g->height * sizeof(square *));
   if (!g->grid) {
     free(g);
     return NULL;
@@ -29,6 +31,7 @@ game game_new_ext(uint nb_rows, uint nb_cols, square* squares,
     g->grid[i] = malloc(g->width * sizeof(square));
     if (!g->grid[i]) {
       game_delete(g);
+      return NULL;
     }
   }
 
@@ -42,6 +45,7 @@ game game_new_ext(uint nb_rows, uint nb_cols, square* squares,
   g->expected_nb_tents_row = malloc(g->height * sizeof(uint));
   if (!g->expected_nb_tents_row) {
     game_delete(g);
+    return NULL;
   }
   for (uint i = 0; i < g->height; i++) {
     g->expected_nb_tents_row[i] = nb_tents_row[i];
@@ -50,9 +54,17 @@ game game_new_ext(uint nb_rows, uint nb_cols, square* squares,
   g->expected_nb_tents_col = malloc(g->width * sizeof(uint));
   if (!g->expected_nb_tents_col) {
     game_delete(g);
+    return NULL;
   }
   for (uint j = 0; j < g->width; j++) {
     g->expected_nb_tents_col[j] = nb_tents_col[j];
+  }
+
+  g->undo_stack = queue_new();
+  g->redo_stack = queue_new();
+  if (!g->undo_stack || !g->redo_stack) {
+    fprintf(stderr, "Erreur d'allocation de mémoire.");
+    exit(EXIT_FAILURE);
   }
 
   return g;
@@ -68,18 +80,21 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
   g->height = nb_rows;
   g->wrapping = wrapping;
 
-  uint size = nb_cols;
+  uint size = nb_cols * nb_rows;
 
   square squares[nb_cols * nb_rows];
-  for (uint i = 0; i < size * size; i++) {
+  for (uint i = 0; i < size; i++) {
     squares[i] = EMPTY;
   }
 
   uint nb_tents_row[nb_rows];
   uint nb_tents_col[nb_cols];
 
-  for (uint i = 0; i < size; i++) {
+  for (uint i = 0; i < nb_rows; i++) {
     nb_tents_row[i] = 0;
+  }
+
+  for (uint i = 0; i < nb_cols; i++) {
     nb_tents_col[i] = 0;
   }
 
@@ -87,13 +102,13 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
                       wrapping);
 }
 
-uint game_nb_rows(cgame g){
-    if(g==NULL){
-        fprintf(stderr,"JEU VIDE");
-        exit(EXIT_FAILURE);
-    }
-    
-    return g->width;
+uint game_nb_rows(cgame g) {
+  if (g == NULL) {
+    fprintf(stderr, "JEU VIDE");
+    exit(EXIT_FAILURE);
+  }
+
+  return g->height;
 }
 
 uint game_nb_cols(cgame g) {
@@ -102,7 +117,7 @@ uint game_nb_cols(cgame g) {
     exit(EXIT_FAILURE);
   }
 
-  return g->height;
+  return g->width;
 }
 
 bool game_is_wrapping(cgame g) {
@@ -114,6 +129,28 @@ bool game_is_wrapping(cgame g) {
   return g->wrapping;
 }
 
-void game_undo(game g) { return; }
+void game_undo(game g) {
+  if (g == NULL) {
+    fprintf(stderr, "Erreur mémoire");
+    exit(EXIT_FAILURE);
+  }
 
-void game_redo(game g) { return; }
+  if (queue_is_empty(g->undo_stack)) return;
+
+  move *m = queue_pop_tail(g->undo_stack);
+  g->grid[m->i][m->j] = m->before;
+  queue_push_tail(g->redo_stack, m);
+}
+
+void game_redo(game g) {
+  if (g == NULL) {
+    fprintf(stderr, "Erreur mémoire");
+    exit(EXIT_FAILURE);
+  }
+
+  if(queue_is_empty(g->redo_stack)) return;
+
+  move *m = queue_pop_tail(g->redo_stack);
+  g->grid[m->i][m->j] = m->after;
+  queue_push_tail(g->undo_stack, m);
+}
