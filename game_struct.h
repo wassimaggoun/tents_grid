@@ -27,4 +27,5 @@ typedef struct move_s {
   square after;
 } move;
 
+
 #endif
