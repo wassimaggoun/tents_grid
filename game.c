@@ -348,23 +348,27 @@ void game_play_move(game g, uint i, uint j, square s) {
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
+  if(!g) return false;
+  if(i >= game_nb_rows(g) || j >= game_nb_cols(g)) return false;
 
-  assert(g);
-
-
-  if (i >= g->height || j >= g->width) {
+  square mtn = game_get_square(g, i, j);
+  if (mtn == TREE || mtn == BIGTREE) {
     return false;
   }
 
-
-  square mtn = g->grid[i][j];
-  if (mtn == TREE || mtn == BIGTREE) {
-    return false;
+  if (s == GRASS) {
+    return mtn == EMPTY;
   }
 
 
   if (s == TREE || s == BIGTREE) {
     return false;
+  }
+
+  if (s == TENT){
+    if(mtn != EMPTY) return false;
+    if(game_is_neigh(g,i,j,TENT,true)) return false;
+    if(game_nb_neigh(g,i,j,TREE,false) < 1 || game_nb_neigh(g,i,j,BIGTREE,false) <1) return false;
   }
 
   return true;
@@ -373,114 +377,40 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
 bool game_won(cgame g) {
   assert(g);
 
-  uint h = g->height;
-  uint w = g->width;
-  
- 
-  for (uint i = 0; i < h; i++) {
+  uint h = game_nb_rows(g), w = game_nb_cols(g);
+  uint tents = 0, needed = 0;
+
+  //regle 2
+  for (uint i = 0; i < h; i++)
     if (game_get_current_nb_tents_row(g, i) != game_get_expected_nb_tents_row(g, i))
       return false;
-  }
 
-  for (uint j = 0; j < w; j++) {
+  for (uint j = 0; j < w; j++)
     if (game_get_current_nb_tents_col(g, j) != game_get_expected_nb_tents_col(g, j))
       return false;
-  }
-
-  uint total_tents_on_board = 0;
-  uint total_tents_needed_by_trees = 0;
-
 
   for (uint i = 0; i < h; i++) {
     for (uint j = 0; j < w; j++) {
-      square s = g->grid[i][j]; // Accès direct plus sûr si les indices sont bons
+      square s = game_get_square(g, i, j);
 
       if (s == TENT) {
-        total_tents_on_board++;
-        
-        
-        if (game_is_neigh(g, i, j, TENT, true)) return false;
-
-
-        if (!game_is_neigh(g, i, j, TREE, false) &&
-            !game_is_neigh(g, i, j, BIGTREE, false)) {
+        tents++;
+        if (game_is_neigh(g, i, j, TENT, true)) return false;  //regle 1
+        if (!game_is_neigh(g, i, j, TREE, false) &&            //regle 4
+            !game_is_neigh(g, i, j, BIGTREE, false))
           return false;
-        }
       }
-      else if (s == TREE || s == BIGTREE) {
-  
-        uint nb_tents = game_nb_neigh(g, i, j, TENT, false);
-        uint expected = (s == TREE) ? 1 : 2;
-        
-        if (nb_tents != expected) return false;
-        
-        total_tents_needed_by_trees += expected;
+
+      if (s == TREE || s == BIGTREE) {
+        uint n = game_nb_neigh(g, i, j, TENT, false);
+        uint req = (s == TREE) ? 1 : 2; //2 tents pour BIGTREE
+        if (n != req) return false;
+        needed += req;
       }
     }
   }
 
-
-
-  if (total_tents_on_board != total_tents_needed_by_trees) {
-      return false;
-  }
-
-  return true;
-}bool game_won(cgame g) {
-  assert(g);
-
-  uint h = g->height;
-  uint w = g->width;
-  
- 
-  for (uint i = 0; i < h; i++) {
-    if (game_get_current_nb_tents_row(g, i) != game_get_expected_nb_tents_row(g, i))
-      return false;
-  }
-
-  for (uint j = 0; j < w; j++) {
-    if (game_get_current_nb_tents_col(g, j) != game_get_expected_nb_tents_col(g, j))
-      return false;
-  }
-
-  uint total_tents_on_board = 0;
-  uint total_tents_needed_by_trees = 0;
-
-
-  for (uint i = 0; i < h; i++) {
-    for (uint j = 0; j < w; j++) {
-      square s = g->grid[i][j]; 
-
-      if (s == TENT) {
-        total_tents_on_board++;
-        
-        
-        if (game_is_neigh(g, i, j, TENT, true)) return false;
-
-
-        if (!game_is_neigh(g, i, j, TREE, false) &&
-            !game_is_neigh(g, i, j, BIGTREE, false)) {
-          return false;
-        }
-      }
-      else if (s == TREE || s == BIGTREE) {
-  
-        uint nb_tents = game_nb_neigh(g, i, j, TENT, false);
-        uint expected = (s == TREE) ? 1 : 2;
-        
-        if (nb_tents != expected) return false;
-        
-        total_tents_needed_by_trees += expected;
-      }
-    }
-  }
-
-
-
-  if (total_tents_on_board != total_tents_needed_by_trees) {
-      return false;
-  }
-
+  if(tents != needed) return false; //regle 3
   return true;
 }
 
