@@ -25,14 +25,14 @@ game game_new(square *squares, uint *nb_tents_row, uint *nb_tents_col) {
   g->height = DEFAULT_SIZE;
   g->wrapping = false;
 
-  g->grid = malloc(g->height * sizeof(square *));
+  g->grid = malloc(game_nb_rows(g) * sizeof(square *));
   if (!g->grid) {
     free(g);
     return NULL;
   }
 
-  for (uint i = 0; i < g->height; i++) {
-    g->grid[i] = malloc(g->width * sizeof(square));
+  for (uint i = 0; i < game_nb_rows(g); i++) {
+    g->grid[i] = malloc(game_nb_cols(g) * sizeof(square));
     if (!g->grid[i]) {
       for (uint k = 0; k < i; k++) {
         free(g->grid[k]);
@@ -43,37 +43,37 @@ game game_new(square *squares, uint *nb_tents_row, uint *nb_tents_col) {
     }
   }
 
-  for (uint i = 0; i < g->height; i++) {
-    for (uint j = 0; j < g->width; j++) {
-      uint index = i * g->width + j;
+  for (uint i = 0; i < game_nb_rows(g); i++) {
+    for (uint j = 0; j < game_nb_cols(g); j++) {
+      uint index = i * game_nb_cols(g) + j;
       g->grid[i][j] = squares[index];
     }
   }
 
-  g->expected_nb_tents_row = malloc(g->height * sizeof(uint));
+  g->expected_nb_tents_row = malloc(game_nb_rows(g) * sizeof(uint));
   if (!g->expected_nb_tents_row) {
-    for (uint i = 0; i < g->height; i++) {
+    for (uint i = 0; i < game_nb_rows(g); i++) {
       free(g->grid[i]);
     }
     free(g->grid);
     free(g);
     return NULL;
   }
-  for (uint i = 0; i < g->height; i++) {
+  for (uint i = 0; i < game_nb_rows(g); i++) {
     g->expected_nb_tents_row[i] = nb_tents_row[i];
   }
 
-  g->expected_nb_tents_col = malloc(g->width * sizeof(uint));
+  g->expected_nb_tents_col = malloc(game_nb_cols(g) * sizeof(uint));
   if (!g->expected_nb_tents_col) {
     free(g->expected_nb_tents_row);
-    for (uint i = 0; i < g->height; i++) {
+    for (uint i = 0; i < game_nb_rows(g); i++) {
       free(g->grid[i]);
     }
     free(g->grid);
     free(g);
     return NULL;
   }
-  for (uint j = 0; j < g->width; j++) {
+  for (uint j = 0; j < game_nb_cols(g); j++) {
     g->expected_nb_tents_col[j] = nb_tents_col[j];
   }
 
@@ -104,29 +104,29 @@ game game_copy(cgame g) {
   game gc = malloc(sizeof(struct game_s));
   assert(gc != NULL);
 
-  gc->width = g->width;
-  gc->height = g->height;
+  gc->width = game_nb_cols(g);
+  gc->height = game_nb_rows(g);
   gc->wrapping = g->wrapping;
 
-  gc->expected_nb_tents_row = malloc(g->height * sizeof(uint));
-  gc->expected_nb_tents_col = malloc(g->width * sizeof(uint));
+  gc->expected_nb_tents_row = malloc(game_nb_rows(g) * sizeof(uint));
+  gc->expected_nb_tents_col = malloc(game_nb_cols(g) * sizeof(uint));
   assert(gc->expected_nb_tents_row != NULL);
   assert(gc->expected_nb_tents_col != NULL);
 
-  for (uint i = 0; i < g->height; i++) {
+  for (uint i = 0; i < game_nb_rows(g); i++) {
     gc->expected_nb_tents_row[i] = g->expected_nb_tents_row[i];
   }
-  for (uint j = 0; j < g->width; j++) {
+  for (uint j = 0; j < game_nb_cols(g); j++) {
     gc->expected_nb_tents_col[j] = g->expected_nb_tents_col[j];
   }
 
-  gc->grid = malloc(g->height * sizeof(square *));
+  gc->grid = malloc(game_nb_rows(g) * sizeof(square *));
   assert(gc->grid != NULL);
 
-  for (uint i = 0; i < g->height; i++) {
-    gc->grid[i] = malloc(g->width * sizeof(square));
+  for (uint i = 0; i < game_nb_rows(g); i++) {
+    gc->grid[i] = malloc(game_nb_cols(g) * sizeof(square));
     assert(gc->grid[i] != NULL);
-    for (uint j = 0; j < g->width; j++) {
+    for (uint j = 0; j < game_nb_cols(g); j++) {
       gc->grid[i][j] = g->grid[i][j];
     }
   }
@@ -163,7 +163,7 @@ void game_delete(game g) {
     return;
 
   if (g->grid) {
-    for (uint i = 0; i < g->height; i++) {
+    for (uint i = 0; i < game_nb_rows(g); i++) {
       free(g->grid[i]);
     }
     free(g->grid);
@@ -183,7 +183,7 @@ void game_delete(game g) {
 void game_set_square(game g, uint i, uint j, square s) {
   if (!g)
     return;
-  if (i >= g->height || j >= g->width)
+  if (i >= game_nb_rows(g) || j >= game_nb_cols(g))
     return;
   if (s != EMPTY && s != TREE && s != TENT && s != GRASS && s != BIGTREE)
     return;
@@ -194,7 +194,7 @@ void game_set_square(game g, uint i, uint j, square s) {
 square game_get_square(cgame g, uint i, uint j) {
   if (!g)
     return EMPTY;
-  if (i >= g->height || j >= g->width)
+  if (i >= game_nb_rows(g) || j >= game_nb_cols(g))
     return EMPTY;
 
   return g->grid[i][j];
@@ -204,7 +204,7 @@ void game_set_expected_nb_tents_row(game g, uint i, uint nb_tents) {
   if (g == NULL) {
     return;
   }
-  if (i >= g->height) {
+  if (i >= game_nb_rows(g)) {
     return;
   }
   g->expected_nb_tents_row[i] = nb_tents;
@@ -214,7 +214,7 @@ void game_set_expected_nb_tents_col(game g, uint j, uint nb_tents) {
   if (g == NULL) {
     return;
   }
-  if (j >= g->width) {
+  if (j >= game_nb_cols(g)) {
     return;
   }
   g->expected_nb_tents_col[j] = nb_tents;
@@ -223,7 +223,7 @@ void game_set_expected_nb_tents_col(game g, uint j, uint nb_tents) {
 uint game_get_expected_nb_tents_row(cgame g, uint i) {
   assert(g);
   assert(g->expected_nb_tents_row);
-  assert(i < g->height);
+  assert(i < game_nb_rows(g));
 
   return g->expected_nb_tents_row[i];
 }
@@ -231,7 +231,7 @@ uint game_get_expected_nb_tents_row(cgame g, uint i) {
 uint game_get_expected_nb_tents_col(cgame g, uint j) {
   assert(g);
   assert(g->expected_nb_tents_col);
-  assert(j < g->width);
+  assert(j < game_nb_cols(g));
 
   return g->expected_nb_tents_col[j];
 }
@@ -240,7 +240,7 @@ uint game_get_expected_nb_tents_all(cgame g) {
   assert(g);
   assert(g->expected_nb_tents_row);
   uint res = 0;
-  for (uint i = 0; i < g->height; i++) {
+  for (uint i = 0; i < game_nb_rows(g); i++) {
     res += game_get_expected_nb_tents_row(g,i);
   }
   return res;
@@ -248,10 +248,10 @@ uint game_get_expected_nb_tents_all(cgame g) {
 
 uint game_get_current_nb_tents_row(cgame g, uint i) {
   assert(g);
-  assert(i < g->height);
+  assert(i < game_nb_rows(g));
 
   uint res = 0;
-  for (uint j = 0; j < g->width; j++) {
+  for (uint j = 0; j < game_nb_cols(g); j++) {
     if (game_get_square(g, i, j) == TENT) {
       res++;
     }
@@ -261,10 +261,10 @@ uint game_get_current_nb_tents_row(cgame g, uint i) {
 
 uint game_get_current_nb_tents_col(cgame g, uint j) {
   assert(g);
-  assert(j < g->width);
+  assert(j < game_nb_cols(g));
 
   uint res = 0;
-  for (uint i = 0; i < g->height; i++) {
+  for (uint i = 0; i < game_nb_rows(g); i++) {
     if (game_get_square(g, i, j) == TENT) {
       res++;
     }
@@ -275,8 +275,8 @@ uint game_get_current_nb_tents_col(cgame g, uint j) {
 uint game_get_current_nb_tents_all(cgame g) {
   assert(g != NULL);
   uint cpt = 0;
-  for (uint i = 0; i < g->height; i++) {
-    for (uint j = 0; j < g->width; j++) {
+  for (uint i = 0; i < game_nb_rows(g); i++) {
+    for (uint j = 0; j < game_nb_cols(g); j++) {
       if (game_get_square(g, i, j) == TENT)
         cpt++;
     }
@@ -285,7 +285,7 @@ uint game_get_current_nb_tents_all(cgame g) {
 }
 
 void game_play_move(game g, uint i, uint j, square s) {
-  assert(g && i < g->height && j < g->width);
+  assert(g && i < game_nb_rows(g) && j < game_nb_cols(g));
 
   if (g->grid[i][j] == TREE || g->grid[i][j] == BIGTREE) {
     return;
@@ -333,7 +333,7 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
 bool game_won(cgame g) {
   assert(g);
 
-  uint h = g->height, w = g->width;
+  uint h = game_nb_rows(g), w = game_nb_cols(g);
   uint tents = 0, needed = 0;
 
   //regle 2
@@ -371,8 +371,9 @@ bool game_won(cgame g) {
 }
 
 void game_fill_grass(game g) {
-  for (unsigned int i = 0; i < g->height; i++) {
-    for (unsigned int j = 0; j < g->width; j++) {
+  assert(g);
+  for (uint i = 0; i < game_nb_rows(g); i++) {
+    for (uint j = 0; j < game_nb_cols(g); j++) {
       if (game_get_square(g, i, j) == EMPTY) {
         game_set_square(g, i, j, GRASS);
       }
@@ -381,10 +382,10 @@ void game_fill_grass(game g) {
 }
 
 void game_restart(game g) {
-  for (uint i = 0; i < g->height; i++) {
-    for (uint j = 0; j < g->width; j++) {
-      if (g->grid[i][j] != TREE && g->grid[i][j] != EMPTY &&
-          g->grid[i][j] != BIGTREE) {
+  assert(g);
+  for (uint i = 0; i < game_nb_rows(g); i++) {
+    for (uint j = 0; j < game_nb_cols(g); j++) {
+      if (game_get_square(g,i,j) == TENT || game_get_square(g,i,j) == GRASS) {
         game_set_square(g, i, j, EMPTY);
       }
     }
