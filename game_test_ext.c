@@ -22,7 +22,7 @@ bool test_game_new_empty_ext(void) {
                 return false;
             }
         }
-        if (game_get_expected_nb_tents_row(g, i) != 0 || game_get_expected_nb_tents_col(g, i) != 0) {
+        if (game_get_expected_nb_tents_row(g, i) != 0 || game_get_expected_nb_tents_col(g, i) != 0 ||game_get_expected_nb_tents_row(g1, i) != 0 || game_get_expected_nb_tents_col(g1, i) != 0) {
             fprintf(stderr,"Error\n");
             game_delete(g);
             game_delete(g1);
