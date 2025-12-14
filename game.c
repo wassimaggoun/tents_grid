@@ -314,66 +314,42 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
 }
 
 bool game_won(cgame g) {
-  assert(g != NULL);
+  assert(g);
 
-  uint nb_trees = 0; // compteur de TREE et BIGTREE
-  uint nb_tents = 0; // compteur de TENT
+  uint h = g->height, w = g->width;
+  uint tents = 0, needed = 0;
 
-  uint h = g->height;
-  uint w = g->width;
-
-  // règle 2 pour les colonnes
-  for (uint j = 0; j < w; j++) {
-    if (game_get_current_nb_tents_col(g, j) != g->expected_nb_tents_col[j])
+  //regle 2
+  for (uint i = 0; i < h; i++)
+    if (game_get_current_nb_tents_row(g, i) != game_get_expected_nb_tents_row(g, i))
       return false;
-  }
+
+  for (uint j = 0; j < w; j++)
+    if (game_get_current_nb_tents_col(g, j) != game_get_expected_nb_tents_col(g, j))
+      return false;
 
   for (uint i = 0; i < h; i++) {
-    // règle 2 pour les lignes
-    if (game_get_current_nb_tents_row(g, i) != g->expected_nb_tents_row[i])
-      return false;
-
     for (uint j = 0; j < w; j++) {
       square s = game_get_square(g, i, j);
 
       if (s == TENT) {
-        nb_tents++;
-        // règle 1
-        if (game_is_neigh(g, i, j, TENT, true))
-          return false;
-
-        // règle 4
-        if (!game_is_neigh(g, i, j, TREE, false) &&
+        tents++;
+        if (game_is_neigh(g, i, j, TENT, true)) return false;  //regle 1
+        if (!game_is_neigh(g, i, j, TREE, false) &&            //regle 4
             !game_is_neigh(g, i, j, BIGTREE, false))
           return false;
       }
 
       if (s == TREE || s == BIGTREE) {
-        uint count_adj_tents = 0; // nombre de tents adjacentes a un arbre
-        // verifie toutes les direzctions (sauf diagonales)
-        if (i > 0 && game_get_square(g, i - 1, j) == TENT)
-          count_adj_tents++;
-        if (i + 1 < h && game_get_square(g, i + 1, j) == TENT)
-          count_adj_tents++;
-        if (j > 0 && game_get_square(g, i, j - 1) == TENT)
-          count_adj_tents++;
-        if (j + 1 < w && game_get_square(g, i, j + 1) == TENT)
-          count_adj_tents++;
-
-        if ((s == TREE && count_adj_tents != 1) ||
-            (s == BIGTREE && count_adj_tents != 2)) {
-          return false;
-        }
-
-        nb_trees++;
+        uint n = game_nb_neigh(g, i, j, TENT, false);
+        uint req = (s == TREE) ? 1 : 2; //2 tents pour BIGTREE
+        if (n != req) return false;
+        needed += req;
       }
     }
   }
 
-  // règle 3
-  if (nb_tents != nb_trees)
-    return false;
-
+  if(tents != needed) return false; //regle 3
   return true;
 }
 
