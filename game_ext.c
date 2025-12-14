@@ -30,7 +30,7 @@ game game_new_ext(uint nb_rows, uint nb_cols, square *squares,
   g->width = nb_cols;
   g->wrapping = wrapping;
 
-  g->grid = malloc(g->height * sizeof(square *));
+  g->grid = calloc(g->height, sizeof(square *)); 
   if (!g->grid) {
     free(g);
     return NULL;
@@ -80,18 +80,10 @@ game game_new_ext(uint nb_rows, uint nb_cols, square *squares,
 }
 
 game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
-  game g = malloc(sizeof(struct game_s));
-  if (!g) {
-    return NULL;
-  }
-
-  g->width = nb_cols;
-  g->height = nb_rows;
-  g->wrapping = wrapping;
 
   uint size = nb_cols * nb_rows;
 
-  square squares[nb_cols * nb_rows];
+  square squares[size]; 
   for (uint i = 0; i < size; i++) {
     squares[i] = EMPTY;
   }
