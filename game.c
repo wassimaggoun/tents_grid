@@ -376,73 +376,62 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
 }
 
 bool game_won(cgame g) {
+  if (!g) return false;
 
-  if (g == NULL) {
-    return false;
-  }
+  uint total_tents = 0;
+  uint required_tents = 0;
 
-  for (uint i = 0; i < g->height; i++) {
-    uint current_row = game_get_current_nb_tents_row(g, i);
-    uint expected_row = game_get_expected_nb_tents_row(g, i);
-    if (current_row != expected_row) {
+  //regle 2
+  for (uint i = 0; i < game_nb_rows(g); i++)
+    if (game_get_current_nb_tents_row(g, i) !=
+        game_get_expected_nb_tents_row(g, i))
       return false;
-    }
-  }
 
-  for (uint j = 0; j < g->width; j++) {
-    uint current_col = game_get_current_nb_tents_col(g, j);
-    uint expected_col = game_get_expected_nb_tents_col(g, j);
-    if (current_col != expected_col) {
+  for (uint j = 0; j < game_nb_cols(g); j++)
+    if (game_get_current_nb_tents_col(g, j) !=
+        game_get_expected_nb_tents_col(g, j))
       return false;
-    }
-  }
 
-  uint total_tents_placed = 0;
-  uint total_tents_required = 0;
 
-  for (uint i = 0; i < g->height; i++) {
-    for (uint j = 0; j < g->width; j++) {
-      square s = g->grid[i][j];
+  for (uint i = 0; i < game_nb_rows(g); i++) {
+    for (uint j = 0; j < game_nb_cols(g); j++) {
 
+      square s = game_get_square(g, i, j);
 
       if (s == TENT) {
-        total_tents_placed++;
+        total_tents++;
 
-        
-        if (game_is_neigh(g, i, j, TENT, true)) {
+        //regle 1
+        if (game_is_neigh(g, i, j, TENT, true))
           return false;
-        }
 
-        
-        if (!game_is_neigh(g, i, j, TREE, false) && 
-            !game_is_neigh(g, i, j, BIGTREE, false)) {
+        //regle 4
+        uint trees =
+            game_nb_neigh(g, i, j, TREE, false) +
+            game_nb_neigh(g, i, j, BIGTREE, false);
+
+        if (trees == 0)
           return false;
-        }
-      } 
-      else if (s == TREE) {
-        total_tents_required += 1;
-        
-        if (game_nb_neigh(g, i, j, TENT, false) != 1) {
-          return false;
-        }
-      } 
-      else if (s == BIGTREE) {
-        total_tents_required += 2;
-        
-        if (game_nb_neigh(g, i, j, TENT, false) != 2) {
-          return false;
-        }
       }
-      
+
+      if (s == TREE) {
+        required_tents++;
+
+        if (!game_is_neigh(g, i, j, TENT, false))
+          return false;
+      }
+
+      if (s == BIGTREE) {
+        required_tents += 2;
+
+        if (!game_is_neigh(g, i, j, TENT, false) != 2)
+          return false;
+      }
     }
   }
 
-  
-  if (total_tents_placed != total_tents_required) {
-    return false;
-  }
-
-
+  //regle 3
+  if(total_tents != required_tents) return false;
 
   return true;
 }
