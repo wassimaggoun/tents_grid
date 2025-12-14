@@ -8,6 +8,8 @@
 
 #include "game_aux.h"
 #include "game_struct.h"
+#include "game_ext.h"
+#include "queue.h"
 
 game game_new(square *squares, uint *nb_tents_row, uint *nb_tents_col) {
   if (!squares || !nb_tents_row || !nb_tents_col) {
