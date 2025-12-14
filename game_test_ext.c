@@ -40,3 +40,15 @@ bool test_game_new_empty_ext(void) {
     game_delete(g1);
     return true;
 }
+
+bool test_game_nb_rows(void){
+    game g1=game_new_empty_ext(9,8,false);
+    if(g1==NULL)return false;
+    bool test1= game_nb_rows(g1)==9;
+    game_delete(g1);
+    game g2=game_new_empty_ext(9,8,true);
+    if(g2==NULL)return false;
+    bool test2=game_nb_rows(g2)==9;
+    game_delete(g2);
+    return test1 && test2;
+}
