@@ -376,12 +376,11 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
 }
 
 bool game_won(cgame g) {
-  // 1. Sécurité anti-crash (Règle le "Child aborted" testv1_won_0)
+
   if (g == NULL) {
     return false;
   }
 
-  // 2. Vérification des totaux par ligne
   for (uint i = 0; i < g->height; i++) {
     uint current_row = game_get_current_nb_tents_row(g, i);
     uint expected_row = game_get_expected_nb_tents_row(g, i);
@@ -390,7 +389,6 @@ bool game_won(cgame g) {
     }
   }
 
-  // 3. Vérification des totaux par colonne
   for (uint j = 0; j < g->width; j++) {
     uint current_col = game_get_current_nb_tents_col(g, j);
     uint expected_col = game_get_expected_nb_tents_col(g, j);
@@ -399,11 +397,9 @@ bool game_won(cgame g) {
     }
   }
 
-  // Compteurs pour la cohérence globale
   uint total_tents_placed = 0;
   uint total_tents_required = 0;
 
-  // 4. Parcours des cases pour vérifier les règles de voisinage
   for (uint i = 0; i < g->height; i++) {
     for (uint j = 0; j < g->width; j++) {
       square s = g->grid[i][j];
@@ -411,14 +407,12 @@ bool game_won(cgame g) {
       if (s == TENT) {
         total_tents_placed++;
 
-        // Règle : Une tente ne doit pas toucher une autre tente (Diagonales incluses)
-        // Utilisation de true pour diag dans game_is_neigh
+        
         if (game_is_neigh(g, i, j, TENT, true)) {
           return false;
         }
 
-        // Règle : Une tente doit toucher au moins un arbre (Orthogonalement)
-        // Utilisation de false pour diag
+        
         if (!game_is_neigh(g, i, j, TREE, false) && 
             !game_is_neigh(g, i, j, BIGTREE, false)) {
           return false;
@@ -426,25 +420,23 @@ bool game_won(cgame g) {
       } 
       else if (s == TREE) {
         total_tents_required += 1;
-        // Règle : Un arbre normal doit avoir EXACTEMENT 1 tente voisine
+        
         if (game_nb_neigh(g, i, j, TENT, false) != 1) {
           return false;
         }
       } 
       else if (s == BIGTREE) {
         total_tents_required += 2;
-        // Règle : Un grand arbre doit avoir EXACTEMENT 2 tentes voisines
+        
         if (game_nb_neigh(g, i, j, TENT, false) != 2) {
           return false;
         }
       }
-      // Note : On ignore EMPTY et GRASS car la victoire ne dépend que des tentes
+      
     }
   }
 
-  // 5. Vérification finale (Règle le "Failed" testv1_won_3)
-  // Si on a le bon nombre de tentes autour des arbres, mais qu'il y a des tentes en trop
-  // ailleurs (qui toucheraient des arbres déjà satisfaits par exemple), ce total différera.
+  
   if (total_tents_placed != total_tents_required) {
     return false;
   }
