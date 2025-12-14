@@ -3,10 +3,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "game.h"
 #include "game_aux.h"
 #include "game_struct.h"
+#include "queue.h"
+#include "game_ext.h"
 
 game game_new_ext(uint nb_rows, uint nb_cols, square *squares,
                   uint *nb_tents_row, uint *nb_tents_col, bool wrapping) {
