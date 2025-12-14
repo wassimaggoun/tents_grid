@@ -404,9 +404,6 @@ bool game_won(cgame g) {
     for (uint j = 0; j < g->width; j++) {
       square s = g->grid[i][j];
 
-      if(s == EMPTY){
-        return false;
-      }
 
       if (s == TENT) {
         total_tents_placed++;
@@ -444,6 +441,8 @@ bool game_won(cgame g) {
   if (total_tents_placed != total_tents_required) {
     return false;
   }
+
+
 
   return true;
 }
