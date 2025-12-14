@@ -142,8 +142,7 @@ game game_default_solution(void) {
 }
 
 bool game_get_adjacent_square(cgame g, uint i, uint j, direction d,
-                             uint* pi_next, uint* pj_next) {
-
+                              uint* pi_next, uint* pj_next) {
     assert(g != NULL);
     assert(i < g->height);
     assert(j < g->width);
@@ -167,21 +166,23 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d,
 
     int ni = (int)i + di;
     int nj = (int)j + dj;
+    
+    int h = (int)g->height;
+    int w = (int)g->width;
 
     if (g->wrapping) {
-        if (ni < 0) ni += g->height;
-        if (ni >= (int)g->height) ni -= g->height;
-        if (nj < 0) nj += g->width;
-        if (nj >= (int)g->width) nj -= g->width;
+        ni = ((ni % h) + h) % h;
+        nj = ((nj % w) + w) % w;
     } else {
-        if (ni < 0 || ni >= (int)g->height || nj < 0 || nj >= (int)g->width)
+        if (ni < 0 || ni >= h || nj < 0 || nj >= w) {
             return false;
+        }
     }
 
     *pi_next = (uint)ni;
     *pj_next = (uint)nj;
-    return true;
 
+    return true;
 }
 
 

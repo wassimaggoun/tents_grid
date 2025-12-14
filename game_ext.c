@@ -20,6 +20,12 @@ game game_new_ext(uint nb_rows, uint nb_cols, square *squares,
   if (!g)
     return NULL;
 
+  g->grid = NULL;
+  g->expected_nb_tents_row = NULL;
+  g->expected_nb_tents_col = NULL;
+  g->undo_stack = NULL;
+  g->redo_stack = NULL;
+
   g->height = nb_rows;
   g->width = nb_cols;
   g->wrapping = wrapping;
@@ -66,8 +72,8 @@ game game_new_ext(uint nb_rows, uint nb_cols, square *squares,
   g->undo_stack = queue_new();
   g->redo_stack = queue_new();
   if (!g->undo_stack || !g->redo_stack) {
-    fprintf(stderr, "Erreur d'allocation de mémoire.");
-    exit(EXIT_FAILURE);
+    game_delete(g);
+    return NULL;
   }
 
   return g;
