@@ -348,27 +348,28 @@ void game_play_move(game g, uint i, uint j, square s) {
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
-  if(!g) return false;
-  if(i >= game_nb_rows(g) || j >= game_nb_cols(g)) return false;
+  // On vérifie le pointeur, mais pour les indices, on retourne false proprement
+  if (!g) return false;
 
-  square mtn = game_get_square(g, i, j);
-  if (mtn == TREE || mtn == BIGTREE) {
+  // 1. Règle : On ne peut pas jouer hors du plateau
+  if (i >= g->height || j >= g->width) {
     return false;
   }
 
-  if (s == GRASS) {
-    return mtn == EMPTY;
+  // 2. Règle : move valide uniquement avec EMPTY, GRASS ou TENT
+  if (s != EMPTY && s != GRASS && s != TENT) {
+    return false;
   }
 
+  // 3. Règle : On ne peut pas modifier un ARBRE existant
+  square current = g->grid[i][j];
+  if (current == TREE || current == BIGTREE) {
+    return false;
+  }
 
+  // 4. Règle : On ne peut pas placer un ARBRE (seule la configuration initiale le fait)
   if (s == TREE || s == BIGTREE) {
     return false;
-  }
-
-  if (s == TENT){
-    if(mtn != EMPTY) return false;
-    if(game_is_neigh(g,i,j,TENT,true)) return false;
-    if(game_nb_neigh(g,i,j,TREE,false) < 1 || game_nb_neigh(g,i,j,BIGTREE,false) <1) return false;
   }
 
   return true;
@@ -426,11 +427,20 @@ void game_fill_grass(game g) {
 }
 
 void game_restart(game g) {
-  assert(g);
-  for (uint i = 0; i < game_nb_rows(g); i++) {
-    for (uint j = 0; j < game_nb_cols(g); j++) {
-      if (game_get_square(g,i,j) == TENT || game_get_square(g,i,j) == GRASS) {
-        game_set_square(g, i, j, EMPTY);
+  if (!g) return;
+
+  // 1. Vider l'historique (Obligatoire selon la doc)
+  // On suppose que game_new a bien initialisé ces piles (correctif précédent)
+  if (g->undo_stack) queue_clear_full(g->undo_stack, free);
+  if (g->redo_stack) queue_clear_full(g->redo_stack, free);
+
+  // 2. Remettre à zéro le plateau (sauf les arbres)
+  for (uint i = 0; i < g->height; i++) {
+    for (uint j = 0; j < g->width; j++) {
+      square s = g->grid[i][j];
+      // On garde les arbres, on efface le reste (Tentes, Herbe) -> EMPTY
+      if (s != TREE && s != BIGTREE) {
+        g->grid[i][j] = EMPTY;
       }
     }
   }
