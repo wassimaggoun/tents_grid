@@ -186,64 +186,62 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d,
 }
 
 
+static bool was_visited(int *visited, int count, int index) {
+    for (int i = 0; i < count; i++) {
+        if (visited[i] == index) return true;
+    }
+    return false;
+}
+
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
     assert(g != NULL);
     assert(i < g->height);
     assert(j < g->width);
 
     direction dirs[8] = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
-
     uint n_dirs = diag ? 8 : 4;
 
     for (uint k = 0; k < n_dirs; k++) {
         uint ni, nj;
         if (game_get_adjacent_square(g, i, j, dirs[k], &ni, &nj)) {
+            if (ni == i && nj == j) continue;
+
             if (game_get_square(g, ni, nj) == s)
-                return true;
+                return true; 
         }
     }
-
     return false;
-
 }
 
-uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag){
-  assert(g != NULL);
-  assert(i < g->height);
-  assert(j < g->width);
+uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag) {
+    assert(g != NULL);
+    assert(i < g->height);
+    assert(j < g->width);
 
-  uint res = 0;
-  direction dirs[8] = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
-  uint n_dirs = diag ? 8 : 4;
+    uint res = 0;
+    direction dirs[8] = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
+    uint n_dirs = diag ? 8 : 4;
 
-  int visited[8];
-  for(int k=0; k<8; k++) visited[k] = -1;
-  int visited_count = 0;
+    int visited[8]; 
+    int visited_count = 0;
 
-  for (uint k = 0; k < n_dirs; k++) {
-      uint ni, nj;
-      if (game_get_adjacent_square(g, i, j, dirs[k], &ni, &nj)) {
-          
-          int linear_index = ni * g->width + nj;
-          
-          bool already_seen = false;
-          for (int v = 0; v < visited_count; v++) {
-              if (visited[v] == linear_index) {
-                  already_seen = true;
-                  break;
-              }
-          }
+    for (uint k = 0; k < n_dirs; k++) {
+        uint ni, nj;
+        if (game_get_adjacent_square(g, i, j, dirs[k], &ni, &nj)) {
+            
+            if (ni == i && nj == j) continue;
 
-          if (!already_seen) {
-              visited[visited_count++] = linear_index; 
-              
-              if (game_get_square(g, ni, nj) == s) {
-                  res++;
-              }
-          }
-      }
-  }
+            int linear_index = ni * g->width + nj;
 
-  return res;
+            if (!was_visited(visited, visited_count, linear_index)) {
+                visited[visited_count++] = linear_index;
+
+                if (game_get_square(g, ni, nj) == s) {
+                    res++;
+                }
+            }
+        }
+    }
+    return res;
 }
 
