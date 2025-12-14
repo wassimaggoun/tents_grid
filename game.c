@@ -366,9 +366,9 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
   }
 
   if (s == TENT){
+    if(mtn != EMPTY) return false;
     if(game_is_neigh(g,i,j,TENT,true)) return false;
-    if(game_nb_neigh(g,j,j,TREE,false) < 1 || game_nb_neigh(g,i,j,BIGTREE,false) <1) return false;
-    return mtn == EMPTY;
+    if(game_nb_neigh(g,i,j,TREE,false) < 1 || game_nb_neigh(g,i,j,BIGTREE,false) <1) return false;
   }
 
   return true;
