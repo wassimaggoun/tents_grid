@@ -135,28 +135,49 @@ game game_copy(cgame g) {
 }
 
 bool game_equal(cgame g1, cgame g2) {
-  if (g1->width != g2->width || g1->height != g2->height ||
+  if (!g1 || !g2) return false;
+
+  if (g1->width != g2->width ||
+      g1->height != g2->height ||
       g1->wrapping != g2->wrapping)
     return false;
 
-  for (uint i = 0; i < g1->height; i++) {
-    if (g1->expected_nb_tents_row[i] != g2->expected_nb_tents_row[i])
-      return false;
+  if ((g1->expected_nb_tents_row == NULL) !=
+      (g2->expected_nb_tents_row == NULL))
+    return false;
+
+
+  if (g1->expected_nb_tents_row) {
+    for (uint i = 0; i < g1->height; i++) {
+      if (g1->expected_nb_tents_row[i] !=
+          g2->expected_nb_tents_row[i])
+        return false;
+    }
   }
 
-  for (uint i = 0; i < g1->width; i++) {
-    if (g1->expected_nb_tents_col[i] != g2->expected_nb_tents_col[i])
-      return false;
+  if ((g1->expected_nb_tents_col == NULL) !=
+      (g2->expected_nb_tents_col == NULL))
+    return false;
+
+  if (g1->expected_nb_tents_col) {
+    for (uint j = 0; j < g1->width; j++) {
+      if (g1->expected_nb_tents_col[j] !=
+          g2->expected_nb_tents_col[j])
+        return false;
+    }
   }
 
   for (uint i = 0; i < g1->height; i++) {
     for (uint j = 0; j < g1->width; j++) {
-      if (g1->grid[i][j] != g2->grid[i][j])
+      if (game_get_square(g1, i, j) !=
+          game_get_square(g2, i, j))
         return false;
     }
   }
+
   return true;
 }
+
 
 void game_delete(game g) {
   if (!g)
