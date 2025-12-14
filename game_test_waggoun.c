@@ -353,7 +353,7 @@ bool test_game_restart(void) {
   return true;
 }
 
-bool test_game_get_ajacent_square(void) {
+bool test_game_get_adjacent_square(void) {
   game g = game_new_empty();
   if (!g) {
     fprintf(stderr, "Erreur\n");
@@ -362,26 +362,26 @@ bool test_game_get_ajacent_square(void) {
 
   uint ni, nj;
 
-  if (!game_get_ajacent_square(g, 0, 0, RIGHT, &ni, &nj) || ni != 0 ||
+  if (!game_get_adjacent_square(g, 0, 0, RIGHT, &ni, &nj) || ni != 0 ||
       nj != 1) {
     fprintf(stderr, "Erreur\n");
     game_delete(g);
     return false;
   }
 
-  if (game_get_ajacent_square(g, 0, 0, UP, &ni, &nj)) {
+  if (game_get_adjacent_square(g, 0, 0, UP, &ni, &nj)) {
     fprintf(stderr, "Erreur\n");
     game_delete(g);
     return false;
   }
 
-  if (game_get_ajacent_square(g, SIZE - 1, 0, DOWN, &ni, &nj)) {
+  if (game_get_adjacent_square(g, SIZE - 1, 0, DOWN, &ni, &nj)) {
     fprintf(stderr, "Erreur\n");
     game_delete(g);
     return false;
   }
 
-  if (game_get_ajacent_square(g, 0, 0, LEFT, &ni, &nj)) {
+  if (game_get_adjacent_square(g, 0, 0, LEFT, &ni, &nj)) {
     fprintf(stderr, "Erreur\n");
     game_delete(g);
     return false;
@@ -425,8 +425,8 @@ int main(int argc, char *argv[]) {
   if (strcmp(argv[1], "game_restart") == 0)
     return test_game_restart() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_get_ajacent_square") == 0)
-    return test_game_get_ajacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_get_adjacent_square") == 0)
+    return test_game_get_adjacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
 
   fprintf(stderr, "Erreur\n");
   return EXIT_FAILURE;
