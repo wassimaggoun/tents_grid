@@ -214,14 +214,33 @@ uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag){
 
   uint res = 0;
   direction dirs[8] = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
-
   uint n_dirs = diag ? 8 : 4;
+
+  int visited[8];
+  for(int k=0; k<8; k++) visited[k] = -1;
+  int visited_count = 0;
 
   for (uint k = 0; k < n_dirs; k++) {
       uint ni, nj;
       if (game_get_adjacent_square(g, i, j, dirs[k], &ni, &nj)) {
-          if (game_get_square(g, ni, nj) == s)
-              res++ ;
+          
+          int linear_index = ni * g->width + nj;
+          
+          bool already_seen = false;
+          for (int v = 0; v < visited_count; v++) {
+              if (visited[v] == linear_index) {
+                  already_seen = true;
+                  break;
+              }
+          }
+
+          if (!already_seen) {
+              visited[visited_count++] = linear_index; 
+              
+              if (game_get_square(g, ni, nj) == s) {
+                  res++;
+              }
+          }
       }
   }
 
