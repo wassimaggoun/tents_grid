@@ -39,6 +39,8 @@ void game_print(cgame g) {
                 c = '*';
             } else if (s == GRASS) {
                 c = '-';
+            } else if (s == BIGTREE) {
+              c = '#';
             }
 
             printf("%c", c);
