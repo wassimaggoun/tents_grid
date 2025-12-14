@@ -219,37 +219,55 @@ void game_set_expected_nb_tents_col(game g, uint j, uint nb_tents) {
 }
 
 uint game_get_expected_nb_tents_row(cgame g, uint i) {
+  assert(g);
+  assert(g->expected_nb_tents_row);
+  assert(i < g->height);
+
   return g->expected_nb_tents_row[i];
 }
 
 uint game_get_expected_nb_tents_col(cgame g, uint j) {
+  assert(g);
+  assert(g->expected_nb_tents_col);
+  assert(j < g->width);
+
   return g->expected_nb_tents_col[j];
 }
 
 uint game_get_expected_nb_tents_all(cgame g) {
+  assert(g);
+  assert(g->expected_nb_tents_row);
   uint res = 0;
-  for (int i = 0; i < g->height; i++) {
-    res += g->expected_nb_tents_row[i];
+  for (uint i = 0; i < g->height; i++) {
+    res += game_get_expected_nb_tents_row(g,i);
   }
   return res;
 }
 
 uint game_get_current_nb_tents_row(cgame g, uint i) {
-  uint result = 0;
+  assert(g);
+  assert(i < g->height);
+
+  uint res = 0;
   for (uint j = 0; j < g->width; j++) {
-    if (g->grid[i][j] == TENT)
-      result++;
+    if (game_get_square(g, i, j) == TENT) {
+      res++;
+    }
   }
-  return result;
+  return res;
 }
 
 uint game_get_current_nb_tents_col(cgame g, uint j) {
-  uint result = 0;
+  assert(g);
+  assert(j < g->width);
+
+  uint res = 0;
   for (uint i = 0; i < g->height; i++) {
-    if (g->grid[i][j] == TENT)
-      result++;
+    if (game_get_square(g, i, j) == TENT) {
+      res++;
+    }
   }
-  return result;
+  return res;
 }
 
 uint game_get_current_nb_tents_all(cgame g) {
@@ -265,9 +283,8 @@ uint game_get_current_nb_tents_all(cgame g) {
 }
 
 void game_play_move(game g, uint i, uint j, square s) {
-  if (g == NULL || i >= g->height || j >= g->width) {
-    return;
-  }
+  assert(g && i < g->height && j < g->width);
+
   if (g->grid[i][j] == TREE || g->grid[i][j] == BIGTREE) {
     return;
   }
@@ -291,20 +308,18 @@ void game_play_move(game g, uint i, uint j, square s) {
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
+  assert(g);
+  assert(i < game_nb_rows(g));
+  assert(j < game_nb_cols(g));
   square mtn = game_get_square(g, i, j);
   if (mtn == TREE || mtn == BIGTREE) {
     return false;
   }
 
-  if (s == GRASS) {
-    return mtn != TENT;
+  if (s == GRASS || s== TENT) {
+    return mtn == EMPTY;
   }
 
-  if (s == TENT) {
-    if (mtn == TENT || mtn == TREE || mtn == BIGTREE) {
-      return false;
-    }
-  }
 
   if (s == TREE || s == BIGTREE) {
     return false;
