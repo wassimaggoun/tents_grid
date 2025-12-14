@@ -376,50 +376,79 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
 }
 
 bool game_won(cgame g) {
-  if (!g) return false;
+  // 1. Sécurité anti-crash (Règle le "Child aborted" testv1_won_0)
+  if (g == NULL) {
+    return false;
+  }
 
-  // 1. Vérification des compteurs Lignes
+  // 2. Vérification des totaux par ligne
   for (uint i = 0; i < g->height; i++) {
-    if (game_get_current_nb_tents_row(g, i) != game_get_expected_nb_tents_row(g, i))
+    uint current_row = game_get_current_nb_tents_row(g, i);
+    uint expected_row = game_get_expected_nb_tents_row(g, i);
+    if (current_row != expected_row) {
       return false;
+    }
   }
 
-  // 2. Vérification des compteurs Colonnes
+  // 3. Vérification des totaux par colonne
   for (uint j = 0; j < g->width; j++) {
-    if (game_get_current_nb_tents_col(g, j) != game_get_expected_nb_tents_col(g, j))
+    uint current_col = game_get_current_nb_tents_col(g, j);
+    uint expected_col = game_get_expected_nb_tents_col(g, j);
+    if (current_col != expected_col) {
       return false;
+    }
   }
 
-  // 3. Vérification des règles de placement
+  // Compteurs pour la cohérence globale
+  uint total_tents_placed = 0;
+  uint total_tents_required = 0;
+
+  // 4. Parcours des cases pour vérifier les règles de voisinage
   for (uint i = 0; i < g->height; i++) {
     for (uint j = 0; j < g->width; j++) {
       square s = g->grid[i][j];
 
       if (s == TENT) {
-        // Règle : Pas de tentes adjacentes (diagonales incluses)
-        if (game_is_neigh(g, i, j, TENT, true)) return false;
+        total_tents_placed++;
 
-        // Règle : Chaque tente doit toucher au moins un arbre (orthogonale)
-        if (!game_is_neigh(g, i, j, TREE, false) &&
+        // Règle : Une tente ne doit pas toucher une autre tente (Diagonales incluses)
+        // Utilisation de true pour diag dans game_is_neigh
+        if (game_is_neigh(g, i, j, TENT, true)) {
+          return false;
+        }
+
+        // Règle : Une tente doit toucher au moins un arbre (Orthogonalement)
+        // Utilisation de false pour diag
+        if (!game_is_neigh(g, i, j, TREE, false) && 
             !game_is_neigh(g, i, j, BIGTREE, false)) {
           return false;
         }
-      }
-      
+      } 
       else if (s == TREE) {
-        // Règle : Un arbre normal doit avoir exactement 1 tente à côté
-        if (game_nb_neigh(g, i, j, TENT, false) != 1) return false;
-      }
-      
+        total_tents_required += 1;
+        // Règle : Un arbre normal doit avoir EXACTEMENT 1 tente voisine
+        if (game_nb_neigh(g, i, j, TENT, false) != 1) {
+          return false;
+        }
+      } 
       else if (s == BIGTREE) {
-        // Règle : Un grand arbre doit avoir exactement 2 tentes à côté
-        if (game_nb_neigh(g, i, j, TENT, false) != 2) return false;
+        total_tents_required += 2;
+        // Règle : Un grand arbre doit avoir EXACTEMENT 2 tentes voisines
+        if (game_nb_neigh(g, i, j, TENT, false) != 2) {
+          return false;
+        }
       }
+      // Note : On ignore EMPTY et GRASS car la victoire ne dépend que des tentes
     }
   }
 
-  // Si toutes les contraintes locales (tentes autour des arbres) et globales (totaux lignes/cols)
-  // sont respectées, alors la bijection est mathématiquement forcée pour ce type de puzzle.
+  // 5. Vérification finale (Règle le "Failed" testv1_won_3)
+  // Si on a le bon nombre de tentes autour des arbres, mais qu'il y a des tentes en trop
+  // ailleurs (qui toucheraient des arbres déjà satisfaits par exemple), ce total différera.
+  if (total_tents_placed != total_tents_required) {
+    return false;
+  }
+
   return true;
 }
 
