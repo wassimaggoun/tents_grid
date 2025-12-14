@@ -64,3 +64,18 @@ bool test_game_nb_cols(void){
     game_delete(g2);
     return test1 && test2;
 }
+
+bool test_game_undo(void){
+    game g=game_new_empty_ext(9,8,false);
+    if(g==NULL)return false;
+
+
+    game_play_move(g,0,0,TENT);
+    square s1= game_get_square(g,0,0);
+   
+    game_undo(g);
+    square s2=game_get_square(g,0,0);
+    bool test1= s1== TENT && s2== EMPTY;
+    game_delete(g);
+    return test1;
+}
