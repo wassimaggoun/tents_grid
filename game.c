@@ -348,9 +348,9 @@ void game_play_move(game g, uint i, uint j, square s) {
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
-  assert(g);
-  assert(i < game_nb_rows(g));
-  assert(j < game_nb_cols(g));
+  if(!g) return false;
+  if(i >= game_nb_rows(g) || j >= game_nb_cols(g)) return false;
+
   square mtn = game_get_square(g, i, j);
   if (mtn == TREE || mtn == BIGTREE) {
     return false;

@@ -1,7 +1,7 @@
 # clang format style by aurelien.esnard@u-bordeaux.fr
 
 ---
-Language: Cpp
+Language: Cpp14
 BasedOnStyle: Google
 ColumnLimit: 120
 TabWidth: 8
