@@ -76,6 +76,19 @@ game game_new(square *squares, uint *nb_tents_row, uint *nb_tents_col) {
   for (uint j = 0; j < game_nb_cols(g); j++) {
     g->expected_nb_tents_col[j] = nb_tents_col[j];
   }
+  g->undo_stack = queue_new();
+  g->redo_stack = queue_new();
+  if (!g->undo_stack || !g->redo_stack) {
+
+    if (g->undo_stack) queue_free(g->undo_stack);
+    if (g->redo_stack) queue_free(g->redo_stack);
+    free(g->expected_nb_tents_col);
+    free(g->expected_nb_tents_row);
+    for (uint i = 0; i < g->height; i++) free(g->grid[i]);
+    free(g->grid);
+    free(g);
+    return NULL;
+  }
 
   return g;
 }
@@ -130,6 +143,10 @@ game game_copy(cgame g) {
       gc->grid[i][j] = g->grid[i][j];
     }
   }
+  gc->undo_stack = queue_new();
+  gc->redo_stack = queue_new();
+  assert(gc->undo_stack != NULL);
+  assert(gc->redo_stack != NULL);
 
   return gc;
 }
