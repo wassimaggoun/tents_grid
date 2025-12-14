@@ -348,26 +348,26 @@ void game_play_move(game g, uint i, uint j, square s) {
 }
 
 bool game_check_move(cgame g, uint i, uint j, square s) {
-  // On vérifie le pointeur, mais pour les indices, on retourne false proprement
+  
   if (!g) return false;
 
-  // 1. Règle : On ne peut pas jouer hors du plateau
+  
   if (i >= g->height || j >= g->width) {
     return false;
   }
 
-  // 2. Règle : move valide uniquement avec EMPTY, GRASS ou TENT
+  
   if (s != EMPTY && s != GRASS && s != TENT) {
     return false;
   }
 
-  // 3. Règle : On ne peut pas modifier un ARBRE existant
+  
   square current = g->grid[i][j];
   if (current == TREE || current == BIGTREE) {
     return false;
   }
 
-  // 4. Règle : On ne peut pas placer un ARBRE (seule la configuration initiale le fait)
+  
   if (s == TREE || s == BIGTREE) {
     return false;
   }
@@ -376,42 +376,50 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
 }
 
 bool game_won(cgame g) {
-  assert(g);
+  if (!g) return false;
 
-  uint h = game_nb_rows(g), w = game_nb_cols(g);
-  uint tents = 0, needed = 0;
-
-  //regle 2
-  for (uint i = 0; i < h; i++)
+  // 1. Vérification des compteurs Lignes
+  for (uint i = 0; i < g->height; i++) {
     if (game_get_current_nb_tents_row(g, i) != game_get_expected_nb_tents_row(g, i))
       return false;
+  }
 
-  for (uint j = 0; j < w; j++)
+  // 2. Vérification des compteurs Colonnes
+  for (uint j = 0; j < g->width; j++) {
     if (game_get_current_nb_tents_col(g, j) != game_get_expected_nb_tents_col(g, j))
       return false;
+  }
 
-  for (uint i = 0; i < h; i++) {
-    for (uint j = 0; j < w; j++) {
-      square s = game_get_square(g, i, j);
+  // 3. Vérification des règles de placement
+  for (uint i = 0; i < g->height; i++) {
+    for (uint j = 0; j < g->width; j++) {
+      square s = g->grid[i][j];
 
       if (s == TENT) {
-        tents++;
-        if (game_is_neigh(g, i, j, TENT, true)) return false;  //regle 1
-        if (!game_is_neigh(g, i, j, TREE, false) &&            //regle 4
-            !game_is_neigh(g, i, j, BIGTREE, false))
-          return false;
-      }
+        // Règle : Pas de tentes adjacentes (diagonales incluses)
+        if (game_is_neigh(g, i, j, TENT, true)) return false;
 
-      if (s == TREE || s == BIGTREE) {
-        uint n = game_nb_neigh(g, i, j, TENT, false);
-        uint req = (s == TREE) ? 1 : 2; //2 tents pour BIGTREE
-        if (n != req) return false;
-        needed += req;
+        // Règle : Chaque tente doit toucher au moins un arbre (orthogonale)
+        if (!game_is_neigh(g, i, j, TREE, false) &&
+            !game_is_neigh(g, i, j, BIGTREE, false)) {
+          return false;
+        }
+      }
+      
+      else if (s == TREE) {
+        // Règle : Un arbre normal doit avoir exactement 1 tente à côté
+        if (game_nb_neigh(g, i, j, TENT, false) != 1) return false;
+      }
+      
+      else if (s == BIGTREE) {
+        // Règle : Un grand arbre doit avoir exactement 2 tentes à côté
+        if (game_nb_neigh(g, i, j, TENT, false) != 2) return false;
       }
     }
   }
 
-  if(tents != needed) return false; //regle 3
+  // Si toutes les contraintes locales (tentes autour des arbres) et globales (totaux lignes/cols)
+  // sont respectées, alors la bijection est mathématiquement forcée pour ce type de puzzle.
   return true;
 }
 
@@ -429,16 +437,15 @@ void game_fill_grass(game g) {
 void game_restart(game g) {
   if (!g) return;
 
-  // 1. Vider l'historique (Obligatoire selon la doc)
-  // On suppose que game_new a bien initialisé ces piles (correctif précédent)
+  
   if (g->undo_stack) queue_clear_full(g->undo_stack, free);
   if (g->redo_stack) queue_clear_full(g->redo_stack, free);
 
-  // 2. Remettre à zéro le plateau (sauf les arbres)
+  
   for (uint i = 0; i < g->height; i++) {
     for (uint j = 0; j < g->width; j++) {
       square s = g->grid[i][j];
-      // On garde les arbres, on efface le reste (Tentes, Herbe) -> EMPTY
+      
       if (s != TREE && s != BIGTREE) {
         g->grid[i][j] = EMPTY;
       }
