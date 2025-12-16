@@ -1,9 +1,9 @@
 # clang format style by aurelien.esnard@u-bordeaux.fr
 
 ---
-Language: Cpp14
+Language: Cpp
 BasedOnStyle: Google
-ColumnLimit: 120
+ColumnLimit: 250
 TabWidth: 8
 UseTab: Never
 DerivePointerAlignment: false

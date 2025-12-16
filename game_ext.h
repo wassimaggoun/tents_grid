@@ -28,8 +28,7 @@
  * @param wrapping wrapping option
  * @return the created game
  **/
-game game_new_ext(uint nb_rows, uint nb_cols, square* squares,
-                  uint* nb_tents_row, uint* nb_tents_col, bool wrapping);
+game game_new_ext(uint nb_rows, uint nb_cols, square* squares, uint* nb_tents_row, uint* nb_tents_col, bool wrapping);
 
 /**
  * @brief Creates a new empty game with extended options.

@@ -12,17 +12,7 @@
 
 #include "game.h"
 
-typedef enum {
-  HERE,
-  UP,
-  DOWN,
-  LEFT,
-  RIGHT,
-  UP_LEFT,
-  UP_RIGHT,
-  DOWN_LEFT,
-  DOWN_RIGHT
-} direction;
+typedef enum { HERE, UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT } direction;
 
 /**
  * @brief Prints a game as text on the standard output stream.
@@ -81,8 +71,7 @@ game game_default_solution(void);
  * @pre @p j < game width
  * @return true if the adjacent square is inside the grid, false otherwise
  */
-bool game_get_adjacent_square(cgame g, uint i, uint j, direction d,
-                              uint* pi_next, uint* pj_next);
+bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_next, uint* pj_next);
 
 /**
  * @brief Counts the number of neighboring squares with a given value.

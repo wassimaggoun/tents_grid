@@ -1,16 +1,18 @@
-#include "game.h"
-#include "game_aux.h"
-#include "game_struct.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include "game.h"
+#include "game_aux.h"
+#include "game_struct.h"
+
 #define SIZE DEFAULT_SIZE
 
 int test_dummy(void) { return EXIT_SUCCESS; }
 
-bool test_game_new_empty(void) {
+bool test_game_new_empty(void)
+{
   game g = game_new_empty();
   if (g == NULL) {
     return false;
@@ -23,8 +25,7 @@ bool test_game_new_empty(void) {
         return false;
       }
     }
-    if (game_get_expected_nb_tents_row(g, i) != 0 ||
-        game_get_expected_nb_tents_col(g, i) != 0) {
+    if (game_get_expected_nb_tents_row(g, i) != 0 || game_get_expected_nb_tents_col(g, i) != 0) {
       fprintf(stderr, "Error\n");
       game_delete(g);
       return false;
@@ -34,7 +35,8 @@ bool test_game_new_empty(void) {
   return true;
 }
 
-bool test_game_delete(void) {
+bool test_game_delete(void)
+{
   game g = game_new_empty();
   if (g == NULL) {
     fprintf(stderr, "Error\n");
@@ -45,7 +47,8 @@ bool test_game_delete(void) {
   return true;
 }
 
-bool test_game_set_square(void) {
+bool test_game_set_square(void)
+{
   game g = game_new_empty();
   if (g == NULL) {
     fprintf(stderr, "Error\n");
@@ -97,7 +100,8 @@ bool test_game_set_square(void) {
   return true;
 }
 
-bool test_game_new(void) {
+bool test_game_new(void)
+{
   square squares[SIZE * SIZE];
   uint tents_row[SIZE];
   uint tents_col[SIZE];
@@ -105,14 +109,14 @@ bool test_game_new(void) {
     squares[i] = EMPTY;
   }
 
-  squares[0] = TREE;                 // coin en haut a gauche
-  squares[1] = TENT;                 // prochaine colonne
-  squares[SIZE + 2] = GRASS;         // prochaine ligne
-  squares[(SIZE * SIZE - 1)] = TREE; // coin en bas a droite
+  squares[0] = TREE;                  // coin en haut a gauche
+  squares[1] = TENT;                  // prochaine colonne
+  squares[SIZE + 2] = GRASS;          // prochaine ligne
+  squares[(SIZE * SIZE - 1)] = TREE;  // coin en bas a droite
 
   for (uint i = 0; i < SIZE; i++) {
-    tents_row[i] = i % 2;       // 0,1,0,1,...
-    tents_col[i] = (i + 1) % 2; // 1,0,1,0,...
+    tents_row[i] = i % 2;        // 0,1,0,1,...
+    tents_col[i] = (i + 1) % 2;  // 1,0,1,0,...
   }
 
   game g = game_new(squares, tents_row, tents_col);
@@ -123,8 +127,7 @@ bool test_game_new(void) {
 
   for (uint i = 0; i < SIZE; i++) {
     for (uint j = 0; j < SIZE; j++) {
-      square expected =
-          squares[i * SIZE + j]; // position dans le tableau en 1 dimension
+      square expected = squares[i * SIZE + j];  // position dans le tableau en 1 dimension
       if (game_get_square(g, i, j) != expected) {
         fprintf(stderr, "Erreur\n");
         game_delete(g);
@@ -150,7 +153,8 @@ bool test_game_new(void) {
   return true;
 }
 
-bool test_game_copy(void) {
+bool test_game_copy(void)
+{
   square squares[SIZE * SIZE];
   uint tents_row[SIZE];
   uint tents_col[SIZE];
@@ -161,8 +165,8 @@ bool test_game_copy(void) {
   }
 
   for (uint i = 0; i < SIZE; i++) {
-    tents_row[i] = i % 2;       // 0,1,0,1,...
-    tents_col[i] = (i + 1) % 2; // 1,0,1,0,...
+    tents_row[i] = i % 2;        // 0,1,0,1,...
+    tents_col[i] = (i + 1) % 2;  // 1,0,1,0,...
   }
 
   game g1 = game_new(squares, tents_row, tents_col);
@@ -180,10 +184,7 @@ bool test_game_copy(void) {
   }
 
   for (uint i = 0; i < SIZE; i++) {
-    if (game_get_expected_nb_tents_row(g1, i) !=
-            game_get_expected_nb_tents_row(g2, i) ||
-        game_get_expected_nb_tents_col(g1, i) !=
-            game_get_expected_nb_tents_col(g2, i)) {
+    if (game_get_expected_nb_tents_row(g1, i) != game_get_expected_nb_tents_row(g2, i) || game_get_expected_nb_tents_col(g1, i) != game_get_expected_nb_tents_col(g2, i)) {
       fprintf(stderr, "Erreur\n");
       game_delete(g1);
       game_delete(g2);
@@ -213,7 +214,8 @@ bool test_game_copy(void) {
   return true;
 }
 
-bool test_game_won(void) {
+bool test_game_won(void)
+{
   game g = game_new_empty();
   game_set_expected_nb_tents_row(g, 1, 1);
   game_set_expected_nb_tents_col(g, 0, 1);
@@ -269,9 +271,8 @@ bool test_game_won(void) {
 
   // regle4
   g = game_new_empty();
-  game_set_expected_nb_tents_row(
-      g, 1, 1); // add the same code but without the expected
-  game_set_expected_nb_tents_col(g, 1, 1); //
+  game_set_expected_nb_tents_row(g, 1, 1);  // add the same code but without the expected
+  game_set_expected_nb_tents_col(g, 1, 1);  //
   game_set_square(g, 0, 0, TREE);
   game_play_move(g, 2, 2, TENT);
   if (game_won(g)) {
@@ -284,7 +285,8 @@ bool test_game_won(void) {
   return true;
 }
 
-bool test_game_equal(void) {
+bool test_game_equal(void)
+{
   game g1 = game_new_empty();
   if (!g1) {
     fprintf(stderr, "Erreur\n");
@@ -318,7 +320,8 @@ bool test_game_equal(void) {
   return true;
 }
 
-bool test_game_restart(void) {
+bool test_game_restart(void)
+{
   game g = game_new_empty();
   if (!g) {
     fprintf(stderr, "Erreur\n");
@@ -353,7 +356,8 @@ bool test_game_restart(void) {
   return true;
 }
 
-bool test_game_get_adjacent_square(void) {
+bool test_game_get_adjacent_square(void)
+{
   game g = game_new_empty();
   if (!g) {
     fprintf(stderr, "Erreur\n");
@@ -362,8 +366,7 @@ bool test_game_get_adjacent_square(void) {
 
   uint ni, nj;
 
-  if (!game_get_adjacent_square(g, 0, 0, RIGHT, &ni, &nj) || ni != 0 ||
-      nj != 1) {
+  if (!game_get_adjacent_square(g, 0, 0, RIGHT, &ni, &nj) || ni != 0 || nj != 1) {
     fprintf(stderr, "Erreur\n");
     game_delete(g);
     return false;
@@ -391,7 +394,8 @@ bool test_game_get_adjacent_square(void) {
   return true;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[])
+{
   if (argc < 2) {
     fprintf(stderr, "Erreur\n");
     return EXIT_FAILURE;
@@ -401,32 +405,23 @@ int main(int argc, char *argv[]) {
     return test_dummy();
   }
 
-  if (strcmp(argv[1], "game_new_empty") == 0)
-    return test_game_new_empty() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_new_empty") == 0) return test_game_new_empty() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_delete") == 0)
-    return test_game_delete() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_delete") == 0) return test_game_delete() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_set_square") == 0)
-    return test_game_set_square() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_set_square") == 0) return test_game_set_square() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_new") == 0)
-    return test_game_new() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_new") == 0) return test_game_new() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_copy") == 0)
-    return test_game_copy() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_copy") == 0) return test_game_copy() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_won") == 0)
-    return test_game_won() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_won") == 0) return test_game_won() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_equal") == 0)
-    return test_game_equal() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_equal") == 0) return test_game_equal() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_restart") == 0)
-    return test_game_restart() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_restart") == 0) return test_game_restart() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_get_adjacent_square") == 0)
-    return test_game_get_adjacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_get_adjacent_square") == 0) return test_game_get_adjacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
 
   fprintf(stderr, "Erreur\n");
   return EXIT_FAILURE;

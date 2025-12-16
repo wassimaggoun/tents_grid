@@ -26,21 +26,21 @@ typedef struct queue_s queue;
  * @brief Creates a new queue.
  * @return A pointer to the newly created queue.
  */
-queue *queue_new();
+queue* queue_new();
 
 /**
  * @brief Adds a new element at the head of the queue.
  * @param q Pointer to the queue.
  * @param data Pointer to the data to be added.
  */
-void queue_push_head(queue *q, void *data);
+void queue_push_head(queue* q, void* data);
 
 /**
  * @brief Adds a new element at the tail of the queue.
  * @param q Pointer to the queue.
  * @param data Pointer to the data to be added.
  */
-void queue_push_tail(queue *q, void *data);
+void queue_push_tail(queue* q, void* data);
 
 /**
  * @brief Removes the first element of the queue and returns its data.
@@ -50,7 +50,7 @@ void queue_push_tail(queue *q, void *data);
  * @note The returned element must be freed manually if it was dynamically
  * allocated.
  */
-void *queue_pop_head(queue *q);
+void* queue_pop_head(queue* q);
 
 /**
  * @brief Removes the last element of the queue and returns its data.
@@ -60,35 +60,35 @@ void *queue_pop_head(queue *q);
  * @note The returned element must be freed manually if it was dynamically
  * allocated.
  */
-void *queue_pop_tail(queue *q);
+void* queue_pop_tail(queue* q);
 
 /**
  * @brief Returns the number of elements in the queue.
  * @param q Pointer to the queue.
  * @return The number of elements in the queue.
  */
-int queue_length(const queue *q);
+int queue_length(const queue* q);
 
 /**
  * @brief Checks if the queue is empty.
  * @param q Pointer to the queue.
  * @return true if the queue is empty, false otherwise.
  */
-bool queue_is_empty(const queue *q);
+bool queue_is_empty(const queue* q);
 
 /**
  * @brief Returns the first element of the queue.
  * @param q Pointer to the queue.
  * @return Pointer to the data of the first element.
  */
-void *queue_peek_head(queue *q);
+void* queue_peek_head(queue* q);
 
 /**
  * @brief Returns the last element of the queue.
  * @param q Pointer to the queue.
  * @return Pointer to the data of the last element.
  */
-void *queue_peek_tail(queue *q);
+void* queue_peek_tail(queue* q);
 
 /**
  * @brief Removes all the elements in the queue.
@@ -96,7 +96,7 @@ void *queue_peek_tail(queue *q);
  * @note If queue elements contain dynamically-allocated memory, they should be
  * freed first.
  */
-void queue_clear(queue *q);
+void queue_clear(queue* q);
 
 /**
  * @brief Frees all the memory used by a queue, and calls the provided destroy
@@ -104,7 +104,7 @@ void queue_clear(queue *q);
  * @param q Pointer to the queue.
  * @param destroy Function pointer to the destroy function.
  */
-void queue_clear_full(queue *q, void (*destroy)(void *));
+void queue_clear_full(queue* q, void (*destroy)(void*));
 
 /**
  * @brief Frees the memory allocated for the queue.
@@ -112,7 +112,7 @@ void queue_clear_full(queue *q, void (*destroy)(void *));
  * @note If queue elements contain dynamically-allocated memory, you should
  * either use queue_free_full() or free them manually first.
  */
-void queue_free(queue *q);
+void queue_free(queue* q);
 
 /**
  * @brief Frees all the memory used by a queue, and calls the provided destroy
@@ -120,7 +120,7 @@ void queue_free(queue *q);
  * @param q Pointer to the queue.
  * @param destroy Function pointer to the destroy function.
  */
-void queue_free_full(queue *q, void (*destroy)(void *));
+void queue_free_full(queue* q, void (*destroy)(void*));
 
 /** @} */
 

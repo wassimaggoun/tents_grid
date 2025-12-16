@@ -1,0 +1,31 @@
+test_zziane_dummy 1 0.0048481
+test_zziane_game_check_move 0 0
+test_zziane_game_play_move 1 0.00516242
+test_zziane_game_default_solution 0 0
+test_zziane_game_default 1 0.00530679
+test_zziane_game_fill_grass 1 0.00513726
+test_zziane_game_get_square 1 0.00507412
+test_zziane_game_print 1 0.00539035
+test_waggoun_dummy 1 0.00477626
+test_waggoun_game_new_empty 1 0.00494097
+test_waggoun_game_delete 1 0.00522602
+test_waggoun_game_set_square 1 0.00574128
+test_waggoun_game_new 1 0.00638385
+test_waggoun_game_copy 1 0.00574983
+test_waggoun_game_restart 1 0.00498993
+test_waggoun_game_won 1 0.0051338
+test_waggoun_game_equal 1 0.0051201
+test_waggoun_game_get_adjacent_square 1 0.00514366
+test_sgoksu_dummy 1 0.00558597
+test_sgoksu_set_expected_row 1 0.00484407
+test_sgoksu_set_expected_col 1 0.00493925
+test_sgoksu_get_expected_row 1 0.00524109
+test_sgoksu_get_expected_col 1 0.00494939
+test_sgoksu_get_expected_all 1 0.00558869
+test_sgoksu_get_current_row 1 0.00479821
+test_sgoksu_get_current_col 1 0.00495311
+test_sgoksu_get_current_all 1 0.00630288
+test_sgoksu_game_is_neigh 1 0.00502948
+---
+test_zziane_game_check_move
+test_zziane_game_default_solution

@@ -48,6 +48,19 @@ add_test(test_sgoksu_get_current_col ./game_test_sgoksu get_current_nb_tents_col
 add_test(test_sgoksu_get_current_all ./game_test_sgoksu get_current_nb_tents_all)
 add_test(test_sgoksu_game_is_neigh ./game_test_sgoksu game_is_neigh)
 
+add_executable(game_test_ext game_test_ext.c)
+target_link_libraries(game_test_ext game m)
+add_test(test_game_undo ./game_test_ext game_undo)
+add_test(test_game_redo ./game_test_ext game_redo)
+add_test(test_game_is_wrapping ./game_test_ext game_is_wrapping)
+add_test(test_nb_cols ./game_test_ext game_nb_cols)
+add_test(test_nb_rows ./game_test_ext game_nb_rows)
+add_test(test_game_new_empty_ext ./game_test_ext game_new_empty_ext)
+add_test(test_game_new_ext ./game_test_ext game_new_ext)
+
+
+
+
 
 
 

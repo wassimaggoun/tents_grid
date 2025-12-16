@@ -1,0 +1,1 @@
+/usr/bin/cc -std=c99 -Wall -Wextra -g CMakeFiles/game_test_sgoksu.dir/game_test_sgoksu.c.o -o game_test_sgoksu  libgame.a -lm 
