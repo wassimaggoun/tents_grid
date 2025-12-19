@@ -76,34 +76,26 @@ game game_default(void)
   game_set_square(g, 2, 6, TREE);
 
   game_set_square(g, 3, 0, TREE);
-  game_set_square(g, 3, 3, TREE);
+  game_set_square(g, 3, 2, TREE);
 
-  game_set_square(g, 4, 5, TREE);
+  game_set_square(g, 4, 4, TREE);
 
-  game_set_square(g, 5, 3, TREE);
+  game_set_square(g, 5, 2, TREE);
 
   game_set_square(g, 7, 1, TREE);
   game_set_square(g, 7, 2, TREE);
   game_set_square(g, 7, 5, TREE);
   game_set_square(g, 7, 6, TREE);
 
-  game_set_expected_nb_tents_row(g, 0, 1);
-  game_set_expected_nb_tents_row(g, 1, 2);
-  game_set_expected_nb_tents_row(g, 2, 1);
-  game_set_expected_nb_tents_row(g, 3, 2);
-  game_set_expected_nb_tents_row(g, 4, 2);
-  game_set_expected_nb_tents_row(g, 5, 0);
-  game_set_expected_nb_tents_row(g, 6, 1);
-  game_set_expected_nb_tents_row(g, 7, 3);
+  uint row_vals[8] = {1,2,1,2,2,0,1,3};
+  for (uint i = 0; i < 8; i++){
+    game_set_expected_nb_tents_row(g, i, row_vals[i]);
+  }
 
-  game_set_expected_nb_tents_col(g, 0, 3);
-  game_set_expected_nb_tents_col(g, 1, 0);
-  game_set_expected_nb_tents_col(g, 2, 2);
-  game_set_expected_nb_tents_col(g, 3, 1);
-  game_set_expected_nb_tents_col(g, 4, 2);
-  game_set_expected_nb_tents_col(g, 5, 1);
-  game_set_expected_nb_tents_col(g, 6, 2);
-  game_set_expected_nb_tents_col(g, 7, 1);
+  uint col_vals[8] = {3,0,2,1,2,1,2,1};
+  for (uint j = 0; j < 8; j++){
+    game_set_expected_nb_tents_col(g, j, col_vals[j]);
+  }  
 
   return g;
 }
@@ -118,15 +110,15 @@ game game_default_solution(void)
   game_set_square(g, 1, 0, TENT);
   game_set_square(g, 1, 6, TENT);
 
-  game_set_square(g, 2, 5, TENT);
+  game_set_square(g, 2, 2, TENT);
 
-  game_set_square(g, 3, 2, TENT);
+  game_set_square(g, 3, 4, TENT);
   game_set_square(g, 3, 6, TENT);
 
   game_set_square(g, 4, 0, TENT);
-  game_set_square(g, 4, 4, TENT);
+  game_set_square(g, 4, 2, TENT);
 
-  game_set_square(g, 6, 2, TENT);
+  game_set_square(g, 6, 5, TENT);
 
   game_set_square(g, 7, 0, TENT);
   game_set_square(g, 7, 3, TENT);

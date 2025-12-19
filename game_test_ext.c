@@ -106,13 +106,13 @@ bool test_game_redo(void)
 bool test_game_is_wrapping(void){
   game g = game_new_empty_ext(9,8,false);
   game g2 = game_new_empty_ext(8,9,true);
-  assert(g && g2);
+  if (!g || !g2) return false;
 
   bool res = !game_is_wrapping(g) && game_is_wrapping(g2);
 
   game_delete(g);
   game_delete(g2);
-  
+
   return res;
 }
 
