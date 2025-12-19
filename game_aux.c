@@ -87,15 +87,15 @@ game game_default(void)
   game_set_square(g, 7, 5, TREE);
   game_set_square(g, 7, 6, TREE);
 
-  uint row_vals[8] = {1,2,1,2,2,0,1,3};
-  for (uint i = 0; i < 8; i++){
+  uint row_vals[8] = {1, 2, 1, 2, 2, 0, 1, 3};
+  for (uint i = 0; i < 8; i++) {
     game_set_expected_nb_tents_row(g, i, row_vals[i]);
   }
 
-  uint col_vals[8] = {3,0,2,1,2,1,2,1};
-  for (uint j = 0; j < 8; j++){
+  uint col_vals[8] = {3, 0, 2, 1, 2, 1, 2, 1};
+  for (uint j = 0; j < 8; j++) {
     game_set_expected_nb_tents_col(g, j, col_vals[j]);
-  }  
+  }
 
   return g;
 }

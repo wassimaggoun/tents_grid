@@ -57,6 +57,7 @@ add_test(test_nb_cols ./game_test_ext game_nb_cols)
 add_test(test_nb_rows ./game_test_ext game_nb_rows)
 add_test(test_game_new_empty_ext ./game_test_ext game_new_empty_ext)
 add_test(test_game_new_ext ./game_test_ext game_new_ext)
+add_test(test_game_is_wrapping ./game_test_ext game_is_wrapping)
 
 
 

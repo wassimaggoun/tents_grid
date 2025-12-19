@@ -1,13 +1,13 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 #include "game.h"
 #include "game_aux.h"
-#include "game_struct.h"
 #include "game_ext.h"
+#include "game_struct.h"
 
 bool test_game_new_empty_ext(void)
 {
@@ -103,19 +103,19 @@ bool test_game_redo(void)
   return test1;
 }
 
-bool test_game_is_wrapping(void){
-  game g = game_new_empty_ext(9,8,false);
-  game g2 = game_new_empty_ext(8,9,true);
+bool test_game_is_wrapping(void)
+{
+  game g = game_new_empty_ext(8, 8, false);
+  game g2 = game_new_empty_ext(8, 8, true);
   if (!g || !g2) return false;
 
-  bool res = !game_is_wrapping(g) && game_is_wrapping(g2);
+  if (game_is_wrapping(g) || !game_is_wrapping(g2)) return false;
 
   game_delete(g);
   game_delete(g2);
 
-  return res;
+  return true;
 }
-
 
 int main(int argc, char* argv[])
 {
@@ -133,6 +133,8 @@ int main(int argc, char* argv[])
   if (strcmp(argv[1], "game_nb_rows") == 0) return test_game_nb_rows() ? EXIT_SUCCESS : EXIT_FAILURE;
 
   if (strcmp(argv[1], "game_new_epmty_ext") == 0) return test_game_new_empty_ext() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+  if (strcmp(argv[1], "game_is_wrapping") == 0) return test_game_is_wrapping() ? EXIT_SUCCESS : EXIT_FAILURE;
 
   fprintf(stderr, "Erreur\n");
   return EXIT_FAILURE;
