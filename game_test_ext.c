@@ -25,7 +25,17 @@ bool test_game_new_empty_ext(void)
         return false;
       }
     }
-    if (game_get_expected_nb_tents_row(g, i) != 0 || game_get_expected_nb_tents_col(g, i) != 0 || game_get_expected_nb_tents_row(g1, i) != 0 || game_get_expected_nb_tents_col(g1, i) != 0) {
+    // Verification du nombre de colonnes en dehors de la boucle
+    if (game_get_expected_nb_tents_row(g, i) != 0 || game_get_expected_nb_tents_row(g1, i) != 0) {
+      fprintf(stderr, "Error\n");
+      game_delete(g);
+      game_delete(g1);
+      return false;
+    }
+  }
+
+  for (uint j = 0; j < 8; j++) {
+    if (game_get_expected_nb_tents_col(g, j) != 0 || game_get_expected_nb_tents_col(g1, j) != 0) {
       fprintf(stderr, "Error\n");
       game_delete(g);
       game_delete(g1);
@@ -41,6 +51,71 @@ bool test_game_new_empty_ext(void)
 
   game_delete(g);
   game_delete(g1);
+  return true;
+}
+
+bool test_game_new_ext(void)
+{
+  uint nb_rows = 9;
+  uint nb_cols = 8;
+  square squares[nb_rows * nb_cols];
+  uint tents_row[nb_rows];
+  uint tents_col[nb_cols];
+  bool wrapping = true;
+
+  for (uint i = 0; i < nb_rows * nb_cols; i++) {
+    squares[i] = EMPTY;
+  }
+
+  squares[0] = TREE;
+  squares[nb_cols + 1] = GRASS;
+  squares[(nb_rows * nb_cols - 1)] = BIGTREE;
+
+  for (uint i = 0; i < nb_rows; i++) {
+    tents_row[i] = i % 2;  // 0,1,0,1...
+  }
+  for (uint j = 0; j < nb_cols; j++) {
+    tents_col[j] = (j + 1) % 2;  // 1,0,1,0...
+  }
+
+  game g = game_new_ext(nb_rows, nb_cols, squares, tents_row, tents_col, wrapping);
+  if (!g) return false;
+
+  if (game_nb_cols(g) != nb_cols || game_nb_rows(g) != nb_rows) {
+    game_delete(g);
+    return false;
+  }
+
+  for (uint i = 0; i < nb_rows; i++) {
+    for (uint j = 0; j < nb_cols; j++) {
+      square s = squares[i * nb_cols + j];
+      if (game_get_square(g, i, j) != s) {
+        game_delete(g);
+        return false;
+      }
+    }
+  }
+
+  for (uint i = 0; i < nb_rows; i++) {
+    if (game_get_expected_nb_tents_row(g, i) != tents_row[i]) {
+      game_delete(g);
+      return false;
+    }
+  }
+
+  for (uint j = 0; j < nb_cols; j++) {
+    if (game_get_expected_nb_tents_col(g, j) != tents_col[j]) {
+      game_delete(g);
+      return false;
+    }
+  }
+
+  if (game_is_wrapping(g) != wrapping) {
+    game_delete(g);
+    return false;
+  }
+
+  game_delete(g);
   return true;
 }
 
@@ -132,7 +207,9 @@ int main(int argc, char* argv[])
 
   if (strcmp(argv[1], "game_nb_rows") == 0) return test_game_nb_rows() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_new_epmty_ext") == 0) return test_game_new_empty_ext() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_new_empty_ext") == 0) return test_game_new_empty_ext() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+  if (strcmp(argv[1], "game_new_ext") == 0) return test_game_new_ext() ? EXIT_SUCCESS : EXIT_FAILURE;
 
   if (strcmp(argv[1], "game_is_wrapping") == 0) return test_game_is_wrapping() ? EXIT_SUCCESS : EXIT_FAILURE;
 
