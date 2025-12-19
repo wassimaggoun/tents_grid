@@ -171,7 +171,7 @@ bool test_game_copy(void)
   uint tents_col[nb_cols];
 
   // on remplit le tableau squres
-  for (uint i = 0; i < SIZE * SIZE; i++) {
+  for (uint i = 0; i < nb_rows * nb_cols; i++) {
     squares[i] = (i % 4 == 0) ? TREE : EMPTY;
   }
 
@@ -226,7 +226,7 @@ bool test_game_copy(void)
     }
 
   for (uint j = 0; j < nb_cols; j++)
-    if (game_get_expected_nb_tents_row(g1, j) != game_get_expected_nb_tents_row(g2, j)) {
+    if (game_get_expected_nb_tents_col(g1, j) != game_get_expected_nb_tents_col(g2, j)) {
       game_delete(g1);
       game_delete(g2);
       return false;
