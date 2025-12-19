@@ -5,6 +5,7 @@
 
 #include "game.h"
 #include "game_aux.h"
+#include "game_ext.h"
 #include "game_struct.h"
 
 #define SIZE DEFAULT_SIZE
@@ -62,8 +63,8 @@ bool test_game_set_square(void)
     return false;
   }
 
-  game_set_square(g, 0, 0, TENT);
-  if (game_get_square(g, 0, 0) != TENT) {
+  game_set_square(g, 0, 1, TENT);
+  if (game_get_square(g, 0, 1) != TENT) {
     fprintf(stderr, "Error\n");
     game_delete(g);
     return false;
@@ -83,7 +84,14 @@ bool test_game_set_square(void)
     return false;
   }
 
-  game_set_square(g, SIZE - 1, SIZE - 1, TREE);
+  game_set_square(g, 4, 4, BIGTREE);
+  if (game_get_square(g, 4, 4) != BIGTREE) {
+    fprintf(stderr, "Error\n");
+    game_delete(g);
+    return false;
+  }
+
+  game_set_square(g, game_nb_rows(g) - 1, game_nb_cols(g) - 1, TREE);
   if (game_get_square(g, SIZE - 1, SIZE - 1) != TREE) {
     fprintf(stderr, "Error\n");
     game_delete(g);
@@ -155,25 +163,30 @@ bool test_game_new(void)
 
 bool test_game_copy(void)
 {
-  square squares[SIZE * SIZE];
-  uint tents_row[SIZE];
-  uint tents_col[SIZE];
+  uint nb_rows = 9;
+  uint nb_cols = 8;
+  bool wrapping = true;
+  square squares[nb_rows * nb_cols];
+  uint tents_row[nb_rows];
+  uint tents_col[nb_cols];
 
   // on remplit le tableau squres
   for (uint i = 0; i < SIZE * SIZE; i++) {
     squares[i] = (i % 4 == 0) ? TREE : EMPTY;
   }
 
-  for (uint i = 0; i < SIZE; i++) {
-    tents_row[i] = i % 2;        // 0,1,0,1,...
-    tents_col[i] = (i + 1) % 2;  // 1,0,1,0,...
-  }
+  squares[0] = TREE;
+  squares[1] = BIGTREE;
+  squares[3] = TENT;
+  squares[nb_cols + 2] = GRASS;
+  squares[nb_rows * nb_cols - 1] = TREE;
 
-  game g1 = game_new(squares, tents_row, tents_col);
-  if (g1 == NULL) {
-    fprintf(stderr, "Erreur\n");
-    return false;
-  }
+  for (uint i = 0; i < nb_rows; i++) tents_row[i] = i % 2;  // 0,1,0,1,0,1...
+
+  for (uint j = 0; j < nb_cols; j++) tents_col[j] = (j + 1) % 2;  // 1,0,1,0,1,0...
+
+  game g1 = game_new_ext(nb_rows, nb_cols, squares, tents_row, tents_col, wrapping);
+  if (!g1) return false;
 
   // on créer une copie de g1
   game g2 = game_copy(g1);
@@ -183,23 +196,41 @@ bool test_game_copy(void)
     return false;
   }
 
-  for (uint i = 0; i < SIZE; i++) {
-    if (game_get_expected_nb_tents_row(g1, i) != game_get_expected_nb_tents_row(g2, i) || game_get_expected_nb_tents_col(g1, i) != game_get_expected_nb_tents_col(g2, i)) {
-      fprintf(stderr, "Erreur\n");
-      game_delete(g1);
-      game_delete(g2);
-      return false;
-    }
+  if (game_nb_rows(g1) != game_nb_rows(g2) || game_nb_cols(g1) != game_nb_cols(g2)) {
+    game_delete(g1);
+    game_delete(g2);
+    return false;
+  }
 
-    for (uint j = 0; j < SIZE; j++) {
+  if (game_is_wrapping(g1) != game_is_wrapping(g2)) {
+    game_delete(g1);
+    game_delete(g2);
+    return false;
+  }
+
+  for (uint i = 0; i < nb_rows; i++) {
+    for (uint j = 0; j < nb_cols; j++) {
       if (game_get_square(g1, i, j) != game_get_square(g2, i, j)) {
-        fprintf(stderr, "Erreur\n");
         game_delete(g1);
         game_delete(g2);
         return false;
       }
     }
   }
+
+  for (uint i = 0; i < nb_rows; i++)
+    if (game_get_expected_nb_tents_row(g1, i) != game_get_expected_nb_tents_row(g2, i)) {
+      game_delete(g1);
+      game_delete(g2);
+      return false;
+    }
+
+  for (uint j = 0; j < nb_cols; j++)
+    if (game_get_expected_nb_tents_row(g1, j) != game_get_expected_nb_tents_row(g2, j)) {
+      game_delete(g1);
+      game_delete(g2);
+      return false;
+    }
 
   game_set_square(g1, 0, 0, TENT);
   if (game_get_square(g2, 0, 0) == TENT) {
