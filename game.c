@@ -398,7 +398,7 @@ bool game_won(cgame g)
       }
 
       if (s == BIGTREE) {
-        if (!game_nb_neigh(g, i, j, TENT, false) != 2) return false;
+        if (game_nb_neigh(g, i, j, TENT, false) != 2) return false;
         required_tents += 2;
       }
     }
