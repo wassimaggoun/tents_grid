@@ -425,6 +425,43 @@ bool test_game_get_adjacent_square(void)
   return true;
 }
 
+bool test_game_get_adjacent_square_wrap(void)
+{
+  uint nb_rows = 4;
+  uint nb_cols = 3;
+  game g = game_new_empty_ext(nb_rows, nb_cols, true);
+
+  if (!g) {
+    fprintf(stderr, "Erreur d'allocation de mémoire\n");
+    return false;
+  }
+
+  uint ni, nj;
+
+  if (!game_get_adjacent_square(g, 0, 0, LEFT, &ni, &nj) || ni != 0 || nj != nb_cols - 1) {
+    game_delete(g);
+    return false;
+  }
+
+  if ((!game_get_adjacent_square(g, 0, 0, UP, &ni, &nj) || ni != nb_rows - 1 || nj != 0)) {
+    game_delete(g);
+    return false;
+  }
+
+  if ((!game_get_adjacent_square(g, nb_rows - 1, 0, DOWN, &ni, &nj) || ni != 0 || nj != 0)) {
+    game_delete(g);
+    return false;
+  }
+
+  if ((!game_get_adjacent_square(g, 0, nb_cols - 1, RIGHT, &ni, &nj) || ni != 0 || nj != 0)) {
+    game_delete(g);
+    return false;
+  }
+
+  game_delete(g);
+  return true;
+}
+
 int main(int argc, char* argv[])
 {
   if (argc < 2) {
@@ -453,6 +490,8 @@ int main(int argc, char* argv[])
   if (strcmp(argv[1], "game_restart") == 0) return test_game_restart() ? EXIT_SUCCESS : EXIT_FAILURE;
 
   if (strcmp(argv[1], "game_get_adjacent_square") == 0) return test_game_get_adjacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+  if (strcmp(argv[1], "game_get_adjacent_square_wrap") == 0) return test_game_get_adjacent_square_wrap() ? EXIT_SUCCESS : EXIT_FAILURE;
 
   fprintf(stderr, "Erreur\n");
   return EXIT_FAILURE;
