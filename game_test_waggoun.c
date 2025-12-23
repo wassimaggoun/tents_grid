@@ -254,7 +254,7 @@ bool test_game_won(void)
   game_play_move(g, 1, 0, TENT);
 
   if (!game_won(g)) {
-    fprintf(stderr, "Erreur\n");
+    fprintf(stderr, "Erreur cas gagnant\n");
     game_delete(g);
     return false;
   }
@@ -262,12 +262,18 @@ bool test_game_won(void)
 
   // verification regle 1
   g = game_new_empty();
+  game_set_expected_nb_tents_row(g, 1, 1);
+  game_set_expected_nb_tents_col(g, 0, 1);
+  game_set_expected_nb_tents_row(g, 2, 1);
+  game_set_expected_nb_tents_col(g, 1, 1);
 
+  game_set_square(g, 0, 0, TREE);
   game_play_move(g, 1, 0, TENT);
+  game_set_square(g, 2, 2, TREE);
   game_play_move(g, 2, 1, TENT);
 
   if (game_won(g)) {
-    fprintf(stderr, "Erreur (rule 1)\n");
+    fprintf(stderr, "Erreur (regle 1)\n");
     game_delete(g);
     return false;
   }
@@ -275,9 +281,22 @@ bool test_game_won(void)
 
   // regle 2
   g = game_new_empty();
-  game_set_expected_nb_tents_row(g, 0, 1);
-  game_set_expected_nb_tents_col(g, 0, 1);
+  game_set_expected_nb_tents_row(g, 0, 1);  // on placera 2 tentes sur cette ligne
+  game_set_expected_nb_tents_col(g, 0, 1);  // le reste sera correct
+
+  game_set_expected_nb_tents_col(g, 1, 1);
+  game_set_expected_nb_tents_col(g, 4, 1);
+  game_set_expected_nb_tents_row(g, 3, 1);
+
   game_set_square(g, 0, 0, TREE);
+  game_play_move(g, 0, 1, TENT);
+
+  game_set_square(g, 0, 3, TREE);
+  game_play_move(g, 0, 4, TENT);
+
+  game_set_square(g, 2, 0, TREE);
+  game_play_move(g, 3, 0, TENT);
+
   if (game_won(g)) {
     fprintf(stderr, "Erreur (regle2)\n");
     game_delete(g);
@@ -287,12 +306,23 @@ bool test_game_won(void)
 
   // regle 3
   g = game_new_empty();
-  game_set_expected_nb_tents_row(g, 0, 2);
-  game_set_expected_nb_tents_col(g, 0, 1);
-  game_set_expected_nb_tents_col(g, 1, 1);
-  game_set_square(g, 0, 0, TREE);
+  game_set_expected_nb_tents_row(g, 0, 1);
+  game_set_expected_nb_tents_col(g, 1, 0);
+
+  game_set_square(g, 0, 0, TREE);  // plus d'arbres que de tentes
+  game_set_square(g, 3, 2, TREE);
   game_play_move(g, 0, 1, TENT);
-  game_play_move(g, 1, 0, TENT);
+  if (game_won(g)) {
+    fprintf(stderr, "Erreur (regle3)\n");
+    game_delete(g);
+    return false;
+  }
+  game_set_expected_nb_tents_row(g, 3, 2);
+  game_set_expected_nb_tents_col(g, 3, 1);
+  game_set_expected_nb_tents_col(g, 5, 1);
+
+  game_play_move(g, 3, 3, TENT);
+  game_play_move(g, 3, 5, TENT);  // plus de tentes que d'arbres (on modifie le meme jeu)
   if (game_won(g)) {
     fprintf(stderr, "Erreur (regle3)\n");
     game_delete(g);
@@ -302,10 +332,10 @@ bool test_game_won(void)
 
   // regle4
   g = game_new_empty();
-  game_set_expected_nb_tents_row(g, 1, 1);  // add the same code but without the expected
-  game_set_expected_nb_tents_col(g, 1, 1);  //
+  game_set_expected_nb_tents_row(g, 0, 1);
+  game_set_expected_nb_tents_col(g, 2, 1);
   game_set_square(g, 0, 0, TREE);
-  game_play_move(g, 2, 2, TENT);
+  game_play_move(g, 0, 2, TENT);
   if (game_won(g)) {
     fprintf(stderr, "Erreur  (regle 4).\n");
     game_delete(g);
