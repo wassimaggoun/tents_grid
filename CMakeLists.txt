@@ -35,6 +35,8 @@ add_test(test_waggoun_game_won ./game_test_waggoun game_won)
 add_test(test_waggoun_game_equal ./game_test_waggoun game_equal)
 add_test(test_waggoun_game_get_adjacent_square ./game_test_waggoun game_get_adjacent_square)
 add_test(test_waggoun_game_get_adjacent_square_wrap ./game_test_waggoun game_get_adjacent_square_wrap)
+add_test(test_waggoun_game_won_wrap_bigtree ./game_test_waggoun game_won_wrap_bigtree)
+
 
 add_executable(game_test_sgoksu game_test_sgoksu.c)
 target_link_libraries(game_test_sgoksu game m)

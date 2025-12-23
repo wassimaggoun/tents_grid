@@ -247,6 +247,7 @@ bool test_game_copy(void)
 
 bool test_game_won(void)
 {
+  // cas gagnant
   game g = game_new_empty();
   game_set_expected_nb_tents_row(g, 1, 1);
   game_set_expected_nb_tents_col(g, 0, 1);
@@ -343,6 +344,73 @@ bool test_game_won(void)
   }
   game_delete(g);
 
+  return true;
+}
+
+bool test_game_won_wrap_bigtree()
+{
+  // cas bigtree
+  game g = game_new_empty();
+  game_set_expected_nb_tents_row(g, 0, 1);
+  game_set_expected_nb_tents_row(g, 2, 1);
+  game_set_expected_nb_tents_col(g, 1, 2);
+
+  game_set_square(g, 0, 0, TREE);
+  game_set_square(g, 2, 2, BIGTREE);
+  game_play_move(g, 0, 1, TENT);
+  game_play_move(g, 2, 1, TENT);  // une seule tente pour bigtree
+
+  if (game_won(g)) {
+    fprintf(stderr, "Erreur bigtree\n");
+    game_delete(g);
+    return false;
+  }
+  // on corrige (cas gagnant)
+  game_set_expected_nb_tents_col(g, 3, 1);  // on ajoute une tente pou la colonne 3 et ligne 2
+  game_set_expected_nb_tents_row(g, 2, 2);
+  game_play_move(g, 2, 3, TENT);
+  if (!game_won(g)) {
+    fprintf(stderr, "Erreur cas gagnant\n");
+    game_delete(g);
+    return false;
+  }
+  game_delete(g);
+  // cas wrapping
+  g = game_new_empty_ext(9, 8, true);
+  game_set_expected_nb_tents_row(g, 0, 2);
+  game_set_expected_nb_tents_col(g, 0, 1);
+  game_set_expected_nb_tents_col(g, 7, 1);
+
+  game_set_square(g, 0, 1, TREE);
+  game_set_square(g, 0, 6, TREE);
+  game_play_move(g, 0, 0, TENT);
+  game_play_move(g, 0, 7, TENT);
+
+  if (game_won(g)) {
+    fprintf(stderr, "Erreur wrapping\n");
+    game_delete(g);
+    return false;
+  }
+  game_delete(g);
+
+  // on enlève le wrapping
+  g = game_new_empty_ext(9, 8, false);
+  game_set_expected_nb_tents_row(g, 0, 2);
+  game_set_expected_nb_tents_col(g, 0, 1);
+  game_set_expected_nb_tents_col(g, 7, 1);
+
+  game_set_square(g, 0, 1, TREE);
+  game_set_square(g, 0, 6, TREE);
+  game_play_move(g, 0, 0, TENT);
+  game_play_move(g, 0, 7, TENT);
+
+  if (!game_won(g)) {
+    fprintf(stderr, "Erreur wrapping cas gagnant\n");
+    game_delete(g);
+    return false;
+  }
+
+  game_delete(g);
   return true;
 }
 
@@ -522,6 +590,8 @@ int main(int argc, char* argv[])
   if (strcmp(argv[1], "game_get_adjacent_square") == 0) return test_game_get_adjacent_square() ? EXIT_SUCCESS : EXIT_FAILURE;
 
   if (strcmp(argv[1], "game_get_adjacent_square_wrap") == 0) return test_game_get_adjacent_square_wrap() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+  if (strcmp(argv[1], "game_won_wrap_bigtree") == 0) return test_game_won_wrap_bigtree() ? EXIT_SUCCESS : EXIT_FAILURE;
 
   fprintf(stderr, "Erreur\n");
   return EXIT_FAILURE;
