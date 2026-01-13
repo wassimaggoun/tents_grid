@@ -4,7 +4,7 @@ project(game_text C)
 include(CTest)
 enable_testing()
 
-set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -g")
+set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -g --coverage ")
 
 add_library(game game.c game_aux.c game_ext.c queue.c)
 
