@@ -83,6 +83,7 @@ bool test_default()
   game g = game_default();
 
   bool t1 = (g != NULL);
+  if (g->width == g->height && g->width == DEFAULT_SIZE) return false;
 
   bool hastree = false;
   bool hasempty = false;
@@ -94,6 +95,7 @@ bool test_default()
       if (s == TREE) hastree = true;
       if (s == EMPTY) hasempty = true;
       if (s == TENT || s == GRASS) hastentougrass = true;
+      if (s == BIGTREE) return false;
     }
   }
 
@@ -103,11 +105,10 @@ bool test_default()
 
   bool t5 = !game_won(g);
   bool t6 = !g->wrapping;
-  bool t7 = (g->width == g->height && g->width == DEFAULT_SIZE);
 
   game_delete(g);
 
-  return t1 && t2 && t3 && t4 && t5 && t6 && t7;
+  return t1 && t2 && t3 && t4 && t5 && t6;
 }
 
 bool test_fill_grass()
