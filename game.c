@@ -244,24 +244,24 @@ void game_set_expected_nb_tents_col(game g, uint j, uint nb_tents)
 
 uint game_get_expected_nb_tents_row(cgame g, uint i)
 {
-  if(g == NULL) return;
-  if(!g->expected_nb_tents_row || i < game_nb_rows(g)) return;
+  if (g == NULL) return;
+  if (!g->expected_nb_tents_row || i < game_nb_rows(g)) return;
 
   return g->expected_nb_tents_row[i];
 }
 
 uint game_get_expected_nb_tents_col(cgame g, uint j)
 {
-  if(g == NULL) return;
-  if(!g->expected_nb_tents_col || j < game_nb_rows(g)) return;
+  if (g == NULL) return;
+  if (!g->expected_nb_tents_col || j < game_nb_rows(g)) return;
 
   return g->expected_nb_tents_col[j];
 }
 
 uint game_get_expected_nb_tents_all(cgame g)
 {
-  if(g == NULL) return;
-  if(!g->expected_nb_tents_row) return;
+  if (g == NULL) return;
+  if (!g->expected_nb_tents_row) return;
   uint res = 0;
   for (uint i = 0; i < game_nb_rows(g); i++) {
     res += game_get_expected_nb_tents_row(g, i);
