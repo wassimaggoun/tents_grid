@@ -264,6 +264,7 @@ uint game_get_expected_nb_tents_all(cgame g)
 {
   assert(g);
   assert(g->expected_nb_tents_row);
+  assert(g->expected_nb_tents_col);
   uint res = 0;
   for (uint i = 0; i < game_nb_rows(g); i++) {
     res += game_get_expected_nb_tents_row(g, i);
