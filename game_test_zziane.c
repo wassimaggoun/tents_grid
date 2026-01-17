@@ -102,10 +102,12 @@ bool test_default()
   bool t4 = !hastentougrass;
 
   bool t5 = !game_won(g);
+  bool t6 = !g->wrapping;
+  bool t7 = (g->width == g->height && g->width == DEFAULT_SIZE);
 
   game_delete(g);
 
-  return t1 && t2 && t3 && t4 && t5;
+  return t1 && t2 && t3 && t4 && t5 && t6 && t7;
 }
 
 bool test_fill_grass()

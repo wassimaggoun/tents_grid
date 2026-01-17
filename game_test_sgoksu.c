@@ -79,7 +79,7 @@ bool test_get_expected_nb_tents_col(void)
 
 bool test_get_expected_nb_tents_all(void)
 {
-  game g = game_new_empty();
+  game g = game_default();
 
   game_set_expected_nb_tents_row(g, 0, 1);
   game_set_expected_nb_tents_row(g, 1, 1);
