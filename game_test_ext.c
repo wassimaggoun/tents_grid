@@ -122,11 +122,11 @@ bool test_game_new_ext(void)
 bool test_game_nb_rows(void)
 {
   game g1 = game_new_empty_ext(9, 8, false);
-  bool test1 = (g1!=NULL) && (game_nb_rows(g1) ==9);
+  bool test1 = (g1 != NULL) && (game_nb_rows(g1) == 9);
   game_delete(g1);
 
   game g2 = game_new_empty_ext(9, 8, true);
-  bool test2 = (g2!=NULL) && (game_nb_rows(g2) == 9);
+  bool test2 = (g2 != NULL) && (game_nb_rows(g2) == 9);
   game_delete(g2);
 
   return test1 && test2;
@@ -135,11 +135,11 @@ bool test_game_nb_rows(void)
 bool test_game_nb_cols(void)
 {
   game g1 = game_new_empty_ext(9, 8, false);
-  bool test1 = (g1!=NULL) && (game_nb_cols(g1) == 8);
+  bool test1 = (g1 != NULL) && (game_nb_cols(g1) == 8);
   game_delete(g1);
 
   game g2 = game_new_empty_ext(9, 8, true);
-  bool test2 = (g2!=NULL) && (game_nb_cols(g2) == 8);
+  bool test2 = (g2 != NULL) && (game_nb_cols(g2) == 8);
   game_delete(g2);
 
   return test1 && test2;
@@ -148,17 +148,16 @@ bool test_game_nb_cols(void)
 bool test_game_undo(void)
 {
   game g = game_new_empty_ext(9, 8, false);
-  bool test1=false;
-  
-  if (g!= NULL){
+  bool test1 = false;
 
-  game_play_move(g, 0, 0, TENT);
-  square s1 = game_get_square(g, 0, 0);
+  if (g != NULL) {
+    game_play_move(g, 0, 0, TENT);
+    square s1 = game_get_square(g, 0, 0);
 
-  game_undo(g);
-  square s2 = game_get_square(g, 0, 0);
+    game_undo(g);
+    square s2 = game_get_square(g, 0, 0);
 
-  test1 = (s1 == TENT) && (s2 == EMPTY);
+    test1 = (s1 == TENT) && (s2 == EMPTY);
   }
 
   game_delete(g);
@@ -168,20 +167,19 @@ bool test_game_undo(void)
 bool test_game_redo(void)
 {
   game g = game_new_empty_ext(9, 8, false);
-  bool test1=false;
-  
-  if (g!= NULL){
+  bool test1 = false;
 
-  game_play_move(g, 0, 0, TENT);
-  square s1 = game_get_square(g, 0, 0);
+  if (g != NULL) {
+    game_play_move(g, 0, 0, TENT);
+    square s1 = game_get_square(g, 0, 0);
 
-  game_undo(g);
-  square s2 = game_get_square(g, 0, 0);
+    game_undo(g);
+    square s2 = game_get_square(g, 0, 0);
 
-  game_redo(g);
-  square s3 = game_get_square(g, 0, 0);
+    game_redo(g);
+    square s3 = game_get_square(g, 0, 0);
 
-  test1 = (s1 == TENT) && (s2 == EMPTY) && (s3 == TENT);
+    test1 = (s1 == TENT) && (s2 == EMPTY) && (s3 == TENT);
   }
   game_delete(g);
   return test1;
