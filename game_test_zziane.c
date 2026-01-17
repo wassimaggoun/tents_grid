@@ -83,7 +83,7 @@ bool test_default()
   game g = game_default();
 
   bool t1 = (g != NULL);
-  if (g->width == g->height && g->width == DEFAULT_SIZE) return false;
+  if (g->width != g->height && g->width != DEFAULT_SIZE) return false;
 
   bool hastree = false;
   bool hasempty = false;
