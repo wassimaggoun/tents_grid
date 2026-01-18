@@ -8,6 +8,7 @@
 #include "game.h"
 #include "game_struct.h"
 
+//this function prints the game
 void game_print(cgame g)
 {
   if (!g) return;
@@ -15,24 +16,31 @@ void game_print(cgame g)
   uint width = g->width;
   uint height = g->height;
 
+  //this loop helps us print the column indices
   printf("   ");
   for (uint j = 0; j < width; j++) {
     printf("%u", j);
   }
   printf("\n");
 
+  //this loop helps us print the top horizontal borders "-"
   printf("   ");
   for (uint j = 0; j < width; j++) {
     printf("-");
   }
   printf("\n");
 
+  //our main loop here will help us print each row 
   for (uint i = 0; i < height; i++) {
+    
+    //we will print row index and separete with "|"(left border)
     printf("%u |", i);
+
     for (uint j = 0; j < width; j++) {
       square s = game_get_square(g, i, j);
       char c;
 
+      //we will chose the character according to our square type and print it
       if (s == EMPTY) {
         c = ' ';
       } else if (s == TREE) {
@@ -47,15 +55,18 @@ void game_print(cgame g)
 
       printf("%c", c);
     }
+    //here we will print the right border "|" and then give the expected number of tents of the row
     printf(" | %u\n", game_get_expected_nb_tents_row(g, i));
   }
 
+  //print the bottom borders
   printf("   ");
   for (uint j = 0; j < width; j++) {
     printf("-");
   }
   printf("\n");
 
+  //we will get our expected number of tents for each column
   printf("   ");
   for (uint j = 0; j < width; j++) {
     printf("%u", game_get_expected_nb_tents_col(g, j));
