@@ -91,6 +91,7 @@ bool test_get_expected_nb_tents_all(void)
   return test;
 }
 
+//tests the function get_current_nb_tents_row
 bool test_get_current_nb_tents_row(void)
 {
   game g = game_new_empty();
@@ -99,6 +100,7 @@ bool test_get_current_nb_tents_row(void)
   game_play_move(g, 0, 3, TENT);
   game_play_move(g, 2, 2, TENT);
 
+  //checks if the number of current tents in a row is accurate
   bool test0 = game_get_current_nb_tents_row(g, 0) == 2;
   bool test1 = game_get_current_nb_tents_row(g, 1) == 0;
   bool test2 = game_get_current_nb_tents_row(g, 2) == 1;
@@ -108,6 +110,7 @@ bool test_get_current_nb_tents_row(void)
   return test0 && test1 && test2 && test2_1;
 }
 
+//tests the function get_current_nb_tents_col
 bool test_get_current_nb_tents_col(void)
 {
   game g = game_new_empty();
@@ -116,6 +119,7 @@ bool test_get_current_nb_tents_col(void)
   game_play_move(g, 0, 2, TENT);
   game_play_move(g, 2, 2, TENT);
 
+  //checks if the number of current tents in a column is accurate
   bool test0 = game_get_current_nb_tents_col(g, 0) == 0;
   bool test1 = game_get_current_nb_tents_col(g, 1) == 1;
   bool test2 = game_get_current_nb_tents_col(g, 2) == 2;
