@@ -88,7 +88,7 @@ bool test_get_expected_nb_tents_all(void)
   bool test = (game_get_expected_nb_tents_all(g) == 12);
   game_delete(g);
 
-  return test ;
+  return test;
 }
 
 bool test_get_current_nb_tents_row(void)
