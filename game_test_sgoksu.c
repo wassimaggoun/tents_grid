@@ -84,7 +84,7 @@ bool test_get_expected_nb_tents_col(void)
 bool test_get_expected_nb_tents_all(void)
 {
   game g = game_default();
-  // we should have 3 expected tents in the whole game
+  // we should have 12 expected tents in the whole game
   bool test = (game_get_expected_nb_tents_all(g) == 12);
   game_delete(g);
 
@@ -129,6 +129,7 @@ bool test_get_current_nb_tents_col(void)
   return test0 && test1 && test2 && test2_1;
 }
 
+//same logic with get_expected_nb_tents_all
 bool test_get_current_nb_tents_all(void)
 {
   game g = game_new_empty();
