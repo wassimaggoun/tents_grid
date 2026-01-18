@@ -116,58 +116,74 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping)
 
 uint game_nb_rows(cgame g)
 {
-  if (g == NULL) {
-    fprintf(stderr, "JEU VIDE");
-    exit(EXIT_FAILURE);
-  }
+ // Vérifie que le jeu existe
+ if (g == NULL) {
+ fprintf(stderr, "JEU VIDE");
+ exit(EXIT_FAILURE);
+ }
 
-  return g->height;
+ // Retourne la hauteur
+ return g->height;
 }
 
 uint game_nb_cols(cgame g)
 {
-  if (g == NULL) {
-    fprintf(stderr, "JEU VIDE");
-    exit(EXIT_FAILURE);
-  }
+ // Vérifie que le jeu existe
+ if (g == NULL) {
+ fprintf(stderr, "JEU VIDE");
+ exit(EXIT_FAILURE);
+ }
 
-  return g->width;
+ // Retourne la largeur
+ return g->width;
 }
 
 bool game_is_wrapping(cgame g)
 {
-  if (g == NULL) {
-    fprintf(stderr, "JEU VIDE");
-    exit(EXIT_FAILURE);
-  }
+ // Vérifie que le jeu existe
+ if (g == NULL) {
+ fprintf(stderr, "JEU VIDE");
+ exit(EXIT_FAILURE);
+ }
 
-  return g->wrapping;
+ // Retourne si le mode "tore" est activé
+ return g->wrapping;
 }
 
 void game_undo(game g)
 {
-  if (g == NULL) {
-    fprintf(stderr, "Erreur mémoire");
-    exit(EXIT_FAILURE);
-  }
+ // Vérifie erreurs mémoire
+ if (g == NULL) {
+ fprintf(stderr, "Erreur mémoire");
+ exit(EXIT_FAILURE);
+ }
 
-  if (queue_is_empty(g->undo_stack)) return;
+ // Si rien à annuler, on ne fait rien
+ if (queue_is_empty(g->undo_stack)) return;
 
-  move* m = queue_pop_tail(g->undo_stack);
-  g->grid[m->i][m->j] = m->before;
-  queue_push_tail(g->redo_stack, m);
+ // Récupère le dernier coup joué
+ move* m = queue_pop_tail(g->undo_stack);
+ // Remet la case comme elle était avant
+ g->grid[m->i][m->j] = m->before;
+ // Ajoute ce coup dans la pile "refaire"
+ queue_push_tail(g->redo_stack, m);
 }
 
 void game_redo(game g)
 {
-  if (g == NULL) {
-    fprintf(stderr, "Erreur mémoire");
-    exit(EXIT_FAILURE);
-  }
+ // Vérifie erreurs mémoire
+ if (g == NULL) {
+ fprintf(stderr, "Erreur mémoire");
+ exit(EXIT_FAILURE);
+ }
 
-  if (queue_is_empty(g->redo_stack)) return;
+ // Si rien à refaire, on ne fait rien
+ if (queue_is_empty(g->redo_stack)) return;
 
-  move* m = queue_pop_tail(g->redo_stack);
-  g->grid[m->i][m->j] = m->after;
-  queue_push_tail(g->undo_stack, m);
+ // Récupère le coup annulé
+ move* m = queue_pop_tail(g->redo_stack);
+ // Remet la case avec la nouvelle valeur
+ g->grid[m->i][m->j] = m->after;
+ // Remet ce coup dans la pile "annuler"
+ queue_push_tail(g->undo_stack, m);
 }
