@@ -63,6 +63,8 @@ void game_print(cgame g)
   printf("\n");
 }
 
+/* *********************************************************** */
+
 game game_default(void)
 {
   game g = game_new_empty();
@@ -100,6 +102,8 @@ game game_default(void)
   return g;
 }
 
+/* *********************************************************** */
+
 game game_default_solution(void)
 {
   game g = game_default();
@@ -128,6 +132,8 @@ game game_default_solution(void)
 
   return g;
 }
+
+/* *********************************************************** */
 
 bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_next, uint* pj_next)
 {
@@ -201,6 +207,8 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
   return true;
 }
 
+/* *********************************************************** */
+
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag)
 {
   assert(g != NULL);
@@ -220,6 +228,8 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag)
 
   return false;
 }
+
+/* *********************************************************** */
 
 uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag)
 {
