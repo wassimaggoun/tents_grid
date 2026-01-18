@@ -554,14 +554,16 @@ bool test_game_get_adjacent_square_wrap(void)
 {
   uint nb_rows = 4;
   uint nb_cols = 3;
-  game g = game_new_empty_ext(nb_rows, nb_cols, true);  // we
+  game g = game_new_empty_ext(nb_rows, nb_cols, true);  // wrapping enabled
 
   if (!g) {
     fprintf(stderr, "Erreur d'allocation de mémoire\n");
     return false;
   }
 
-  uint ni, nj;
+  uint ni, nj;  // store the adjacent square indexes in these variables
+
+  // chacking with 4 directions (Should be true in all cases)
 
   if (!game_get_adjacent_square(g, 0, 0, LEFT, &ni, &nj) || ni != 0 || nj != nb_cols - 1) {
     game_delete(g);
