@@ -237,16 +237,20 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
 
 /* *********************************************************** */
 
+//checks if the square i,j has a neighbor with the value s
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag)
 {
   assert(g != NULL);
   assert(i < g->height);
   assert(j < g->width);
 
+  //we put all the possible directions in an array
   direction dirs[8] = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
 
+  //if diag is true, then we have 8 directions, if not, we only use the 4 main directions
   uint n_dirs = diag ? 8 : 4;
 
+  //we check every direction if there is a neighbor s
   for (uint k = 0; k < n_dirs; k++) {
     uint ni, nj;
     if (game_get_adjacent_square(g, i, j, dirs[k], &ni, &nj)) {
