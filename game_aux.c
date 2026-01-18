@@ -8,7 +8,7 @@
 #include "game.h"
 #include "game_struct.h"
 
-//this function prints the game
+// this function prints the game
 void game_print(cgame g)
 {
   if (!g) return;
@@ -16,31 +16,30 @@ void game_print(cgame g)
   uint width = g->width;
   uint height = g->height;
 
-  //this loop helps us print the column indices
+  // this loop helps us print the column indices
   printf("   ");
   for (uint j = 0; j < width; j++) {
     printf("%u", j);
   }
   printf("\n");
 
-  //this loop helps us print the top horizontal borders "-"
+  // this loop helps us print the top horizontal borders "-"
   printf("   ");
   for (uint j = 0; j < width; j++) {
     printf("-");
   }
   printf("\n");
 
-  //our main loop here will help us print each row 
+  // our main loop here will help us print each row
   for (uint i = 0; i < height; i++) {
-    
-    //we will print row index and separete with "|"(left border)
+    // we will print row index and separete with "|"(left border)
     printf("%u |", i);
 
     for (uint j = 0; j < width; j++) {
       square s = game_get_square(g, i, j);
       char c;
 
-      //we will chose the character according to our square type and print it
+      // we will chose the character according to our square type and print it
       if (s == EMPTY) {
         c = ' ';
       } else if (s == TREE) {
@@ -55,18 +54,18 @@ void game_print(cgame g)
 
       printf("%c", c);
     }
-    //here we will print the right border "|" and then give the expected number of tents of the row
+    // here we will print the right border "|" and then give the expected number of tents of the row
     printf(" | %u\n", game_get_expected_nb_tents_row(g, i));
   }
 
-  //print the bottom borders
+  // print the bottom borders
   printf("   ");
   for (uint j = 0; j < width; j++) {
     printf("-");
   }
   printf("\n");
 
-  //we will get our expected number of tents for each column
+  // we will get our expected number of tents for each column
   printf("   ");
   for (uint j = 0; j < width; j++) {
     printf("%u", game_get_expected_nb_tents_col(g, j));
@@ -76,14 +75,14 @@ void game_print(cgame g)
 
 /* *********************************************************** */
 
-//this function gives us the default game, given in the documentation
+// this function gives us the default game, given in the documentation
 game game_default(void)
 {
   game g = game_new_empty();
 
   if (!g) return NULL;
 
-  //we set the tree squares with the given values(the defaults) under the documentation
+  // we set the tree squares with the given values(the defaults) under the documentation
   game_set_square(g, 0, 0, TREE);
   game_set_square(g, 0, 5, TREE);
   game_set_square(g, 0, 6, TREE);
@@ -102,18 +101,18 @@ game game_default(void)
   game_set_square(g, 7, 5, TREE);
   game_set_square(g, 7, 6, TREE);
 
-  //the array for each expected number of tents for each row
+  // the array for each expected number of tents for each row
   uint row_vals[8] = {1, 2, 1, 2, 2, 0, 1, 3};
 
-  //setting the expected values
+  // setting the expected values
   for (uint i = 0; i < 8; i++) {
     game_set_expected_nb_tents_row(g, i, row_vals[i]);
   }
 
-  //the array for each expected number of tents for each column
+  // the array for each expected number of tents for each column
   uint col_vals[8] = {3, 0, 2, 1, 2, 1, 2, 1};
 
-  //setting the expected values
+  // setting the expected values
   for (uint j = 0; j < 8; j++) {
     game_set_expected_nb_tents_col(g, j, col_vals[j]);
   }
@@ -123,13 +122,13 @@ game game_default(void)
 
 /* *********************************************************** */
 
-//this function gives us the solution to the defaul game
+// this function gives us the solution to the defaul game
 game game_default_solution(void)
 {
   game g = game_default();
   if (!g) return NULL;
 
-  //here we put the tents on the right places to solve the default game
+  // here we put the tents on the right places to solve the default game
   game_set_square(g, 0, 4, TENT);
 
   game_set_square(g, 1, 0, TENT);
@@ -149,7 +148,7 @@ game game_default_solution(void)
   game_set_square(g, 7, 3, TENT);
   game_set_square(g, 7, 7, TENT);
 
-  //puts grass to empty sqaures
+  // puts grass to empty sqaures
   game_fill_grass(g);
 
   return g;
@@ -165,10 +164,10 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
   assert(pi_next != NULL);
   assert(pj_next != NULL);
 
-  //these variables help us store the difference of coordinates of our square and the adjacent square
+  // these variables help us store the difference of coordinates of our square and the adjacent square
   int di = 0, dj = 0;
 
-  //here, we set di and dj depending on the square we want to get
+  // here, we set di and dj depending on the square we want to get
   switch (d) {
     case HERE:
       di = 0;
@@ -210,15 +209,15 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
       return false;
   }
 
-  //we get the sum of our old coordinates and the changes, then apply it to our new variables
+  // we get the sum of our old coordinates and the changes, then apply it to our new variables
   int ni = (int)i + di;
   int nj = (int)j + dj;
 
   int h = (int)g->height;
   int w = (int)g->width;
 
-  //if we surpass the grid, we return to the other side if the wrapping is enabled
-  //if there isnt, we just return false
+  // if we surpass the grid, we return to the other side if the wrapping is enabled
+  // if there isnt, we just return false
   if (g->wrapping) {
     ni = ((ni % h) + h) % h;
     nj = ((nj % w) + w) % w;
@@ -228,7 +227,7 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
     }
   }
 
-  //we put the coordinates of the adjacent square to the output pointers
+  // we put the coordinates of the adjacent square to the output pointers
   *pi_next = (uint)ni;
   *pj_next = (uint)nj;
 
@@ -237,20 +236,20 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
 
 /* *********************************************************** */
 
-//checks if the square i,j has a neighbor with the value s
+// checks if the square i,j has a neighbor with the value s
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag)
 {
   assert(g != NULL);
   assert(i < g->height);
   assert(j < g->width);
 
-  //we put all the possible directions in an array
+  // we put all the possible directions in an array
   direction dirs[8] = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
 
-  //if diag is true, then we have 8 directions, if not, we only use the 4 main directions
+  // if diag is true, then we have 8 directions, if not, we only use the 4 main directions
   uint n_dirs = diag ? 8 : 4;
 
-  //we check every direction if there is a neighbor s
+  // we check every direction if there is a neighbor s
   for (uint k = 0; k < n_dirs; k++) {
     uint ni, nj;
     if (game_get_adjacent_square(g, i, j, dirs[k], &ni, &nj)) {
@@ -263,25 +262,24 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag)
 
 /* *********************************************************** */
 
-//this function gives us number of neighbors with the value s of a square i,j 
+// this function gives us number of neighbors with the value s of a square i,j
 uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag)
 {
   assert(g != NULL);
   assert(i < g->height);
   assert(j < g->width);
 
-  //this is the varible where we store the number of neighbors
+  // this is the varible where we store the number of neighbors
   uint res = 0;
 
   direction dirs[8] = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
   uint n_dirs = diag ? 8 : 4;
 
-  //we create an array to keep track on which neighbors have been already checcked
-  //we initialize to -1 for now(means not visited)
+  // we create an array to keep track on which neighbors have been already checcked
+  // we initialize to -1 for now(means not visited)
   int visited[8];
   for (int k = 0; k < 8; k++) visited[k] = -1;
   int visited_count = 0;
-
 
   for (uint k = 0; k < n_dirs; k++) {
     uint ni, nj;

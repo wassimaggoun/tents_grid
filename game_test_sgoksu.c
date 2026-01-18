@@ -17,8 +17,8 @@ int test_dummy(void) { return EXIT_SUCCESS; }
   return test1 && test2;
 }*/
 
-//for the first 4 test functions, we set a expected number of tents for a specific row/column 
-//then we check with the get function if it works, we also try a false case with "!="
+// for the first 4 test functions, we set a expected number of tents for a specific row/column
+// then we check with the get function if it works, we also try a false case with "!="
 
 bool test_set_expected_nb_tents_row(void)
 {
@@ -80,7 +80,7 @@ bool test_get_expected_nb_tents_col(void)
   return test1 && test1_1 && test2;
 }
 
-//this function tests whether or not we get the right amount of tents for the entire grid
+// this function tests whether or not we get the right amount of tents for the entire grid
 bool test_get_expected_nb_tents_all(void)
 {
   game g = game_default();
@@ -89,14 +89,14 @@ bool test_get_expected_nb_tents_all(void)
   game_set_expected_nb_tents_row(g, 1, 1);
   game_set_expected_nb_tents_row(g, 2, 1);
 
-  //we should have 3 expected tents in the whole game
+  // we should have 3 expected tents in the whole game
   bool test1 = (game_get_expected_nb_tents_all(g) == 3);
 
   game_set_expected_nb_tents_col(g, 0, 1);
   game_set_expected_nb_tents_col(g, 1, 1);
   game_set_expected_nb_tents_col(g, 2, 1);
 
-  //it should remain three expected tents, not 6
+  // it should remain three expected tents, not 6
   bool test2 = (game_get_expected_nb_tents_all(g) == 3);
   bool test2_1 = (game_get_expected_nb_tents_all(g)) != 6;
 
