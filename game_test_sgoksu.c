@@ -17,6 +17,9 @@ int test_dummy(void) { return EXIT_SUCCESS; }
   return test1 && test2;
 }*/
 
+//for the first 4 test functions, we set a expected number of tents for a specific row/column 
+//then we check with the get function if it works, we also try a false case with "!="
+
 bool test_set_expected_nb_tents_row(void)
 {
   game g = game_default();
