@@ -7,6 +7,8 @@
 #include "game_ext.h"
 #include "game_struct.h"
 
+// This program runs the game in text mode, using the provided manual and commands
+
 int main(void)
 {
   game g = game_default();

@@ -41,7 +41,7 @@ bool test_play_move()
 {
   // Crée un jeu vide
   game g = game_new_empty();
-  
+
   // Pose une tente et vérifie si elle est bien là
   game_play_move(g, 0, 0, TENT);
   bool t1 = (game_get_square(g, 0, 0) == TENT);
@@ -156,7 +156,7 @@ bool test_fill_grass()
   for (unsigned int i = 0; i < DEFAULT_SIZE; i++) {
     for (unsigned int j = 0; j < DEFAULT_SIZE; j++) {
       if (i == 0 && (j == 0 || j == 1 || j == 2)) {
-        continue; // On saute nos cases manuelles
+        continue;  // On saute nos cases manuelles
       }
       if (game_get_square(g, i, j) != GRASS) {
         t4 = false;
@@ -207,7 +207,7 @@ bool test_print(void)
 {
   // Charge le jeu
   game g1 = game_default();
-  
+
   // Affiche le jeu dans la console (pour vérifier visuellement)
   game_print(g1);
 

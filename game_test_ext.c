@@ -11,6 +11,7 @@
 
 bool test_game_new_empty_ext(void)
 {
+  // We create two games, with and without wrapping
   game g = game_new_empty_ext(9, 8, false);
   game g1 = game_new_empty_ext(9, 8, true);
   if (g == NULL || g1 == NULL) {
@@ -25,7 +26,7 @@ bool test_game_new_empty_ext(void)
         return false;
       }
     }
-    // Verification du nombre de colonnes en dehors de la boucle
+    // We check the number of columns outside the loop
     if (game_get_expected_nb_tents_row(g, i) != 0 || game_get_expected_nb_tents_row(g1, i) != 0) {
       fprintf(stderr, "Error\n");
       game_delete(g);
@@ -34,6 +35,7 @@ bool test_game_new_empty_ext(void)
     }
   }
 
+  // checking the number of columns
   for (uint j = 0; j < 8; j++) {
     if (game_get_expected_nb_tents_col(g, j) != 0 || game_get_expected_nb_tents_col(g1, j) != 0) {
       fprintf(stderr, "Error\n");
@@ -43,6 +45,7 @@ bool test_game_new_empty_ext(void)
     }
   }
 
+  // We check the wrapping option
   if (game_is_wrapping(g) != false || game_is_wrapping(g1) != true) {
     game_delete(g);
     game_delete(g1);
@@ -56,6 +59,7 @@ bool test_game_new_empty_ext(void)
 
 bool test_game_new_ext(void)
 {
+  // We run the same test as the V1, and we check the wrapping option
   uint nb_rows = 9;
   uint nb_cols = 8;
   square squares[nb_rows * nb_cols];
@@ -121,6 +125,7 @@ bool test_game_new_ext(void)
 
 bool test_game_nb_rows(void)
 {
+  // checking the function with and without wrapping
   game g1 = game_new_empty_ext(9, 8, false);
   bool test1 = (g1 != NULL) && (game_nb_rows(g1) == 9);
   game_delete(g1);
@@ -134,6 +139,7 @@ bool test_game_nb_rows(void)
 
 bool test_game_nb_cols(void)
 {
+  // checking the function with and without wrapping
   game g1 = game_new_empty_ext(9, 8, false);
   bool test1 = (g1 != NULL) && (game_nb_cols(g1) == 8);
   game_delete(g1);
@@ -154,10 +160,10 @@ bool test_game_undo(void)
     game_play_move(g, 0, 0, TENT);
     square s1 = game_get_square(g, 0, 0);
 
-    game_undo(g);
+    game_undo(g);  // s2 should become EMPTY again
     square s2 = game_get_square(g, 0, 0);
 
-    test1 = (s1 == TENT) && (s2 == EMPTY);
+    test1 = (s1 == TENT) && (s2 == EMPTY);  // first move was placing a TENT and then undo
   }
 
   game_delete(g);
@@ -169,6 +175,7 @@ bool test_game_redo(void)
   game g = game_new_empty_ext(9, 8, false);
   bool test1 = false;
 
+  // we place a TENT, and we undo the move , then we redo (should be TENT again)
   if (g != NULL) {
     game_play_move(g, 0, 0, TENT);
     square s1 = game_get_square(g, 0, 0);
