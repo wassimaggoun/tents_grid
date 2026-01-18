@@ -165,8 +165,10 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
   assert(pi_next != NULL);
   assert(pj_next != NULL);
 
+  //these variables help us store the difference of coordinates of our square and the adjacent square
   int di = 0, dj = 0;
 
+  //here, we set di and dj depending on the square we want to get
   switch (d) {
     case HERE:
       di = 0;
@@ -208,12 +210,15 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
       return false;
   }
 
+  //we get the sum of our old coordinates and the changes, then apply it to our new variables
   int ni = (int)i + di;
   int nj = (int)j + dj;
 
   int h = (int)g->height;
   int w = (int)g->width;
 
+  //if we surpass the grid, we return to the other side if the wrapping is enabled
+  //if there isnt, we just return false
   if (g->wrapping) {
     ni = ((ni % h) + h) % h;
     nj = ((nj % w) + w) % w;
@@ -223,6 +228,7 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
     }
   }
 
+  //we put the coordinates of the adjacent square to the output pointers
   *pi_next = (uint)ni;
   *pj_next = (uint)nj;
 
