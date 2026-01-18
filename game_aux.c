@@ -76,12 +76,14 @@ void game_print(cgame g)
 
 /* *********************************************************** */
 
+//this function gives us the default game, given in the documentation
 game game_default(void)
 {
   game g = game_new_empty();
 
   if (!g) return NULL;
 
+  //we set the tree squares with the given values(the defaults) under the documentation
   game_set_square(g, 0, 0, TREE);
   game_set_square(g, 0, 5, TREE);
   game_set_square(g, 0, 6, TREE);
@@ -100,12 +102,18 @@ game game_default(void)
   game_set_square(g, 7, 5, TREE);
   game_set_square(g, 7, 6, TREE);
 
+  //the array for each expected number of tents for each row
   uint row_vals[8] = {1, 2, 1, 2, 2, 0, 1, 3};
+
+  //setting the expected values
   for (uint i = 0; i < 8; i++) {
     game_set_expected_nb_tents_row(g, i, row_vals[i]);
   }
 
+  //the array for each expected number of tents for each column
   uint col_vals[8] = {3, 0, 2, 1, 2, 1, 2, 1};
+
+  //setting the expected values
   for (uint j = 0; j < 8; j++) {
     game_set_expected_nb_tents_col(g, j, col_vals[j]);
   }
