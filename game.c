@@ -389,7 +389,7 @@ bool game_won(cgame g)
   if (!g) return false;
 
   uint total_tents = 0;
-  uint required_tents = 0; //1 tent required for TREE and 2 tents for BIGTREE
+  uint required_tents = 0; //at least 1 tent required for TREE and 2 tents for BIGTREE (nb_tress + 2*nb_bigtrees)
 
   // RULE 2: chekcing if nb_tents = expected_nb_tents in each row/colomn 
   for (uint i = 0; i < game_nb_rows(g); i++)
@@ -415,7 +415,7 @@ bool game_won(cgame g)
       }
 
       if (s == TREE) {
-        required_tents++; //1 tent for TREE
+        required_tents++; //at least 1 tent for TREE
 
         if (!game_is_neigh(g, i, j, TENT, false)) return false;
       }

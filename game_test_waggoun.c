@@ -11,14 +11,15 @@
 #define SIZE DEFAULT_SIZE
 
 int test_dummy(void) { return EXIT_SUCCESS; }
-
+/* *********************************************************** */
+//tester for game_new_empty
 bool test_game_new_empty(void)
-{
+{ 
   game g = game_new_empty();
   if (g == NULL) {
     return false;
   }
-  for (uint i = 0; i < SIZE; i++) {
+  for (uint i = 0; i < SIZE; i++) { //checking if all squares are empty
     for (uint j = 0; j < SIZE; j++) {
       if (game_get_square(g, i, j) != EMPTY) {
         fprintf(stderr, "Error\n");
@@ -26,6 +27,7 @@ bool test_game_new_empty(void)
         return false;
       }
     }
+    //checking if the expected nb of tents for each row/col is set to zero
     if (game_get_expected_nb_tents_row(g, i) != 0 || game_get_expected_nb_tents_col(g, i) != 0) {
       fprintf(stderr, "Error\n");
       game_delete(g);
@@ -35,7 +37,8 @@ bool test_game_new_empty(void)
   game_delete(g);
   return true;
 }
-
+/* *********************************************************** */
+//tester for game_delete
 bool test_game_delete(void)
 {
   game g = game_new_empty();
@@ -47,6 +50,7 @@ bool test_game_delete(void)
   game_delete(g);
   return true;
 }
+/* *********************************************************** */
 
 bool test_game_set_square(void)
 {
@@ -56,6 +60,7 @@ bool test_game_set_square(void)
     return false;
   }
 
+  //we set squares with all possible values in random spots and check if there are unexcpected behavior
   game_set_square(g, 0, 0, TREE);
   if (game_get_square(g, 0, 0) != TREE) {
     fprintf(stderr, "Error\n");
@@ -91,6 +96,7 @@ bool test_game_set_square(void)
     return false;
   }
 
+  //trying the corner
   game_set_square(g, game_nb_rows(g) - 1, game_nb_cols(g) - 1, TREE);
   if (game_get_square(g, SIZE - 1, SIZE - 1) != TREE) {
     fprintf(stderr, "Error\n");
@@ -107,7 +113,8 @@ bool test_game_set_square(void)
   game_delete(g);
   return true;
 }
-
+/* *********************************************************** */
+//tester for game_new
 bool test_game_new(void)
 {
   square squares[SIZE * SIZE];
@@ -117,10 +124,10 @@ bool test_game_new(void)
     squares[i] = EMPTY;
   }
 
-  squares[0] = TREE;                  // coin en haut a gauche
-  squares[1] = TENT;                  // prochaine colonne
-  squares[SIZE + 2] = GRASS;          // prochaine ligne
-  squares[(SIZE * SIZE - 1)] = TREE;  // coin en bas a droite
+  squares[0] = TREE;                  // top left corner
+  squares[1] = TENT;                  // next col
+  squares[SIZE + 2] = GRASS;          // next row
+  squares[(SIZE * SIZE - 1)] = TREE;  // bottom right corner
 
   for (uint i = 0; i < SIZE; i++) {
     tents_row[i] = i % 2;        // 0,1,0,1,...
@@ -133,9 +140,10 @@ bool test_game_new(void)
     return false;
   }
 
+  //verifying the value of each square in the grid
   for (uint i = 0; i < SIZE; i++) {
     for (uint j = 0; j < SIZE; j++) {
-      square expected = squares[i * SIZE + j];  // position dans le tableau en 1 dimension
+      square expected = squares[i * SIZE + j];  // getting the index in 1D array version
       if (game_get_square(g, i, j) != expected) {
         fprintf(stderr, "Erreur\n");
         game_delete(g);
@@ -143,6 +151,8 @@ bool test_game_new(void)
       }
     }
   }
+
+  //verifying the expected nb_tents in each row/col
 
   for (uint i = 0; i < SIZE; i++) {
     if (game_get_expected_nb_tents_row(g, i) != tents_row[i]) {
@@ -160,6 +170,7 @@ bool test_game_new(void)
   game_delete(g);
   return true;
 }
+/* *********************************************************** */
 
 bool test_game_copy(void)
 {
@@ -170,10 +181,12 @@ bool test_game_copy(void)
   uint tents_row[nb_rows];
   uint tents_col[nb_cols];
 
-  // on remplit le tableau squres
+  // filling the array squares
   for (uint i = 0; i < nb_rows * nb_cols; i++) {
-    squares[i] = (i % 4 == 0) ? TREE : EMPTY;
+    squares[i] = (i % 4 == 0) ? TREE : EMPTY; //placing trees in squares with index that is a multiple of 4 (arbitrary choice)
   }
+
+  //setting random values  to check if they are correctly copied
 
   squares[0] = TREE;
   squares[1] = BIGTREE;
@@ -195,6 +208,8 @@ bool test_game_copy(void)
     game_delete(g1);
     return false;
   }
+
+  //checking equality for all structure fields including arrays (no undo/redo)
 
   if (game_nb_rows(g1) != game_nb_rows(g2) || game_nb_cols(g1) != game_nb_cols(g2)) {
     game_delete(g1);
@@ -244,10 +259,11 @@ bool test_game_copy(void)
   game_delete(g2);
   return true;
 }
-
+/* *********************************************************** */
+//test for game_won
 bool test_game_won(void)
 {
-  // cas gagnant
+  // Testing valid case
   game g = game_new_empty();
   game_set_expected_nb_tents_row(g, 1, 1);
   game_set_expected_nb_tents_col(g, 0, 1);
@@ -261,7 +277,7 @@ bool test_game_won(void)
   }
   game_delete(g);
 
-  // verification regle 1
+  // Testing RULE 1
   g = game_new_empty();
   game_set_expected_nb_tents_row(g, 1, 1);
   game_set_expected_nb_tents_col(g, 0, 1);
@@ -280,10 +296,10 @@ bool test_game_won(void)
   }
   game_delete(g);
 
-  // regle 2
+  // TESTING RULE 2
   g = game_new_empty();
-  game_set_expected_nb_tents_row(g, 0, 1);  // on placera 2 tentes sur cette ligne
-  game_set_expected_nb_tents_col(g, 0, 1);  // le reste sera correct
+  game_set_expected_nb_tents_row(g, 0, 1);  // We will place 2 tents in this row 
+  game_set_expected_nb_tents_col(g, 0, 1);  // The rest will be placed correctly 
 
   game_set_expected_nb_tents_col(g, 1, 1);
   game_set_expected_nb_tents_col(g, 4, 1);
@@ -298,22 +314,22 @@ bool test_game_won(void)
   game_set_square(g, 2, 0, TREE);
   game_play_move(g, 3, 0, TENT);
 
-  if (game_won(g)) {
+  if (game_won(g)) { //should be false
     fprintf(stderr, "Erreur (regle2)\n");
     game_delete(g);
     return false;
   }
   game_delete(g);
 
-  // regle 3
+  // TESTING RULE 3
   g = game_new_empty();
   game_set_expected_nb_tents_row(g, 0, 1);
   game_set_expected_nb_tents_col(g, 1, 0);
 
-  game_set_square(g, 0, 0, TREE);  // plus d'arbres que de tentes
+  game_set_square(g, 0, 0, TREE);  // We place more trees than tents 
   game_set_square(g, 3, 2, TREE);
   game_play_move(g, 0, 1, TENT);
-  if (game_won(g)) {
+  if (game_won(g)) { //should be false
     fprintf(stderr, "Erreur (regle3)\n");
     game_delete(g);
     return false;
@@ -323,21 +339,21 @@ bool test_game_won(void)
   game_set_expected_nb_tents_col(g, 5, 1);
 
   game_play_move(g, 3, 3, TENT);
-  game_play_move(g, 3, 5, TENT);  // plus de tentes que d'arbres (on modifie le meme jeu)
-  if (game_won(g)) {
+  game_play_move(g, 3, 5, TENT);  // more tents than trees (using the same game)
+  if (game_won(g)) { //should be false
     fprintf(stderr, "Erreur (regle3)\n");
     game_delete(g);
     return false;
   }
   game_delete(g);
 
-  // regle4
+  // TESTING RULE 4
   g = game_new_empty();
   game_set_expected_nb_tents_row(g, 0, 1);
   game_set_expected_nb_tents_col(g, 2, 1);
   game_set_square(g, 0, 0, TREE);
-  game_play_move(g, 0, 2, TENT);
-  if (game_won(g)) {
+  game_play_move(g, 0, 2, TENT); //We plpace a tent that is not orthogonally adjacent to any tree 
+  if (game_won(g)) { // should be false
     fprintf(stderr, "Erreur  (regle 4).\n");
     game_delete(g);
     return false;
@@ -346,10 +362,11 @@ bool test_game_won(void)
 
   return true;
 }
-
+/* *********************************************************** */
+//test for game_won (V2 version)
 bool test_game_won_wrap_bigtree()
 {
-  // cas bigtree
+  // case 1 : BIGTREE
   game g = game_new_empty();
   game_set_expected_nb_tents_row(g, 0, 1);
   game_set_expected_nb_tents_row(g, 2, 1);
@@ -413,6 +430,7 @@ bool test_game_won_wrap_bigtree()
   game_delete(g);
   return true;
 }
+/* *********************************************************** */
 
 bool test_game_equal(void)
 {
@@ -448,6 +466,7 @@ bool test_game_equal(void)
   game_delete(g2);
   return true;
 }
+/* *********************************************************** */
 
 bool test_game_restart(void)
 {
@@ -484,6 +503,7 @@ bool test_game_restart(void)
   game_delete(g);
   return true;
 }
+/* *********************************************************** */
 
 bool test_game_get_adjacent_square(void)
 {
@@ -522,6 +542,7 @@ bool test_game_get_adjacent_square(void)
   game_delete(g);
   return true;
 }
+/* *********************************************************** */
 
 bool test_game_get_adjacent_square_wrap(void)
 {
@@ -559,6 +580,7 @@ bool test_game_get_adjacent_square_wrap(void)
   game_delete(g);
   return true;
 }
+/* *********************************************************** */
 
 int main(int argc, char* argv[])
 {
