@@ -263,19 +263,25 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag)
 
 /* *********************************************************** */
 
+//this function gives us number of neighbors with the value s of a square i,j 
 uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag)
 {
   assert(g != NULL);
   assert(i < g->height);
   assert(j < g->width);
 
+  //this is the varible where we store the number of neighbors
   uint res = 0;
+
   direction dirs[8] = {UP, DOWN, LEFT, RIGHT, UP_LEFT, UP_RIGHT, DOWN_LEFT, DOWN_RIGHT};
   uint n_dirs = diag ? 8 : 4;
 
+  //we create an array to keep track on which neighbors have been already checcked
+  //we initialize to -1 for now(means not visited)
   int visited[8];
   for (int k = 0; k < 8; k++) visited[k] = -1;
   int visited_count = 0;
+
 
   for (uint k = 0; k < n_dirs; k++) {
     uint ni, nj;
