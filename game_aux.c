@@ -123,11 +123,13 @@ game game_default(void)
 
 /* *********************************************************** */
 
+//this function gives us the solution to the defaul game
 game game_default_solution(void)
 {
   game g = game_default();
   if (!g) return NULL;
 
+  //here we put the tents on the right places to solve the default game
   game_set_square(g, 0, 4, TENT);
 
   game_set_square(g, 1, 0, TENT);
@@ -147,6 +149,7 @@ game game_default_solution(void)
   game_set_square(g, 7, 3, TENT);
   game_set_square(g, 7, 7, TENT);
 
+  //puts grass to empty sqaures
   game_fill_grass(g);
 
   return g;
