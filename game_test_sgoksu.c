@@ -149,9 +149,13 @@ bool test_game_is_neigh(void)
 {
   game g = game_new_empty();
 
+  //we play a tent on the square 1,2
   game_play_move(g, 1, 2, TENT);
 
+  //so here we check with a square 0,1 
   bool test1_true = game_is_neigh(g, 0, 1, TENT, true);
+
+  //if diag is false, they are not considered as neihgbors
   bool test1_false = !game_is_neigh(g, 0, 1, TENT, false);
 
   game_delete(g);
