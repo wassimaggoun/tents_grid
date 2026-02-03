@@ -56,7 +56,7 @@ void game_save(cgame g, char* filename)
 
       fprintf(f,"%c ",c);
     }
-    fprintf(f,"%c",c);
+    fprintf(f,"\n",c);
    }  
 }
 
