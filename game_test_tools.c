@@ -16,4 +16,7 @@ bool test_game_load(void)
   if (!g) return NULL;
   game g1 = game_default();
   bool test1 = game_equal(g, g1);
+  game g2 = game_new_empty_ext(9, 8, true);
+  bool test2 = !game_equal(g, g2);
+  return test1 && test2;
 }
