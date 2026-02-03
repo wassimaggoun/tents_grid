@@ -10,4 +10,10 @@
 #include "game_struct.h"
 #include "game_tools.h"
 
-bool test_game_load(void) { game g = game_load("gameload.txt"); }
+bool test_game_load(void)
+{
+  game g = game_load("gameload.txt");
+  if (!g) return NULL;
+  game g1 = game_default();
+  bool test1 = game_equal(g, g1);
+}
