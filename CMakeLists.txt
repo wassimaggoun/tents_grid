@@ -62,8 +62,8 @@ add_test(test_game_new_empty_ext ./game_test_ext game_new_empty_ext)
 add_test(test_game_new_ext ./game_test_ext game_new_ext)
 add_test(test_game_is_wrapping ./game_test_ext game_is_wrapping)
 
-
-
+add_executable(game_test_tools game_test_tools.c)
+add_test(test_game_load ./game_test_tools game_load)
 
 
 
