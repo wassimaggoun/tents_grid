@@ -20,3 +20,19 @@ bool test_game_load(void)
   bool test2 = !game_equal(g, g2);
   return test1 && test2;
 }
+
+
+
+int main(int argc, char* argv[])
+{
+  if (argc < 2) {
+    fprintf(stderr, "Erreur\n");
+    return EXIT_FAILURE;
+  }
+
+  if (strcmp(argv[1], "game_load") == 0) return test_game_load() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_save") == 0) return test_game_save() ? EXIT_SUCCESS : EXIT_FAILURE;
+
+  fprintf(stderr, "Erreur\n");
+  return EXIT_FAILURE;
+}
