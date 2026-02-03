@@ -1,7 +1,7 @@
 #include "game_tools.h"
 #include "game.h"
 #include "game_aux.h"
-
+#include "game_ext.h"
 #include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -52,12 +52,40 @@ game game_load(char* filename){
             free(squares);
             fclose(f);
             return NULL;
+        
     }
+    char c;
     for (int i =0; i<nb_rows;i++ ){
         for(int j =0 ; j<nb_cols; j++ ){
+            if (fscanf(f," %c",&c)){
+                free(nb_tents_rows);
+                free(nb_tents_cols);
+                free(squares);
+                fclose(f);
+                return NULL;
+            }
+            square s = EMPTY;
+            switch (c)
+            {
+            case 'E' : s = EMPTY; break;
+            case 'X' : s = TREE; break;
+            case 'T' : s = TENT; break;
+            case 'G' : s = GRASS; break;
+            case 'B' : s = BIGTREE; break;
+            default:
+                free(nb_tents_rows);
+                free(nb_tents_cols);
+                free(squares);
+                fclose(f);
+                return NULL;
+                
+            }
+            squares[i*nb_cols+j]=s; 
+
             
         }
     }
+    game g = game_new_ext()
 
 
 
