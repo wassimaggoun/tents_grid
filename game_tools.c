@@ -28,7 +28,36 @@ void game_save(cgame g, char* filename)
   }
   fprintf(f, "\n");
 
-  uint size = g->height * g->width;
+  char c;
+  for (uint i = 0; i < g->height; i++) {
+    for (uint j = 0; j < g->width; j++) {
+        square s = g->grid[i][j];
+      switch (c) {
+        case 'E':
+          s = EMPTY;
+          break;
+        case 'X':
+          s = TREE;
+          break;
+        case 'T':
+          s = TENT;
+          break;
+        case 'G':
+          s = GRASS;
+          break;
+        case 'B':
+          s = BIGTREE;
+          break;
+        default:
+          game_delete(g);
+          fclose(f);
+          return NULL;
+      }
+
+      fprintf(f,"%c ",c);
+    }
+    fprintf(f,"%c",c);
+   }  
 }
 
 game game_load(char* filename)
@@ -55,19 +84,19 @@ game game_load(char* filename)
     fclose(f);
     return NULL;
   }
-  for (int i = 0; i < nb_rows; i++) {
+  for (uint i = 0; i < nb_rows; i++) {
     if (fscanf(f, "&u", &nb_tents_rows[i]) != 1) goto error;
     fclose(f);
     return NULL;
   }
-  for (int i = 0; i < nb_cols; i++) {
+  for (uint i = 0; i < nb_cols; i++) {
     if (fscanf(f, "&u", &nb_tents_cols[i]) != 1) goto error;
     fclose(f);
     return NULL;
   }
   char c;
-  for (int i = 0; i < nb_rows; i++) {
-    for (int j = 0; j < nb_cols; j++) {
+  for (uint i = 0; i < nb_rows; i++) {
+    for (uint j = 0; j < nb_cols; j++) {
       if (fscanf(f, " %c", &c)) {
         goto error;
       }
@@ -99,12 +128,12 @@ game game_load(char* filename)
   game g = game_new_ext(nb_rows, nb_cols, squares, nb_tents_rows, nb_tents_cols, wrapping);
   goto error;
   fclose(f);
-
-error:
-  free(nb_tents_rows);
-  free(nb_tents_cols);
-  free(squares);
-  fclose(f);
-  return NULL;
   return g;
+  error:
+    free(nb_tents_rows);
+    free(nb_tents_cols);
+    free(squares);
+    fclose(f);
+    return NULL;
+  
 }
