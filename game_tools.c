@@ -11,55 +11,63 @@
 #include "game_ext.h"
 #include "game_struct.h"
 
+// Saves a game given as an argument in the file "filename" according to the provided format
 void game_save(cgame g, char* filename)
 {
+  assert(g);
+  assert(filename);
+
+  uint height = game_nb_rows(g);
+  uint width = game_nb_cols(g);
+
   FILE* f = fopen(filename, "w");  // Opening the file in writing mode
-  fprintf(f, "%d %d %d \n", g->height, g->width, g->wrapping);
+  if (!f) return;
+
+  fprintf(f, "%u %u %d \n", height, width, game_is_wrapping(g));
   // Writing the expected number of tents in each row.
-  for (uint i = 0; i < g->height; i++) {
-    uint x = g->expected_nb_tents_row[i];
-    fprintf(f, "%d ", x);
+  for (uint i = 0; i < height; i++) {
+    uint x = game_get_current_nb_tents_row(g, i);
+    fprintf(f, "%u ", x);
   }
   fprintf(f, "\n");
   // Writing the expected number of tents in each column.
   for (uint j = 0; j < g->width; j++) {
-    uint y = g->expected_nb_tents_row[j];
-    fprintf(f, "%d ", y);
+    uint y = game_get_expected_nb_tents_col(g, j);
+    fprintf(f, "%u ", y);
   }
   fprintf(f, "\n");
 
-  char c;
-  for (uint i = 0; i < g->height; i++) {
-    for (uint j = 0; j < g->width; j++) {
-        square s = g->grid[i][j];
-      switch (c) {
-        case 'E':
-          s = EMPTY;
+  char c = 'E';
+  for (uint i = 0; i < game_nb_rows(g); i++) {
+    for (uint j = 0; j < game_nb_cols(g); j++) {
+      square s = game_get_square(g, i, j);
+      switch (s) {
+        case EMPTY:
+          c = 'E';
           break;
-        case 'X':
-          s = TREE;
+        case TREE:
+          c = 'X';
           break;
-        case 'T':
-          s = TENT;
+        case TENT:
+          c = 'T';
           break;
-        case 'G':
-          s = GRASS;
+        case GRASS:
+          c = 'G';
           break;
-        case 'B':
-          s = BIGTREE;
+        case BIGTREE:
+          c = 'B';
           break;
         default:
-          game_delete(g);
-          fclose(f);
-          return NULL;
+          break;
       }
-
-      fprintf(f,"%c ",c);
+      fprintf(f, "%c ", c);
     }
-    fprintf(f,"\n",c);
-   }  
+    fprintf(f, "\n", c);
+  }
+  fclose(f);
 }
 
+//________________________________________________________________________________________________
 game game_load(char* filename)
 {
   FILE* f = fopen(filename, "r");
@@ -129,11 +137,10 @@ game game_load(char* filename)
   goto error;
   fclose(f);
   return g;
-  error:
-    free(nb_tents_rows);
-    free(nb_tents_cols);
-    free(squares);
-    fclose(f);
-    return NULL;
-  
+error:
+  free(nb_tents_rows);
+  free(nb_tents_cols);
+  free(squares);
+  fclose(f);
+  return;
 }

@@ -12,39 +12,38 @@
 
 bool test_game_load(void)
 {
-  FILE* f= fopen("./file/gameload.txt","r");
-  if(f==NULL){
+  FILE* f = fopen("./file/gameload.txt", "r");
+  if (f == NULL) {
     exit(EXIT_FAILURE);
   }
   fclose(f);
   game g = game_load("./file/gameload.txt");
-  assert(g!=NULL);
+  assert(g != NULL);
   game g1 = game_default();
   bool test1 = game_equal(g, g1);
   game g2 = game_new_empty_ext(9, 8, true);
   bool test2 = !game_equal(g, g2);
   game_delete(g);
   game_delete(g1);
-  gale_gelete(g2);
+  game_delete(g2);
   return test1 && test2;
 }
 
-bool test_game_save(void){
-  FILE* f= fopen("./file/gameload.txt","r");
-  if(f==NULL){
+bool test_game_save(void)
+{
+  FILE* f = fopen("./file/gameload.txt", "r");
+  if (f == NULL) {
     exit(EXIT_FAILURE);
   }
   fclose(f);
-  game g=game_default();
-  game_save(g,"./file/gameload.txt");
-  game g1=game_load("./file/gameload.txt");
-  bool test=game_equal(g,g1);
+  game g = game_default();
+  game_save(g, "./file/gameload.txt");
+  game g1 = game_load("./file/gameload.txt");
+  bool test = game_equal(g, g1);
   game_delete(g);
   game_delete(g1);
   return test;
 }
-
-
 
 int main(int argc, char* argv[])
 {

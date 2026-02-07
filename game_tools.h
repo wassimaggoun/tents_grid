@@ -49,8 +49,7 @@ void game_save(cgame g, char* filename);
  * only trees are placed
  * @return the generated game
  */
-game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees,
-                 bool solution);
+game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees, bool solution);
 
 /**
  * @}
