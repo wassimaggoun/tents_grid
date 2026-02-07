@@ -13,9 +13,7 @@
 bool test_game_load(void)
 {
   FILE* f= fopen("./file/gameload.txt","r");
-  if(f==NULL){
-    exit(EXIT_FAILURE);
-  }
+  assert(f);
   fclose(f);
   game g = game_load("./file/gameload.txt");
   assert(g!=NULL);
@@ -31,9 +29,7 @@ bool test_game_load(void)
 
 bool test_game_save(void){
   FILE* f= fopen("./file/gameload.txt","r");
-  if(f==NULL){
-    exit(EXIT_FAILURE);
-  }
+  assert(f);
   fclose(f);
   game g=game_default();
   game_save(g,"./file/gameload.txt");
