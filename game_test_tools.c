@@ -29,6 +29,21 @@ bool test_game_load(void)
   return test1 && test2;
 }
 
+bool test_game_save(void){
+  FILE* f= fopen("./file/gameload.txt","r");
+  if(f==NULL){
+    exit(EXIT_FAILURE);
+  }
+  fclose(f);
+  game g=game_default();
+  game_save(g,"./file/gameload.txt");
+  game g1=game_load("./file/gameload.txt");
+  bool test=game_equal(g,g1);
+  game_delete(g);
+  game_delete(g1);
+  return test;
+}
+
 
 
 int main(int argc, char* argv[])
