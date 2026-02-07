@@ -12,17 +12,20 @@
 
 bool test_game_load(void)
 {
-  FILE* f= fopen("gameload.txt","r");
+  FILE* f= fopen("./file/gameload.txt","r");
   if(f==NULL){
     exit(EXIT_FAILURE);
   }
   fclose(f);
-  game g = game_load("gameload.txt");
+  game g = game_load("./file/gameload.txt");
   assert(g!=NULL);
   game g1 = game_default();
   bool test1 = game_equal(g, g1);
   game g2 = game_new_empty_ext(9, 8, true);
   bool test2 = !game_equal(g, g2);
+  game_delete(g);
+  game_delete(g1);
+  gale_gelete(g2);
   return test1 && test2;
 }
 
