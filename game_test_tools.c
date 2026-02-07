@@ -19,20 +19,11 @@ bool test_game_load(void)
   fclose(f);
   game g = game_load("gameload.txt");
   assert(g!=NULL);
-  if(game_nb_rows(g)!=8)return false;
-  if(game_nb_cols(g)!=8)return false;
-  if(game_is_wrapping(g)==true)return false;   
-  if(g->expected_nb_tents_row[0]!=1)return false;
-  if(g->expected_nb_tents_row[5]!=0)return false;
-  if(g->expected_nb_tents_row[7]!=3)return false;
-  if(g->expected_nb_tents_col[0]!=3)return false;
-  if(g->expected_nb_tents_col[5]!=1)return false;
-  if(g->expected_nb_tents_col[7]!=1)return false;
-  if(g->grid[0][0]!=TREE)return false;
-  if(g->grid[0][1]!=EMPTY)return false;
-  if(g->grid[3][0]!=TREE)return false;
-  if(g->grid[0][2]!=EMPTY)return false;
-  return true;
+  game g1 = game_default();
+  bool test1 = game_equal(g, g1);
+  game g2 = game_new_empty_ext(9, 8, true);
+  bool test2 = !game_equal(g, g2);
+  return test1 && test2;
 }
 
 
