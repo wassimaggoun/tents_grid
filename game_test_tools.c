@@ -10,20 +10,18 @@
 #include "game_struct.h"
 #include "game_tools.h"
 
-bool test_game_load(void)
-{
+bool test_game_load(void){
   FILE* f= fopen("./file/gameload.txt","r");
   assert(f);
-  fclose(f);
   game g = game_load("./file/gameload.txt");
-  assert(g!=NULL);
+  assert(g);
   game g1 = game_default();
   bool test1 = game_equal(g, g1);
   game g2 = game_new_empty_ext(9, 8, true);
   bool test2 = !game_equal(g, g2);
   game_delete(g);
   game_delete(g1);
-  gale_gelete(g2);
+  game_delete(g2);
   return test1 && test2;
 }
 
