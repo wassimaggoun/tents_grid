@@ -125,11 +125,13 @@ error:
 /***********************************************************************************************/
 
 game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees, bool solution){
-  uint nb_attempts = 0;
+  
   game g=game_new_empty_ext(nb_rows,nb_cols,wrapping);
+  
   uint placed_trees=0;
   uint placed_bigtrees=0;
   direction dirs[4]={UP,DOWN,LEFT,RIGHT};
+  uint nb_attempts = 0;
 
   while((placed_trees<nb_trees || placed_bigtrees<nb_bigtrees) && nb_attempts < 1000){
     uint i = (((double)rand() * nb_rows) / RAND_MAX);
@@ -169,23 +171,28 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
     //Case 2: placing a BIGTREE
     if(!is_tree){
       uint nb_tents_placed = 0;
-      uint ni_save;
-      uint nj_save;
+
       for(uint k=0;k<4;k++){
-        uint ni,nj;
-        square s=game_get_adjacent_square(g,i,j,dirs[k],&ni,&nj);
-        if(game_check_move(g,ni,nj,s)){
-          game_set_square(g,ni,nj,TENT);
-          nb_tents_placed++;
-          placed_tent = true;
-          ni_save=ni;
-          nj_save=nj;
-        }
+          uint ni,nj;
+          square s = game_get_adjacent_square(g,i,j,dirs[k],&ni,&nj);
+
+          if(game_check_move(g,ni,nj,s)){
+              game_set_square(g,ni,nj,TENT);
+              nb_tents_placed++;
+          }
       }
-      if (nb_tents_placed != 2){
-        if(placed_tent) game_set_square(g,ni_save,nj_save,EMPTY);
-        game_set_square(g,i,j,EMPTY);
-        placed_bigtrees--;
+
+      if(nb_tents_placed != 2){
+          // remove all tents around the bigtree
+          for(uint k=0;k<4;k++){
+              uint ni,nj;
+              game_get_adjacent_square(g,i,j,dirs[k],&ni,&nj);
+              if(game_get_square(g,ni,nj) == TENT)
+                  game_set_square(g,ni,nj,EMPTY);
+          }
+
+          game_set_square(g,i,j,EMPTY);
+          placed_bigtrees--;
       }
     }
     nb_attempts ++;
