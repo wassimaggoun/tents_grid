@@ -11,7 +11,7 @@
 #include "game_tools.h"
 
 bool test_game_load(void) {
-  game g = game_load("./file/gameload.txt");
+  game g = game_load("../file/gameload.txt");
   assert(g);
   game g1 = game_default();
   bool test1 = game_equal(g, g1);
@@ -25,8 +25,8 @@ bool test_game_load(void) {
 
 bool test_game_save(void) {
   game g = game_default();
-  game_save(g, "./file/gamesave.txt");
-  game g1 = game_load("./file/gamesave.txt");
+  game_save(g, "../file/gamesave.txt");
+  game g1 = game_load("../file/gamesave.txt");
   bool test = game_equal(g, g1);
   game_delete(g);
   game_delete(g1);
