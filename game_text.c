@@ -16,15 +16,15 @@ int main(int argc, char* argv[]) {
   if (argc == 2) {
     g = game_load(argv[1]);
     if (!g) {
-        fprintf(stderr, "Error while loading game from %s\n", argv[1]);
-        return EXIT_FAILURE;
+      fprintf(stderr, "Error while loading game from %s\n", argv[1]);
+      return EXIT_FAILURE;
     }
   } else {
-      g = game_default();
-      if (!g) {
-          fprintf(stderr, "Error while generating the default game\n");
-          return EXIT_FAILURE;
-      }
+    g = game_default();
+    if (!g) {
+      fprintf(stderr, "Error while generating the default game\n");
+      return EXIT_FAILURE;
+    }
   }
 
   if (g == NULL) {
@@ -79,14 +79,13 @@ int main(int argc, char* argv[]) {
     } else if (c == 'y') {
       game_redo(g);
     } else if (c == 's') {
-        if (scanf("%255s", buf) == 1) {
-            game_save(g, buf);
-            printf("Game saved in %s\n", buf);
-        } else {
-            printf("Usage : s <filename>\n");
-        }
-    }
-     else {
+      if (scanf("%255s", buf) == 1) {
+        game_save(g, buf);
+        printf("Game saved in %s\n", buf);
+      } else {
+        printf("Usage : s <filename>\n");
+      }
+    } else {
       printf("Commande inconnue : %c\n", c);
     }
   }
