@@ -63,7 +63,9 @@ add_test(test_game_new_ext ./game_test_ext game_new_ext)
 add_test(test_game_is_wrapping ./game_test_ext game_is_wrapping)
 
 add_executable(game_test_tools game_test_tools.c)
+target_link_libraries(game_test_tools game m)
 add_test(test_game_load ./game_test_tools game_load)
+add_test(test_game_save ./game_test_tools game_save)
 
 
 
