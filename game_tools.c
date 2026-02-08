@@ -108,6 +108,9 @@ game game_load(char* filename) {
   }
 
   game g = game_new_ext(nb_rows, nb_cols, squares, nb_tents_rows, nb_tents_cols, wrapping);
+  free(nb_tents_rows);
+  free(nb_tents_cols);
+  free(squares);
   fclose(f);
   return g;
 
