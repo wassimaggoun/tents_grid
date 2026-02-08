@@ -6,11 +6,27 @@
 #include "game_aux.h"
 #include "game_ext.h"
 #include "game_struct.h"
+#include "game_tools.h"
 
 // This program runs the game in text mode, using the provided manual and commands
 
-int main(void) {
-  game g = game_default();
+int main(int argc, char* argv[]) {
+  game g = NULL;
+
+  if (argc == 2) {
+    g = game_load(argv[1]);
+    if (!g) {
+        fprintf(stderr, "Error while loading game from %s\n", argv[1]);
+        return EXIT_FAILURE;
+    }
+  } else {
+      g = game_default();
+      if (!g) {
+          fprintf(stderr, "Error while generating the default game\n");
+          return EXIT_FAILURE;
+      }
+  }
+
   if (g == NULL) {
     fprintf(stderr, "Erreur : échec de la création du jeu.\n");
     return EXIT_FAILURE;
@@ -18,6 +34,7 @@ int main(void) {
 
   char c;
   unsigned int i, j;
+  char buf[256];
 
   while (!game_won(g)) {
     game_print(g);
@@ -35,6 +52,9 @@ int main(void) {
       printf("  r             : réinitialiser le jeu\n");
       printf("  f             : remplir tout d’herbe\n");
       printf("  q             : quitter\n");
+      printf("  z             : undo\n");
+      printf("  y             : redo\n");
+      printf("  s <filename>  : sauvegarder le jeu\n");
     } else if (c == 't' || c == 'g' || c == 'e') {
       if (scanf("%u %u", &i, &j) == 2) {
         if (c == 't') {
@@ -58,7 +78,15 @@ int main(void) {
       game_undo(g);
     } else if (c == 'y') {
       game_redo(g);
-    } else {
+    } else if (c == 's') {
+        if (scanf("%255s", buf) == 1) {
+            game_save(g, buf);
+            printf("Game saved in %s\n", buf);
+        } else {
+            printf("Usage : s <filename>\n");
+        }
+    }
+     else {
       printf("Commande inconnue : %c\n", c);
     }
   }
