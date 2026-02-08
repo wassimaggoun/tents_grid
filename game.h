@@ -254,4 +254,4 @@ void game_fill_grass(game g);
  **/
 void game_restart(game g);
 
-#endif  // __GAME_H__
+#endif // __GAME_H__

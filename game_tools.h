@@ -55,4 +55,4 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
  * @}
  */
 
-#endif  // __GAME_TOOLS_H__
+#endif // __GAME_TOOLS_H__

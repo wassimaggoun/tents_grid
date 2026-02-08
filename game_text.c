@@ -9,8 +9,7 @@
 
 // This program runs the game in text mode, using the provided manual and commands
 
-int main(void)
-{
+int main(void) {
   game g = game_default();
   if (g == NULL) {
     fprintf(stderr, "Erreur : échec de la création du jeu.\n");
@@ -42,7 +41,7 @@ int main(void)
           game_play_move(g, i, j, TENT);
         } else if (c == 'g') {
           game_play_move(g, i, j, GRASS);
-        } else {  // c == 'e'
+        } else { // c == 'e'
           game_play_move(g, i, j, EMPTY);
         }
       }

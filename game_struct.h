@@ -17,8 +17,8 @@ struct game_s {
 
   bool wrapping;
 
-  queue* undo_stack;  // pile des moves joués
-  queue* redo_stack;  // pile des moves annulés
+  queue* undo_stack; // pile des moves joués
+  queue* redo_stack; // pile des moves annulés
 };
 
 typedef struct move_s {

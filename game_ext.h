@@ -90,4 +90,4 @@ void game_redo(game g);
  * @}
  */
 
-#endif  // __GAME_EXT_H__
+#endif // __GAME_EXT_H__

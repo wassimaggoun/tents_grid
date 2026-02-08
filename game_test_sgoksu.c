@@ -20,8 +20,7 @@ int test_dummy(void) { return EXIT_SUCCESS; }
 // for the first 4 test functions, we set a expected number of tents for a specific row/column
 // then we check with the get function if it works, we also try a false case with "!="
 
-bool test_set_expected_nb_tents_row(void)
-{
+bool test_set_expected_nb_tents_row(void) {
   game g = game_default();
 
   game_set_expected_nb_tents_row(g, 0, 3);
@@ -35,8 +34,7 @@ bool test_set_expected_nb_tents_row(void)
   return test1 && test1_1 && test2;
 }
 
-bool test_get_expected_nb_tents_row(void)
-{
+bool test_get_expected_nb_tents_row(void) {
   game g = game_default();
 
   game_set_expected_nb_tents_row(g, 0, 5);
@@ -50,8 +48,7 @@ bool test_get_expected_nb_tents_row(void)
   return test1 && test1_1 && test2;
 }
 
-bool test_set_expected_nb_tents_col(void)
-{
+bool test_set_expected_nb_tents_col(void) {
   game g = game_default();
 
   game_set_expected_nb_tents_col(g, 5, 0);
@@ -65,8 +62,7 @@ bool test_set_expected_nb_tents_col(void)
   return test1 && test1_1 && test2;
 }
 
-bool test_get_expected_nb_tents_col(void)
-{
+bool test_get_expected_nb_tents_col(void) {
   game g = game_default();
 
   game_set_expected_nb_tents_col(g, 5, 0);
@@ -81,8 +77,7 @@ bool test_get_expected_nb_tents_col(void)
 }
 
 // this function tests whether or not we get the right amount of tents for the entire grid
-bool test_get_expected_nb_tents_all(void)
-{
+bool test_get_expected_nb_tents_all(void) {
   game g = game_default();
   // we should have 12 expected tents in the whole game
   bool test = (game_get_expected_nb_tents_all(g) == 12);
@@ -92,8 +87,7 @@ bool test_get_expected_nb_tents_all(void)
 }
 
 // tests the function get_current_nb_tents_row
-bool test_get_current_nb_tents_row(void)
-{
+bool test_get_current_nb_tents_row(void) {
   game g = game_new_empty();
 
   game_play_move(g, 0, 1, TENT);
@@ -111,8 +105,7 @@ bool test_get_current_nb_tents_row(void)
 }
 
 // tests the function get_current_nb_tents_col
-bool test_get_current_nb_tents_col(void)
-{
+bool test_get_current_nb_tents_col(void) {
   game g = game_new_empty();
 
   game_play_move(g, 0, 1, TENT);
@@ -130,8 +123,7 @@ bool test_get_current_nb_tents_col(void)
 }
 
 // same logic with get_expected_nb_tents_all
-bool test_get_current_nb_tents_all(void)
-{
+bool test_get_current_nb_tents_all(void) {
   game g = game_new_empty();
 
   game_play_move(g, 0, 1, TENT);
@@ -145,8 +137,7 @@ bool test_get_current_nb_tents_all(void)
   return test0 && test0_1;
 }
 
-bool test_game_is_neigh(void)
-{
+bool test_game_is_neigh(void) {
   game g = game_new_empty();
 
   // we play a tent on the square 1,2
@@ -162,11 +153,12 @@ bool test_game_is_neigh(void)
   return test1_true && test1_false;
 }
 
-int main(int argc, char* argv[])
-{
-  if (argc < 2) return EXIT_FAILURE;
+int main(int argc, char* argv[]) {
+  if (argc < 2)
+    return EXIT_FAILURE;
 
-  if (strcmp(argv[1], "dummy") == 0) return test_dummy();
+  if (strcmp(argv[1], "dummy") == 0)
+    return test_dummy();
 
   if (strcmp(argv[1], "set_expected_nb_tents_row") == 0) {
     return test_set_expected_nb_tents_row() ? EXIT_SUCCESS : EXIT_FAILURE;

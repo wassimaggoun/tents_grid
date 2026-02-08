@@ -2,14 +2,16 @@
 
 ---
 Language: Cpp
-BasedOnStyle: Google
-ColumnLimit: 250
+BasedOnStyle: LLVM
+ColumnLimit: 120
 TabWidth: 8
 UseTab: Never
 DerivePointerAlignment: false
 PointerAlignment: Left
-# BreakBeforeBraces: Attach
-BreakBeforeBraces: Linux
+BreakBeforeBraces: Attach
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortBlocksOnASingleLine: true
+IndentCaseLabels: false
 ---
 
 # Warning: an empty line is required at the end of this file.

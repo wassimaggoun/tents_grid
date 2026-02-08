@@ -6,14 +6,12 @@
 #include "game.h"
 #include "game_aux.h"
 #include "game_struct.h"
-int test_dummy()
-{
+int test_dummy() {
   printf("NO ERREUR\n ");
   return EXIT_SUCCESS;
 }
 
-bool test_check_move()
-{
+bool test_check_move() {
   // Crée le jeu par défaut
   game g = game_default();
 
@@ -37,8 +35,7 @@ bool test_check_move()
   return t1 && t2 && t3 && t5 && t6 && t8 && t9;
 }
 
-bool test_play_move()
-{
+bool test_play_move() {
   // Crée un jeu vide
   game g = game_new_empty();
 
@@ -69,8 +66,7 @@ bool test_play_move()
   return t1 && t2 && t3 && t4 && t5 && t6 && t7 && t8 && t9 && t10 && t11;
 }
 
-bool test_default_solution()
-{
+bool test_default_solution() {
   // Charge la solution du jeu par défaut
   game g = game_default_solution();
 
@@ -86,7 +82,8 @@ bool test_default_solution()
         break;
       }
     }
-    if (!t2) break;
+    if (!t2)
+      break;
   }
 
   // Vérifie que la partie est gagnée
@@ -98,8 +95,7 @@ bool test_default_solution()
   return t1 && t2 && t3;
 }
 
-bool test_default()
-{
+bool test_default() {
   // Charge le jeu par défaut (non résolu)
   game g = game_default();
 
@@ -113,9 +109,12 @@ bool test_default()
   for (unsigned int i = 0; i < DEFAULT_SIZE; i++) {
     for (unsigned int j = 0; j < DEFAULT_SIZE; j++) {
       square s = game_get_square(g, i, j);
-      if (s == TREE) hastree = true;
-      if (s == EMPTY) hasempty = true;
-      if (s == TENT || s == GRASS) hastentougrass = true;
+      if (s == TREE)
+        hastree = true;
+      if (s == EMPTY)
+        hasempty = true;
+      if (s == TENT || s == GRASS)
+        hastentougrass = true;
     }
   }
 
@@ -133,8 +132,7 @@ bool test_default()
   return t1 && t2 && t3 && t4 && t5;
 }
 
-bool test_fill_grass()
-{
+bool test_fill_grass() {
   // Crée un jeu vide
   game g = game_new_empty();
 
@@ -156,14 +154,15 @@ bool test_fill_grass()
   for (unsigned int i = 0; i < DEFAULT_SIZE; i++) {
     for (unsigned int j = 0; j < DEFAULT_SIZE; j++) {
       if (i == 0 && (j == 0 || j == 1 || j == 2)) {
-        continue;  // On saute nos cases manuelles
+        continue; // On saute nos cases manuelles
       }
       if (game_get_square(g, i, j) != GRASS) {
         t4 = false;
         break;
       }
     }
-    if (!t4) break;
+    if (!t4)
+      break;
   }
 
   // Vérifie qu'il n'y a toujours qu'une seule tente
@@ -175,8 +174,7 @@ bool test_fill_grass()
   return t1 && t2 && t3 && t4 && t5;
 }
 
-bool test_get_square(void)
-{
+bool test_get_square(void) {
   // Crée un jeu vide
   game g = game_new_empty();
 
@@ -203,8 +201,7 @@ bool test_get_square(void)
   return t1 && t2 && t3 && t4 && t5;
 }
 
-bool test_print(void)
-{
+bool test_print(void) {
   // Charge le jeu
   game g1 = game_default();
 
@@ -238,13 +235,19 @@ int main(int argc, char* argv[])
       return EXIT_FAILURE;
     }
   }
-  if (strcmp(argv[1], "game_play_move") == 0) return test_play_move() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_play_move") == 0)
+    return test_play_move() ? EXIT_SUCCESS : EXIT_FAILURE;
 
-  if (strcmp(argv[1], "game_default_solution") == 0) return test_default_solution() ? EXIT_SUCCESS : EXIT_FAILURE;
-  if (strcmp(argv[1], "game_default") == 0) return test_default() ? EXIT_SUCCESS : EXIT_FAILURE;
-  if (strcmp(argv[1], "game_fill_grass") == 0) return test_fill_grass() ? EXIT_SUCCESS : EXIT_FAILURE;
-  if (strcmp(argv[1], "game_get_square") == 0) return test_get_square() ? EXIT_SUCCESS : EXIT_FAILURE;
-  if (strcmp(argv[1], "game_print") == 0) return test_print() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_default_solution") == 0)
+    return test_default_solution() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_default") == 0)
+    return test_default() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_fill_grass") == 0)
+    return test_fill_grass() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_get_square") == 0)
+    return test_get_square() ? EXIT_SUCCESS : EXIT_FAILURE;
+  if (strcmp(argv[1], "game_print") == 0)
+    return test_print() ? EXIT_SUCCESS : EXIT_FAILURE;
   printf("ERREUR\n ");
   return EXIT_FAILURE;
 }

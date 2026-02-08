@@ -106,4 +106,4 @@ uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag);
  */
 bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag);
 
-#endif  // __GAME_AUX_H__
+#endif // __GAME_AUX_H__

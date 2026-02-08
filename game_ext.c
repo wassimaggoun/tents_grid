@@ -11,14 +11,15 @@
 #include "game_struct.h"
 #include "queue.h"
 
-game game_new_ext(uint nb_rows, uint nb_cols, square* squares, uint* nb_tents_row, uint* nb_tents_col, bool wrapping)
-{
+game game_new_ext(uint nb_rows, uint nb_cols, square* squares, uint* nb_tents_row, uint* nb_tents_col, bool wrapping) {
   // Vérifie que les données fournies sont valides
-  if (!squares || !nb_tents_row || !nb_tents_col) return NULL;
+  if (!squares || !nb_tents_row || !nb_tents_col)
+    return NULL;
 
   // Alloue la mémoire pour la structure du jeu
   game g = malloc(sizeof(struct game_s));
-  if (!g) return NULL;
+  if (!g)
+    return NULL;
 
   // Initialise les pointeurs à NULL pour éviter les bugs
   g->grid = NULL;
@@ -43,7 +44,7 @@ game game_new_ext(uint nb_rows, uint nb_cols, square* squares, uint* nb_tents_ro
   for (uint i = 0; i < g->height; i++) {
     g->grid[i] = malloc(g->width * sizeof(square));
     if (!g->grid[i]) {
-      game_delete(g);  // Nettoie tout proprement si ça échoue
+      game_delete(g); // Nettoie tout proprement si ça échoue
       return NULL;
     }
   }
@@ -89,8 +90,7 @@ game game_new_ext(uint nb_rows, uint nb_cols, square* squares, uint* nb_tents_ro
 
 /* *********************************************************** */
 
-game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping)
-{
+game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping) {
   // Calcule la taille totale
   uint size = nb_cols * nb_rows;
 
@@ -118,8 +118,7 @@ game game_new_empty_ext(uint nb_rows, uint nb_cols, bool wrapping)
 
 /* *********************************************************** */
 
-uint game_nb_rows(cgame g)
-{
+uint game_nb_rows(cgame g) {
   // Vérifie que le jeu existe
   if (g == NULL) {
     fprintf(stderr, "JEU VIDE");
@@ -132,8 +131,7 @@ uint game_nb_rows(cgame g)
 
 /* *********************************************************** */
 
-uint game_nb_cols(cgame g)
-{
+uint game_nb_cols(cgame g) {
   // Vérifie que le jeu existe
   if (g == NULL) {
     fprintf(stderr, "JEU VIDE");
@@ -146,8 +144,7 @@ uint game_nb_cols(cgame g)
 
 /* *********************************************************** */
 
-bool game_is_wrapping(cgame g)
-{
+bool game_is_wrapping(cgame g) {
   // Vérifie que le jeu existe
   if (g == NULL) {
     fprintf(stderr, "JEU VIDE");
@@ -160,8 +157,7 @@ bool game_is_wrapping(cgame g)
 
 /* *********************************************************** */
 
-void game_undo(game g)
-{
+void game_undo(game g) {
   // Vérifie erreurs mémoire
   if (g == NULL) {
     fprintf(stderr, "Erreur mémoire");
@@ -169,7 +165,8 @@ void game_undo(game g)
   }
 
   // Si rien à annuler, on ne fait rien
-  if (queue_is_empty(g->undo_stack)) return;
+  if (queue_is_empty(g->undo_stack))
+    return;
 
   // Récupère le dernier coup joué
   move* m = queue_pop_tail(g->undo_stack);
@@ -181,8 +178,7 @@ void game_undo(game g)
 
 /* *********************************************************** */
 
-void game_redo(game g)
-{
+void game_redo(game g) {
   // Vérifie erreurs mémoire
   if (g == NULL) {
     fprintf(stderr, "Erreur mémoire");
@@ -190,7 +186,8 @@ void game_redo(game g)
   }
 
   // Si rien à refaire, on ne fait rien
-  if (queue_is_empty(g->redo_stack)) return;
+  if (queue_is_empty(g->redo_stack))
+    return;
 
   // Récupère le coup annulé
   move* m = queue_pop_tail(g->redo_stack);

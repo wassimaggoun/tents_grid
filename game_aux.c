@@ -9,9 +9,9 @@
 #include "game_struct.h"
 
 // this function prints the game
-void game_print(cgame g)
-{
-  if (!g) return;
+void game_print(cgame g) {
+  if (!g)
+    return;
 
   uint width = g->width;
   uint height = g->height;
@@ -76,11 +76,11 @@ void game_print(cgame g)
 /* *********************************************************** */
 
 // this function gives us the default game, given in the documentation
-game game_default(void)
-{
+game game_default(void) {
   game g = game_new_empty();
 
-  if (!g) return NULL;
+  if (!g)
+    return NULL;
 
   // we set the tree squares with the given values(the defaults) under the documentation
   game_set_square(g, 0, 0, TREE);
@@ -123,10 +123,10 @@ game game_default(void)
 /* *********************************************************** */
 
 // this function gives us the solution to the defaul game
-game game_default_solution(void)
-{
+game game_default_solution(void) {
   game g = game_default();
-  if (!g) return NULL;
+  if (!g)
+    return NULL;
 
   // here we put the tents on the right places to solve the default game
   game_set_square(g, 0, 4, TENT);
@@ -156,57 +156,56 @@ game game_default_solution(void)
 
 /* *********************************************************** */
 
-bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_next, uint* pj_next)
-{
+bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_next, uint* pj_next) {
   assert(g != NULL);
   assert(i < g->height);
   assert(j < g->width);
   assert(pi_next != NULL);
   assert(pj_next != NULL);
 
-  // these variables help us store the difference of coordinates of our square and the adjacent square
+  // these variables help us store the difference of coordinates of our square and the adjacent
+  // square
   int di = 0, dj = 0;
 
   // here, we set di and dj depending on the square we want to get
   switch (d) {
-    case HERE:
-      di = 0;
-      dj = 0;
-      break;
-    case UP:
-      di = -1;
-      dj = 0;
-      break;
-    case DOWN:
-      di = +1;
-      dj = 0;
-      break;
-    case LEFT:
-      di = 0;
-      dj = -1;
-      break;
-    case RIGHT:
-      di = 0;
-      dj = +1;
-      break;
-    case UP_LEFT:
-      di = -1;
-      dj = -1;
-      break;
-    case UP_RIGHT:
-      di = -1;
-      dj = +1;
-      break;
-    case DOWN_LEFT:
-      di = +1;
-      dj = -1;
-      break;
-    case DOWN_RIGHT:
-      di = +1;
-      dj = +1;
-      break;
-    default:
-      return false;
+  case HERE:
+    di = 0;
+    dj = 0;
+    break;
+  case UP:
+    di = -1;
+    dj = 0;
+    break;
+  case DOWN:
+    di = +1;
+    dj = 0;
+    break;
+  case LEFT:
+    di = 0;
+    dj = -1;
+    break;
+  case RIGHT:
+    di = 0;
+    dj = +1;
+    break;
+  case UP_LEFT:
+    di = -1;
+    dj = -1;
+    break;
+  case UP_RIGHT:
+    di = -1;
+    dj = +1;
+    break;
+  case DOWN_LEFT:
+    di = +1;
+    dj = -1;
+    break;
+  case DOWN_RIGHT:
+    di = +1;
+    dj = +1;
+    break;
+  default: return false;
   }
 
   // we get the sum of our old coordinates and the changes, then apply it to our new variables
@@ -237,8 +236,7 @@ bool game_get_adjacent_square(cgame g, uint i, uint j, direction d, uint* pi_nex
 /* *********************************************************** */
 
 // checks if the square i,j has a neighbor with the value s
-bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag)
-{
+bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag) {
   assert(g != NULL);
   assert(i < g->height);
   assert(j < g->width);
@@ -253,7 +251,8 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag)
   for (uint k = 0; k < n_dirs; k++) {
     uint ni, nj;
     if (game_get_adjacent_square(g, i, j, dirs[k], &ni, &nj)) {
-      if (game_get_square(g, ni, nj) == s) return true;
+      if (game_get_square(g, ni, nj) == s)
+        return true;
     }
   }
 
@@ -263,8 +262,7 @@ bool game_is_neigh(cgame g, uint i, uint j, square s, bool diag)
 /* *********************************************************** */
 
 // this function gives us number of neighbors with the value s of a square i,j
-uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag)
-{
+uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag) {
   assert(g != NULL);
   assert(i < g->height);
   assert(j < g->width);
@@ -278,7 +276,8 @@ uint game_nb_neigh(cgame g, uint i, uint j, square s, bool diag)
   // we create an array to keep track on which neighbors have been already checcked
   // we initialize to -1 for now(means not visited)
   int visited[8];
-  for (int k = 0; k < 8; k++) visited[k] = -1;
+  for (int k = 0; k < 8; k++)
+    visited[k] = -1;
   int visited_count = 0;
 
   for (uint k = 0; k < n_dirs; k++) {
