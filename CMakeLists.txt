@@ -11,6 +11,9 @@ add_library(game game.c game_aux.c game_ext.c queue.c game_tools.c)
 add_executable(game_text game_text.c)
 target_link_libraries(game_text game m)
 
+add_executable(game_random game_random.c)
+target_link_libraries(game_random game m)
+
 add_executable(game_test_zziane game_test_zziane.c)
 target_link_libraries(game_test_zziane game m)
 add_test(test_zziane_dummy ./game_test_zziane dummy)

@@ -198,7 +198,7 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
   }
 
   for(uint col=0; col< nb_cols; col++){
-    uint expected_tents = game_get_current_nb_tents_cols(g,col);
+    uint expected_tents = game_get_current_nb_tents_col(g,col);
     game_set_expected_nb_tents_col(g,col,expected_tents);
   }
 
@@ -216,111 +216,4 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
 
     return g;
   }
-}
-
-game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees, bool solution) {
-    game g = game_new_empty_ext(nb_rows, nb_cols, wrapping);
-    if (!g) return NULL;
-
-    direction all_dirs[4] = {UP, DOWN, LEFT, RIGHT};
-
-    for (uint i = 0; i < nb_bigtrees; i++) {
-        for (int attempt = 0; attempt < 100; attempt++) {
-            uint r = rand() % nb_rows;
-            uint c = rand() % nb_cols;
-
-            if (game_get_square(g, r, c) != EMPTY) continue;
-
-            bool placed = false;
-            
-            for (int d1 = 0; d1 < 3 && !placed; d1++) {
-                for (int d2 = d1 + 1; d2 < 4 && !placed; d2++) {
-                    uint t1_r, t1_c, t2_r, t2_c;
-
-                    if (game_get_adjacent_square(g, r, c, all_dirs[d1], &t1_r, &t1_c) &&
-                        game_get_adjacent_square(g, r, c, all_dirs[d2], &t2_r, &t2_c)) {
-
-                        if (game_get_square(g, t1_r, t1_c) != EMPTY || 
-                            game_get_square(g, t2_r, t2_c) != EMPTY) continue;
-
-                        if (game_is_neigh(g, t1_r, t1_c, TENT, true) || 
-                            game_is_neigh(g, t2_r, t2_c, TENT, true)) continue;
-
-                        game_set_square(g, t1_r, t1_c, TENT);
-                        bool touch_each_other = game_is_neigh(g, t2_r, t2_c, TENT, true);
-                        game_set_square(g, t1_r, t1_c, EMPTY);
-
-                        if (!touch_each_other) {
-                            game_set_square(g, r, c, BIGTREE);
-                            game_set_square(g, t1_r, t1_c, TENT);
-                            game_set_square(g, t2_r, t2_c, TENT);
-
-                            game_set_expected_nb_tents_row(g, t1_r, game_get_expected_nb_tents_row(g, t1_r) + 1);
-                            game_set_expected_nb_tents_col(g, t1_c, game_get_expected_nb_tents_col(g, t1_c) + 1);
-                            
-                            game_set_expected_nb_tents_row(g, t2_r, game_get_expected_nb_tents_row(g, t2_r) + 1);
-                            game_set_expected_nb_tents_col(g, t2_c, game_get_expected_nb_tents_col(g, t2_c) + 1);
-
-                            placed = true;
-                        }
-                    }
-                }
-            }
-            if (placed) break;
-        }
-    }
-
-    for (uint i = 0; i < nb_trees; i++) {
-        for (int attempt = 0; attempt < 100; attempt++) {
-            uint r = rand() % nb_rows;
-            uint c = rand() % nb_cols;
-
-            if (game_get_square(g, r, c) != EMPTY) continue;
-
-            int d_idx[4] = {0, 1, 2, 3};
-            for (int k = 0; k < 4; k++) {
-                int rand_idx = rand() % 4;
-                int temp = d_idx[k];
-                d_idx[k] = d_idx[rand_idx];
-                d_idx[rand_idx] = temp;
-            }
-
-            bool placed = false;
-            for (int k = 0; k < 4; k++) {
-                uint tr, tc;
-                if (game_get_adjacent_square(g, r, c, all_dirs[d_idx[k]], &tr, &tc)) {
-                    
-                    if (game_get_square(g, tr, tc) == EMPTY && 
-                        !game_is_neigh(g, tr, tc, TENT, true)) {
-                        
-                        game_set_square(g, r, c, TREE);
-                        game_set_square(g, tr, tc, TENT);
-
-                        game_set_expected_nb_tents_row(g, tr, game_get_expected_nb_tents_row(g, tr) + 1);
-                        game_set_expected_nb_tents_col(g, tc, game_get_expected_nb_tents_col(g, tc) + 1);
-                        
-                        placed = true;
-                        break;
-                    }
-                }
-            }
-            if (placed) break;
-        }
-    }
-
-    if (solution) {
-        game_fill_grass(g);
-    } 
-    else {
-        for (uint r = 0; r < nb_rows; r++) {
-            for (uint c = 0; c < nb_cols; c++) {
-                square s = game_get_square(g, r, c);
-                if (s == TENT || s == GRASS) {
-                    game_set_square(g, r, c, EMPTY);
-                }
-            }
-        }
-    }
-
-    return g;
 }
