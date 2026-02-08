@@ -121,3 +121,24 @@ error:
   fclose(f);
   return NULL;
 }
+
+game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees, bool solution){
+  game g=game_new_empty_ext(nb_rows,nb_cols,wrapping);
+  uint placed_trees=0;
+  uint placed_bigtrees=0;
+  while(placed_trees<nb_trees || placed_bigtrees<nb_bigtrees){
+    uint i = (((double)rand() * nb_rows) / RAND_MAX);
+    uint j = (((double)rand() * nb_cols) / RAND_MAX);
+    if(game_get_square(g,i,j)!=EMPTY)continue;
+    game_set_square(g,i,j,TREE);
+    direction dirs[4]={UP,DOWN,LEFT,RIGHT};
+    for(uint k=0;k<4;k++){
+      uint ni,nj;
+      square s=game_get_adjacent_square(g,i,j,dirs[k],&ni,&nj);
+      if(game_check_move(g,ni,nj,s)){
+        game_set_square(g,ni,nj,TENT);
+      }
+    }
+    
+  }
+}
