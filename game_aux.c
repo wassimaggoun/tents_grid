@@ -55,7 +55,7 @@ void game_print(cgame g) {
       printf("%c", c);
     }
     // here we will print the right border "|" and then give the expected number of tents of the row
-    printf(" | %u\n", game_get_expected_nb_tents_row(g, i));
+    printf("| %u\n", game_get_expected_nb_tents_row(g, i));
   }
 
   // print the bottom borders
