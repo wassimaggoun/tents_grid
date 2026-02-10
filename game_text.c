@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
       printf("Commande inconnue : %c\n", c);
     }
   }
-  if(game_won){
+  if (game_won(g)) {
     game_print(g);
     printf("congratulation\n");
   }
