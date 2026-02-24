@@ -52,6 +52,23 @@ void game_save(cgame g, char* filename);
 game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees, bool solution);
 
 /**
+ * @brief Computes the solution of a given game.
+ * @param g the game to solve
+ * @details The game @p g is updated with the first solution found. If there are
+ * no solution for this game, @p g must be unchanged.
+ * @return true if a solution is found, false otherwise
+ */
+bool game_solve(game g);
+
+/**
+ * @brief Computes the total number of solutions of a given game.
+ * @param g the game
+ * @return the number of solutions
+ */
+uint game_nb_solutions(cgame g);
+
+
+/**
  * @}
  */
 
