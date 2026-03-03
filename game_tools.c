@@ -277,6 +277,7 @@ void solutions(cgame g, int pos, unsigned long* count) {
     if (game_won(g)) {
       (*count)++;
       game_print(g);
+      printf("/n");
       return;
     }
   }
@@ -291,8 +292,9 @@ void solutions(cgame g, int pos, unsigned long* count) {
 
     game_set_square(g, row, col, GRASS);
     return solutions(g, pos + 1, count);
+
+    game_set_square(g, row, col, EMPTY);
   }
-  game_set_square(g, row, col, EMPTY);
 }
 
 uint game_nb_solutions(cgame g) {}
