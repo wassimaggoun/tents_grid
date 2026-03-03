@@ -14,6 +14,9 @@ target_link_libraries(game_text game m)
 add_executable(game_random game_random.c)
 target_link_libraries(game_random game m)
 
+add_executable(game_solve game_solve.c)
+target_link_libraries(game_solve game m)
+
 add_executable(game_test_zziane game_test_zziane.c)
 target_link_libraries(game_test_zziane game m)
 add_test(test_zziane_dummy ./game_test_zziane dummy)
