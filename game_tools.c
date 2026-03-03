@@ -234,39 +234,65 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
   return g;
 }
 
-
-bool game_solve_rec ( game g, uint i, uint j ){  
+bool game_solve_rec(game g, uint i, uint j) {
   uint rows = game_nb_rows(g);
-  uint cols = game_nb_rows(g);
+  uint cols = game_nb_cols(g);
   uint taille = rows * cols;
-  if(j==cols){
+  if (j == cols) {
     j = 0;
     i++;
-  } 
-  if (i=rows){
+  }
+  if (i == rows) {
     game_fill_grass(g);
     return game_won(g);
   }
-  square s = game_get_square(g,i,j);
-  if ( s == TREE || s == BIGTREE ){
-    return game_solve_rec(g ,i , j++);
-  } 
-  if ( game_check_move(g,i,j, TENT)){
-    game_set_square(g,i,j,TENT);
-    if (game_solve_rec (g, i, j+1)){
-      return true ;
-    }  
-    game_set_square(g,i,j,EMPTY);
+  square s = game_get_square(g, i, j);
+  if (s == TREE || s == BIGTREE) {
+    return game_solve_rec(g, i, j++);
+  }
+  if (game_check_move(g, i, j, TENT)) {
+    game_set_square(g, i, j, TENT);
+    if (game_solve_rec(g, i, j + 1)) {
+      return true;
+    }
+    game_set_square(g, i, j, EMPTY);
   }
 
-  if(game_solve_rec(g,i,j++) ){
+  if (game_solve_rec(g, i, j++)) {
     return true;
-  } 
+  }
   return false;
-   
 }
-bool game_solve(game g){
-  if(!g) return false;
-  return game_solve_rec(g,0,0);
-} 
+bool game_solve(game g) {
+  if (!g)
+    return false;
+  return game_solve_rec(g, 0, 0);
+}
 
+void solutions(cgame g, int pos, unsigned long* count) {
+  uint row = pos / game_nb_cols(g);
+  uint col = pos % game_nb_cols(g);
+  uint taille = game_nb_rows(g) * game_nb_cols(g);
+  if (pos == taille) {
+    if (game_won(g)) {
+      (*count)++;
+      game_print(g);
+      return;
+    }
+  }
+  square s = game_get_square(g, row, col);
+
+  if (s == TREE || s == BIGTREE) {
+    return solutions(g, pos + 1, count);
+  }
+  if (s == EMPTY) {
+    game_set_square(g, row, col, TENT);
+    return solutions(g, pos + 1, count);
+
+    game_set_square(g, row, col, GRASS);
+    return solutions(g, pos + 1, count);
+  }
+  game_set_square(g, row, col, EMPTY);
+}
+
+uint game_nb_solutions(cgame g) {}
