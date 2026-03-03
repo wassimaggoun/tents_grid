@@ -233,3 +233,40 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
 
   return g;
 }
+
+
+bool game_solve_rec ( game g, uint i, uint j ){  
+  uint rows = game_nb_rows(g);
+  uint cols = game_nb_rows(g);
+  uint taille = rows * cols;
+  if(j==cols){
+    j = 0;
+    i++;
+  } 
+  if (i=rows){
+    game_fill_grass(g);
+    return game_won(g);
+  }
+  square s = game_get_square(g,i,j);
+  if ( s == TREE || s == BIGTREE ){
+    return game_solve_rec(g ,i , j++);
+  } 
+  if ( game_check_move(g,i,j, TENT)){
+    game_set_square(g,i,j,TENT);
+    if (game_solve_rec (g, i, j+1)){
+      return true ;
+    }  
+    game_set_square(g,i,j,EMPTY);
+  }
+
+  if(game_solve_rec(g,i,j++) ){
+    return true;
+  } 
+  return false;
+   
+}
+bool game_solve(game g){
+  if(!g) return false;
+  return game_solve_rec(g,0,0);
+} 
+
