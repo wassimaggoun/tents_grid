@@ -299,7 +299,17 @@ void solutions(cgame g, int pos, unsigned long* count) {
   }
 }
 
-uint game_nb_solutions(cgame g) {}
+uint game_nb_solutions(cgame g) {
+  game temp=game_copy(g);
+
+  uint count=0;
+
+  solutions(temp,0,&count);
+
+  game_delete(temp);
+
+  return count;
+}
 
 bool game_solve_rec_v2(game g, uint pos)
 {
