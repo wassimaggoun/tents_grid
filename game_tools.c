@@ -236,42 +236,54 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
 
 /*******************************************************************************************************/
 
-bool game_solve_rec(game g, uint i, uint j) {
+
+
+
+static bool game_solve_rec(game g, uint pos) {
   uint rows = game_nb_rows(g);
   uint cols = game_nb_cols(g);
-  uint taille = rows * cols;
-  if (j == cols) {
-    j = 0;
-    i++;
-  }
-  if (i == rows) {
+  uint total = rows * cols;
+
+  if (pos == total) { // si on arrive à la derniere case, on remplie avec GRASS et on vérifie si la solution est bonne
     game_fill_grass(g);
     return game_won(g);
   }
+
+  // on traduit la position currente en tuple (i,j)
+  uint i = pos / cols;
+  uint j = pos % cols;
+
   square s = game_get_square(g, i, j);
-  if (s == TREE || s == BIGTREE) {
-    return game_solve_rec(g, i, j++);
-  }
+
+  if (s == TREE || s == BIGTREE) // si la case est un arbre on passe à la case suivante
+    return game_solve_rec(g, pos + 1);
+
+  // si ce n'est pas un arbre : 2 cas
+
+  // cas 1: on essaye de placer un TENT
   if (game_check_move(g, i, j, TENT)) {
     game_set_square(g, i, j, TENT);
-    if (game_solve_rec(g, i, j + 1)) {
+
+    if (game_solve_rec(g, pos + 1)) // retourne true si une solution est trouvée
       return true;
-    }
-    game_set_square(g, i, j, EMPTY);
+
+    game_set_square(g, i, j, EMPTY); // sinon on retire la Tnet placée
   }
 
-  if (game_solve_rec(g, i, j + 1)) {
+  // cas 2: on ne place pas de TENT
+  if (game_solve_rec(g, pos + 1)) // on passe à la case suivante
     return true;
-  }
+
   return false;
 }
+
 bool game_solve(game g) {
   if (!g)
     return false;
-  return game_solve_rec(g, 0, 0);
+  return game_solve_rec(g,0);
 }
 
-void solutions(cgame g, int pos, unsigned long* count) {
+static void solutions(cgame g, uint pos, unsigned long* count) {
   uint row = pos / game_nb_cols(g);
   uint col = pos % game_nb_cols(g);
   uint taille = game_nb_rows(g) * game_nb_cols(g);
@@ -300,52 +312,13 @@ void solutions(cgame g, int pos, unsigned long* count) {
 }
 
 uint game_nb_solutions(cgame g) {
-    game temp=game_copy(g);
+  game temp = game_copy(g);
 
-    uint count=0;
+  uint count = 0;
 
-    solutions(temp,0,&count);
+  solutions(temp, 0, &count);
 
-    game_delete(temp);
+  game_delete(temp);
 
-    return count;
-}
-
-bool game_solve_rec_v2(game g, uint pos)
-{
-    uint rows = game_nb_rows(g);
-    uint cols = game_nb_cols(g);
-    uint total = rows * cols;
-
-    if (pos == total) { //si on arrive à la derniere case, on remplie avec GRASS et on vérifie si la solution est bonne
-        game_fill_grass(g);
-        return game_won(g);
-    }
-
-    //on traduit la position currente en tuple (i,j) 
-    uint i = pos / cols;
-    uint j = pos % cols;
-
-    square s = game_get_square(g, i , j);
-
-    if (s == TREE || s == BIGTREE) //si la case est un arbre on passe à la case suivante
-        return game_solve_rec_v2(g, pos + 1);
-
-    // si ce n'est pas un arbre : 2 cas
-
-    //cas 1: on essaye de placer un TENT
-    if (game_check_move(g, i, j, TENT)) {
-        game_set_square(g, i, j, TENT);
-
-        if (game_solve_rec_v2(g, pos + 1)) //retourne true si une solution est trouvée
-            return true;
-
-        game_set_square(g, i, j, EMPTY); //sinon on retire la Tnet placée
-    }
-
-    //cas 2: on ne place pas de TENT
-    if (game_solve_rec_v2(g, pos + 1)) //on passe à la case suivante
-        return true;
-
-    return false;
+  return count;
 }
