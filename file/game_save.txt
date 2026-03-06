@@ -1,0 +1,11 @@
+8 8 0 
+1 2 1 2 2 0 1 3 
+3 0 2 1 2 1 2 1 
+X G G G T X X G 
+T G G G G G T G 
+G G T G G G X G 
+X G X G T G T G 
+T G T G X G G G 
+G G X G G G G G 
+G G G G G T G G 
+T X X T G X X T 

@@ -239,24 +239,26 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
 
 
 
-static bool game_solve_rec(game g, uint pos) {
-  uint rows = game_nb_rows(g);
+static bool game_solve_rec(game g, uint idx, uint* cells, uint size) {
   uint cols = game_nb_cols(g);
-  uint total = rows * cols;
 
-  if (pos == total) { // si on arrive à la derniere case, on remplie avec GRASS et on vérifie si la solution est bonne
+  if (idx == size) { // si on arrive à la derniere case, on remplie avec GRASS et on vérifie si la solution est bonne
     game_fill_grass(g);
     return game_won(g);
   }
 
-  // on traduit la position currente en tuple (i,j)
+  // on traduit la position currente 1D en 2D (i,j)
+  uint pos = cells[idx];
   uint i = pos / cols;
   uint j = pos % cols;
+
+  if(game_get_current_nb_tents_row(g,i) > game_get_expected_nb_tents_row(g,i) ||   //si on dépasse la limite de tent par ligne/colonne on arrete
+    game_get_current_nb_tents_col(g,j) > game_get_expected_nb_tents_col(g,j)) return false;
 
   square s = game_get_square(g, i, j);
 
   if (s == TREE || s == BIGTREE) // si la case est un arbre on passe à la case suivante
-    return game_solve_rec(g, pos + 1);
+    return game_solve_rec(g,idx + 1,cells,size);
 
   // si ce n'est pas un arbre : 2 cas
 
@@ -264,26 +266,60 @@ static bool game_solve_rec(game g, uint pos) {
   if (game_check_move(g, i, j, TENT)) {
     game_set_square(g, i, j, TENT);
 
-    if (game_solve_rec(g, pos + 1)) // retourne true si une solution est trouvée
+    if (game_solve_rec(g, idx + 1,cells,size)) // retourne true si une solution est trouvée
       return true;
 
     game_set_square(g, i, j, EMPTY); // sinon on retire la Tnet placée
   }
 
-  // cas 2: on ne place pas de TENT
-  if (game_solve_rec(g, pos + 1)) // on passe à la case suivante
+  // cas 2: on ne place pas de TENT (si il y'a déja au moins une TENT)
+ 
+  if (game_solve_rec(g, idx + 1 ,cells,size)) // on passe à la case suivante
     return true;
 
   return false;
 }
 
+/*********************************************************************************************************************/
+
 bool game_solve(game g) {
-  if (!g)
-    return false;
-  return game_solve_rec(g,0);
+  if (!g) return false;
+  uint rows = game_nb_rows(g);
+  uint cols = game_nb_cols(g);
+  uint size = rows * cols;
+  uint *cells = malloc(size * sizeof(uint));
+  uint nb_cells = 0;
+
+  for (uint k = 0; k < size; k++){
+    uint i = k / cols;
+    uint j = k % cols;
+    square s = game_get_square(g,i,j);
+
+    if(s == EMPTY && game_is_neigh(g,i,j,TREE,false)){
+      if(game_get_expected_nb_tents_row(g,i)!=0 && game_get_expected_nb_tents_col(g,j) != 0){
+      cells[nb_cells] = k;
+      nb_cells ++;
+      }
+    }
+
+  }
+  game copy = game_copy(g);
+  bool res =  game_solve_rec(copy,0,cells,nb_cells);
+  if(res){
+    for(uint i = 0 ; i < rows ; i++){
+      for(uint j = 0 ; j < cols ; j++){
+        square s = game_get_square(copy,i,j);
+        game_set_square(g,i,j,s);
+      }
+    }
+  }
+  free(cells);
+  return res;
 }
 
-static void solutions(cgame g, uint pos, unsigned long* count) {
+/*********************************************************************************************************************/
+
+static void solutions(game g, uint pos, uint* count) {
   uint row = pos / game_nb_cols(g);
   uint col = pos % game_nb_cols(g);
   uint taille = game_nb_rows(g) * game_nb_cols(g);
@@ -310,6 +346,8 @@ static void solutions(cgame g, uint pos, unsigned long* count) {
     game_set_square(g, row, col, EMPTY);
   }
 }
+
+/*********************************************************************************************************************/
 
 uint game_nb_solutions(cgame g) {
   game temp = game_copy(g);
