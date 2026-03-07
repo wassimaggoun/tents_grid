@@ -235,16 +235,32 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
 }
 
 /*******************************************************************************************************/
-
+//Fonction récursive appelé dans le solveur
 
 
 
 static bool game_solve_rec(game g, uint idx, uint* cells, uint size) {
   uint cols = game_nb_cols(g);
+  uint rows = game_nb_rows(g);
 
-  if (idx == size) { // si on arrive à la derniere case, on remplie avec GRASS et on vérifie si la solution est bonne
-    game_fill_grass(g);
+  if (idx == size) { // condition d'arret (derniere case)
     return game_won(g);
+  }
+
+  // On vérifie si l'état actuel du jeu est valide dans la branche courante
+  uint expected_tents = game_get_expected_nb_tents_all(g);
+  uint current_tents = game_get_current_nb_tents_all(g);
+  if (current_tents > expected_tents) return false;
+  //Nombre de cases libres resatntes
+  uint remaining = size - idx;
+  if (current_tents + remaining < expected_tents) return false;
+
+  //On check la limite de TENT pour chaque row/col
+  for (uint i = 0; i < rows; i++) {
+    if (game_get_current_nb_tents_row(g, i) > game_get_expected_nb_tents_row(g, i)) return false;
+  }
+  for (uint j = 0; j < cols; j++) {
+    if (game_get_current_nb_tents_col(g, j) > game_get_expected_nb_tents_col(g, j)) return false;
   }
 
   // on traduit la position currente 1D en 2D (i,j)
@@ -252,28 +268,46 @@ static bool game_solve_rec(game g, uint idx, uint* cells, uint size) {
   uint i = pos / cols;
   uint j = pos % cols;
 
-  if(game_get_current_nb_tents_row(g,i) > game_get_expected_nb_tents_row(g,i) ||   //si on dépasse la limite de tent par ligne/colonne on arrete
-    game_get_current_nb_tents_col(g,j) > game_get_expected_nb_tents_col(g,j)) return false;
-
-  square s = game_get_square(g, i, j);
-
-  if (s == TREE || s == BIGTREE) // si la case est un arbre on passe à la case suivante
-    return game_solve_rec(g,idx + 1,cells,size);
-
-  // si ce n'est pas un arbre : 2 cas
-
-  // cas 1: on essaye de placer un TENT
-  if (game_check_move(g, i, j, TENT)) {
-    game_set_square(g, i, j, TENT);
-
-    if (game_solve_rec(g, idx + 1,cells,size)) // retourne true si une solution est trouvée
-      return true;
-
-    game_set_square(g, i, j, EMPTY); // sinon on retire la Tnet placée
+  // Si on est obligé de placer une TENT on la place et on passe à la case suivante
+  uint free_in_row = 0;
+  uint free_in_col = 0;
+  for (uint k = idx; k < size; k++) { //On compte le nombres de cases libre dans la ligne i et colonne j
+    uint p = cells[k];
+    uint ni = p / cols;
+    uint nj = p % cols;
+    if (ni == i) free_in_row++; //si la case libre est dans la ligne/colonne actuelle on incremente le conmpteur
+    if (nj == j) free_in_col++;
   }
 
-  // cas 2: on ne place pas de TENT (si il y'a déja au moins une TENT)
- 
+  //Nombre des TENTs restant a placer dans la row/col
+  uint needed_in_row = game_get_expected_nb_tents_row(g, i) - game_get_current_nb_tents_row(g, i); 
+  uint needed_in_col = game_get_expected_nb_tents_col(g, j) - game_get_current_nb_tents_col(g, j);
+
+  bool must_place = (free_in_row == needed_in_row) || (free_in_col == needed_in_col);
+  if (must_place) {
+    // Obligé de placer une TENT en (i,j) (espace restant = nombre de TENT restant a placer)
+    if (game_check_move(g, i, j, TENT)) {
+      game_set_square(g, i, j, TENT);
+      if (game_solve_rec(g, idx + 1, cells, size)) return true;
+      game_set_square(g, i, j, EMPTY); // On annule la modification si aucune solution n'est trouvée sur cetet branche
+    }
+    return false;
+  }
+
+  //Pour chaque case on a deux cas : placer une TENT / ne pas placer de TENT 
+
+  // cas 1: on essaye de placer un TENT
+  if (game_check_move(g, i, j, TENT) ) {
+
+    game_set_square(g, i, j, TENT);
+
+    if (game_solve_rec(g, idx + 1, cells, size)) //Si une solution est trouvé sur cette branche on retourne true
+        return true;
+
+    game_set_square(g, i, j, EMPTY); //sinon on annule la modification
+  }
+
+  // cas 2: on ne place pas de TENT
   if (game_solve_rec(g, idx + 1 ,cells,size)) // on passe à la case suivante
     return true;
 
@@ -282,12 +316,14 @@ static bool game_solve_rec(game g, uint idx, uint* cells, uint size) {
 
 /*********************************************************************************************************************/
 
+// Cette fonction créé un tableau de cases adjacentes à des TREE ou BIGTREE , puis appelle la fonction récursive en passant le tableau en parametre
 bool game_solve(game g) {
   if (!g) return false;
   uint rows = game_nb_rows(g);
   uint cols = game_nb_cols(g);
   uint size = rows * cols;
-  uint *cells = malloc(size * sizeof(uint));
+
+  uint *cells = malloc(size * sizeof(uint)); //Allocation mémoire pour le tableau de cases à tester
   uint nb_cells = 0;
 
   for (uint k = 0; k < size; k++){
@@ -295,25 +331,28 @@ bool game_solve(game g) {
     uint j = k % cols;
     square s = game_get_square(g,i,j);
 
-    if(s == EMPTY && game_is_neigh(g,i,j,TREE,false)){
-      if(game_get_expected_nb_tents_row(g,i)!=0 && game_get_expected_nb_tents_col(g,j) != 0){
+    if(s == EMPTY && (game_is_neigh(g,i,j,TREE,false) || game_is_neigh(g,i,j,BIGTREE,false))){ 
+      if(game_get_expected_nb_tents_row(g,i)!=0 && game_get_expected_nb_tents_col(g,j) != 0){ //on ne garde pas les cases impossibles (0 TENT excpected)
       cells[nb_cells] = k;
       nb_cells ++;
       }
     }
 
   }
-  game copy = game_copy(g);
+  game copy = game_copy(g); //On travail sur une copie 
   bool res =  game_solve_rec(copy,0,cells,nb_cells);
-  if(res){
+  if(res){ // Si une solution est trouvée , on copie la copie dans le jeu original 
     for(uint i = 0 ; i < rows ; i++){
       for(uint j = 0 ; j < cols ; j++){
         square s = game_get_square(copy,i,j);
         game_set_square(g,i,j,s);
       }
     }
+    game_fill_grass(g);
   }
   free(cells);
+  game_delete(copy);
+
   return res;
 }
 
@@ -360,3 +399,6 @@ uint game_nb_solutions(cgame g) {
 
   return count;
 }
+
+
+/*********************************************************************************************************************/

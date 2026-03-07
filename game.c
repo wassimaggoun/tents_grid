@@ -336,7 +336,7 @@ uint game_get_current_nb_tents_all(cgame g) {
 void game_play_move(game g, uint i, uint j, square s) {
   assert(g && i < game_nb_rows(g) && j < game_nb_cols(g));
 
-  if (g->grid[i][j] == TREE || g->grid[i][j] == BIGTREE) {
+  if (game_get_square(g,i,j) == TREE || game_get_square(g,i,j) == BIGTREE) {
     return;
   }
   if (s != EMPTY && s != GRASS && s != TENT) {
@@ -372,7 +372,11 @@ bool game_check_move(cgame g, uint i, uint j, square s) {
     return false;
   }
 
-  square current = g->grid[i][j];
+  if(s == TENT){
+    if(game_is_neigh(g,i,j,TENT,true)) return false;
+  }
+
+  square current = game_get_square(g,i,j);
   if (current == TREE || current == BIGTREE) { // We cannot play a move on a tree
     return false;
   }
