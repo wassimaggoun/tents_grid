@@ -359,8 +359,6 @@ bool game_solve(game g) {
 /*********************************************************************************************************************/
 
 static void solutions(game g, uint pos, uint* count) {
-  uint row = pos / game_nb_cols(g);
-  uint col = pos % game_nb_cols(g);
   uint taille = game_nb_rows(g) * game_nb_cols(g);
   if (pos == taille) {
     if (game_won(g)) {
@@ -370,6 +368,9 @@ static void solutions(game g, uint pos, uint* count) {
     }
     return;
   }
+  uint row = pos / game_nb_cols(g);
+  uint col = pos % game_nb_cols(g);
+
   square s = game_get_square(g, row, col);
 
   if (s == TREE || s == BIGTREE) {
@@ -382,8 +383,10 @@ static void solutions(game g, uint pos, uint* count) {
     game_set_square(g, row, col, GRASS);
     solutions(g, pos + 1, count);
 
-    game_set_square(g, row, col, EMPTY);
+    return game_set_square(g, row, col, EMPTY);
   }
+
+  solutions(g,pos +1, count);
 }
 
 /*********************************************************************************************************************/
