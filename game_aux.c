@@ -37,7 +37,7 @@ void game_print(cgame g) {
 
     for (uint j = 0; j < width; j++) {
       square s = game_get_square(g, i, j);
-      char c;
+      char c = ' ';
 
       // we will chose the character according to our square type and print it
       if (s == EMPTY) {

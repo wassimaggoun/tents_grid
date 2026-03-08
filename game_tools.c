@@ -37,7 +37,7 @@ void game_save(cgame g, char* filename) {
   }
   fprintf(f, "\n");
 
-  char c;
+  char c = 'E';
   for (uint i = 0; i < height; i++) {
     for (uint j = 0; j < width; j++) {
       square s = game_get_square(g, i, j);
