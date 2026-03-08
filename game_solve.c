@@ -57,8 +57,6 @@ int main(int argc, char* argv[]) {
       fprintf(f, "%u\n", count);
       fclose(f);
       printf("result saved in file %s", output);
-
-      game_delete(g);
       return EXIT_SUCCESS;
     }
     printf("%u\n", count);

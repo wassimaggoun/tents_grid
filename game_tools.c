@@ -355,9 +355,9 @@ bool game_solve(game g) {
     }
     game_fill_grass(g);
   }
-  free(cells);
-  // game_delete(copy); (bug) ?
 
+  free(cells);
+  game_delete(copy);
   return res;
 }
 
