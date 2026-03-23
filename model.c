@@ -2,6 +2,7 @@
 
 #include "model.h"
 #include "game.h"
+#include "game_aux.h"
 #include <SDL.h>
 #include <SDL_image.h> // required to load transparent texture from PNG
 #include <SDL_ttf.h>   // required to use TTF fonts
@@ -29,16 +30,16 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
 void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   /* PUT YOUR CODE HERE TO RENDER TEXTURES, ... */
-  SDL_rect rect;
+  SDL_Rect rect;
 
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
 
-  uint rows = game_nb_rows(g);
-  uint cols = game_nb_cols(g);
+  uint rows = game_nb_rows(env->g);
+  uint cols = game_nb_cols(env->g);
 
-  width = w / cols;
-  height = h / rows;
+  int width = w / cols;
+  int height = h / rows;
 
   SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
 
