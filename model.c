@@ -45,12 +45,12 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
 
   for (uint i = 0; i <= cols; i++) {
     int pos_x = i * width;
-    SDL_RenderDrawLine(ren, pos_x, 0, pos_x, height);
+    SDL_RenderDrawLine(ren, pos_x, 0, pos_x, h);
   }
 
   for (uint j = 0; j <= rows; j++) {
     int pos_y = j * height;
-    SDL_RenderDrawLine(ren, 0, pos_y, width, pos_y);
+    SDL_RenderDrawLine(ren, 0, pos_y, w, pos_y);
   }
 }
 
