@@ -1,6 +1,7 @@
 // SDL2 Demo by aurelien.esnard@u-bordeaux.fr
 
 #include "model.h"
+#include "game.h"
 #include <SDL.h>
 #include <SDL_image.h> // required to load transparent texture from PNG
 #include <SDL_ttf.h>   // required to use TTF fonts
@@ -11,7 +12,7 @@
 /* **************************************************************** */
 
 struct Env_t {
-  /* PUT YOUR VARIABLES HERE */
+  game g;
 };
 
 /* **************************************************************** */
@@ -19,14 +20,38 @@ struct Env_t {
 Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   Env* env = malloc(sizeof(struct Env_t));
 
-  /* PUT YOUR CODE HERE TO INIT TEXTURES, ... */
+  env->g = game_default();
 
   return env;
 }
 
 /* **************************************************************** */
 
-void render(SDL_Window* win, SDL_Renderer* ren, Env* env) { /* PUT YOUR CODE HERE TO RENDER TEXTURES, ... */ }
+void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
+  /* PUT YOUR CODE HERE TO RENDER TEXTURES, ... */
+  SDL_rect rect;
+
+  int w, h;
+  SDL_GetWindowSize(win, &w, &h);
+
+  uint rows = game_nb_rows(g);
+  uint cols = game_nb_cols(g);
+
+  width = w / cols;
+  height = h / rows;
+
+  SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
+
+  for (uint i = 0; i < cols; i++) {
+    int pos_x = i * height;
+    SDL_RenderDrawLine(ren, pos_x, 0, pos_x, height);
+  }
+
+  for (uint j = 0; j < rows; j++) {
+    int pos_y = j * width;
+    SDL_RenderDrawLine(ren, 0, pos_y, width, pos_y);
+  }
+}
 
 /* **************************************************************** */
 
