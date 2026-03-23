@@ -4,6 +4,12 @@ project(game_text C)
 include(CTest)
 enable_testing()
 
+include(sdl2.cmake)
+message(STATUS "SDL2 include dir: ${SDL2_ALL_INC}")
+message(STATUS "SDL2 all libraries: ${SDL2_ALL_LIBS}")
+include_directories(${SDL2_ALL_INC})
+
+
 set(CMAKE_C_FLAGS "-std=c99 -Wall -Wextra -g ")
 
 add_library(game game.c game_aux.c game_ext.c queue.c game_tools.c)
@@ -73,6 +79,7 @@ target_link_libraries(game_test_tools game m)
 add_test(test_game_load ./game_test_tools game_load)
 add_test(test_game_save ./game_test_tools game_save)
 
-
+add_executable(game_sdl main.c model.c)
+target_link_libraries(game_sdl game ${SDL2_ALL_LIBS} m)
 
 
