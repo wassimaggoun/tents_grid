@@ -43,13 +43,13 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
 
   SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
 
-  for (uint i = 0; i < cols; i++) {
-    int pos_x = i * height;
+  for (uint i = 0; i <= cols; i++) {
+    int pos_x = i * width;
     SDL_RenderDrawLine(ren, pos_x, 0, pos_x, height);
   }
 
-  for (uint j = 0; j < rows; j++) {
-    int pos_y = j * width;
+  for (uint j = 0; j <= rows; j++) {
+    int pos_y = j * height;
     SDL_RenderDrawLine(ren, 0, pos_y, width, pos_y);
   }
 }
