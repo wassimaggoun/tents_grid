@@ -3,6 +3,7 @@
 #include "model.h"
 #include "game.h"
 #include "game_aux.h"
+#include "game_ext.h"
 #include <SDL.h>
 #include <SDL_image.h> // required to load transparent texture from PNG
 #include <SDL_ttf.h>   // required to use TTF fonts
@@ -21,7 +22,7 @@ struct Env_t {
 Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   Env* env = malloc(sizeof(struct Env_t));
 
-  env->g = game_default();
+  env->g = game_new_empty_ext(10,7,false);
 
   return env;
 }
