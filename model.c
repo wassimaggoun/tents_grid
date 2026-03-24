@@ -11,10 +11,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TREE "graphics/tree.png"
+#define BIGTREE "graphics/bigtree.png"
+#define TENT "graphics/tent.png"
+#define GRASS "graphics/grass.png"
+
 /* **************************************************************** */
 
 struct Env_t {
   game g;
+  SDL_Texture* tree;
+  SDL_Texture* tent;
+  SDL_Texture* bigtree;
+  SDL_Texture* grass;
 };
 
 /* **************************************************************** */
