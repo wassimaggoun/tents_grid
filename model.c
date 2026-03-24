@@ -15,7 +15,7 @@
 #define BIGTREE "graphics/bigtree.png"
 #define TENT "graphics/tent.png"
 #define GRASS "graphics/grass.png"
-#define BACKGROUND "graphics/background.jpg"
+#define BACKGROUND "graphics/background.png"
 
 /* **************************************************************** */
 
@@ -33,9 +33,10 @@ struct Env_t {
 Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   Env* env = malloc(sizeof(struct Env_t));
 
-  env->g = game_new_empty_ext(10,7,false);
+  env->g = game_new_empty_ext(10, 7, false);
   env->background = IMG_LoadTexture(ren, BACKGROUND);
-  if(!env->background) ERROR("IMG_LoadTexture: %s\n" , BACKGROUND);
+  if (!env->background)
+    ERROR("IMG_LoadTexture: %s\n", BACKGROUND);
   return env;
 }
 
@@ -47,7 +48,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
 
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
-  SDL_RenderCopy(ren,env->background,NULL,NULL);
+  SDL_RenderCopy(ren, env->background, NULL, NULL);
 
   uint rows = game_nb_rows(env->g);
   uint cols = game_nb_cols(env->g);
