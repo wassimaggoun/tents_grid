@@ -116,8 +116,28 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
 
     int col = mouse_x / cell_w;
     int row = mouse_y / cell_h;
+    if (e->button.button == SDL_BUTTON_LEFT) {
 
-    game_play_move(env->g, row, col, TENT);
+      square s = game_get_square(env->g, row, col);
+
+      if (s == TENT) {
+        game_play_move(env->g, row, col, EMPTY);
+      } else {
+        if (game_check_move(env->g, row, col, TENT)) {
+          game_play_move(env->g, row, col, TENT);
+        }
+      }
+    }
+    if (e->button.button == SDL_BUTTON_RIGHT) {
+
+      square s = game_get_square(env->g, row, col);
+
+      if (s == GRASS) {
+        game_play_move(env->g, row, col, EMPTY);
+      } else {
+        game_play_move(env->g, row, col, GRASS);
+      }
+    }
   }
 
   /* PUT YOUR CODE HERE TO PROCESS EVENTS */
