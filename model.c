@@ -11,11 +11,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TREE "graphics/tree.png"
-#define BIGTREE "graphics/bigtree.png"
-#define TENT "graphics/tent.png"
-#define GRASS "graphics/grass.png"
-#define BACKGROUND "graphics/background.png"
+#define TREE "res/tree.png"
+#define BIGTREE "res/bigtree.png"
+#define TENT "res/tent.png"
+#define GRASS "res/grass.png"
+#define BACKGROUND "res/background.png"
 
 /* **************************************************************** */
 
