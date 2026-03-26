@@ -44,6 +44,9 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   env->tent = IMG_LoadTexture(ren, TENT_IMG);
   if (!env->tent)
     ERROR("IMG_LoadTexture: %s\n", TENT_IMG);
+  env->grass = IMG_LoadTexture(ren, GRASS_IMG);
+  if (!env->grass)
+    ERROR("IMG_LoadTexture: %s\n", GRASS_IMG);
   return env;
 }
 
@@ -72,6 +75,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
         SDL_RenderCopy(ren, env->tree, NULL, &rect);
       } else if (s == TENT) {
         SDL_RenderCopy(ren, env->tent, NULL, &rect);
+      } else if (s == GRASS) {
+        SDL_RenderCopy(ren, env->grass, NULL, &rect);
       }
     }
   }
@@ -94,6 +99,25 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
 bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
   if (e->type == SDL_QUIT) {
     return true;
+  }
+
+  else if (e->type == SDL_MOUSEBUTTONDOWN) {
+    int mouse_x, mouse_y;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+
+    int w, h;
+    SDL_GetWindowSize(win, &w, &h);
+
+    uint rows = game_nb_rows(env->g);
+    uint cols = game_nb_cols(env->g);
+
+    int cell_w = w / cols;
+    int cell_h = h / rows;
+
+    int col = mouse_x / cell_w;
+    int row = mouse_y / cell_h;
+
+    game_play_move(env->g, row, col, TENT);
   }
 
   /* PUT YOUR CODE HERE TO PROCESS EVENTS */
