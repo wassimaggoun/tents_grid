@@ -11,10 +11,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TREE "res/tree.png"
-#define BIGTREE "res/bigtree.png"
-#define TENT "res/tent.png"
-#define GRASS "res/grass.png"
+#define TREE_IMG "res/tree.png"
+#define BIGTREE_IMG "res/bigtree.png"
+#define TENT_IMG "res/tent.png"
+#define GRASS_IMG "res/grass.png"
 #define BACKGROUND "res/background.png"
 
 /* **************************************************************** */
@@ -33,10 +33,17 @@ struct Env_t {
 Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   Env* env = malloc(sizeof(struct Env_t));
 
-  env->g = game_new_empty_ext(10, 7, false);
+  env->g = game_default();
+
   env->background = IMG_LoadTexture(ren, BACKGROUND);
   if (!env->background)
     ERROR("IMG_LoadTexture: %s\n", BACKGROUND);
+  env->tree = IMG_LoadTexture(ren, TREE_IMG);
+  if (!env->tree)
+    ERROR("IMG_LoadTexture: %s\n", TREE_IMG);
+  env->tent = IMG_LoadTexture(ren, TENT_IMG);
+  if (!env->tent)
+    ERROR("IMG_LoadTexture: %s\n", TENT_IMG);
   return env;
 }
 
@@ -44,7 +51,6 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
 void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   /* PUT YOUR CODE HERE TO RENDER TEXTURES, ... */
-  SDL_Rect rect;
 
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
@@ -53,18 +59,32 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   uint rows = game_nb_rows(env->g);
   uint cols = game_nb_cols(env->g);
 
-  int width = w / cols;
-  int height = h / rows;
+  int cell_w = w / cols;
+  int cell_h = h / rows;
+
+  for (uint i = 0; i < rows; i++) {
+    for (uint j = 0; j < cols; j++) {
+      square s = game_get_square(env->g, i, j);
+      int x = j * cell_w;
+      int y = i * cell_h;
+      SDL_Rect rect = {x, y, cell_w, cell_h};
+      if (s == TREE) {
+        SDL_RenderCopy(ren, env->tree, NULL, &rect);
+      } else if (s == TENT) {
+        SDL_RenderCopy(ren, env->tent, NULL, &rect);
+      }
+    }
+  }
 
   SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
 
   for (uint i = 0; i <= cols; i++) {
-    int pos_x = i * width;
+    int pos_x = i * cell_w;
     SDL_RenderDrawLine(ren, pos_x, 0, pos_x, h);
   }
 
   for (uint j = 0; j <= rows; j++) {
-    int pos_y = j * height;
+    int pos_y = j * cell_h;
     SDL_RenderDrawLine(ren, 0, pos_y, w, pos_y);
   }
 }
