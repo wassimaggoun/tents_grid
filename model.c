@@ -21,11 +21,13 @@
 
 struct Env_t {
   game g;
+  bool won;
   SDL_Texture* tree;
   SDL_Texture* tent;
   SDL_Texture* bigtree;
   SDL_Texture* grass;
   SDL_Texture* background;
+  SDL_Texture* text;
 };
 
 /* **************************************************************** */
@@ -137,6 +139,9 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
       } else {
         game_play_move(env->g, row, col, GRASS);
       }
+    }
+    if (game_won(env->g)) {
+      printf("CONGRATS!!!!\n");
     }
   }
 
