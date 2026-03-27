@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define FONT "res/arial.ttf"
+#define FONTSIZE 36
 #define TREE_IMG "res/tree.png"
 #define BIGTREE_IMG "res/bigtree.png"
 #define TENT_IMG "res/tent.png"
@@ -36,6 +38,7 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   Env* env = malloc(sizeof(struct Env_t));
 
   env->g = game_default();
+  env->won = false;
 
   env->background = IMG_LoadTexture(ren, BACKGROUND);
   if (!env->background)
@@ -49,6 +52,17 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   env->grass = IMG_LoadTexture(ren, GRASS_IMG);
   if (!env->grass)
     ERROR("IMG_LoadTexture: %s\n", GRASS_IMG);
+
+  SDL_Color color = {0, 0, 255, 255};
+  TTF_Font* font = TTF_OpenFont(FONT, FONTSIZE);
+  if (!font)
+    ERROR("TTF_OpenFont: %s\n", FONT);
+  TTF_SetFontStyle(font, TTF_STYLE_BOLD);                                 // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
+  SDL_Surface* surf = TTF_RenderText_Blended(font, "CONGRATS!!!", color); // blended rendering for ultra nice text
+  env->text = SDL_CreateTextureFromSurface(ren, surf);
+  SDL_FreeSurface(surf);
+  TTF_CloseFont(font);
+
   return env;
 }
 
@@ -93,6 +107,11 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   for (uint j = 0; j <= rows; j++) {
     int pos_y = j * cell_h;
     SDL_RenderDrawLine(ren, 0, pos_y, w, pos_y);
+  }
+
+  if (env->won) {
+    SDL_Rect rect = {w / 2 - 100, h / 2 - 25, 200, 50};
+    SDL_RenderCopy(ren, env->text, NULL, &rect);
   }
 }
 
@@ -140,8 +159,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
         game_play_move(env->g, row, col, GRASS);
       }
     }
-    if (game_won(env->g)) {
-      printf("CONGRATS!!!!\n");
+    if (!env->won && game_won(env->g)) {
+      env->won = true;
     }
   }
 
