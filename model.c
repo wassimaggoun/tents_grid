@@ -78,14 +78,20 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   uint rows = game_nb_rows(env->g);
   uint cols = game_nb_cols(env->g);
 
-  int cell_w = w / cols;
-  int cell_h = h / rows;
+  int cell_w = (w * 0.8) / cols;
+  int cell_h = (h * 0.8) / rows;
+
+  int grid_w = w * 0.8;
+  int grid_h = h * 0.8;
+
+  int offset_x = (w - grid_w) / 2;
+  int offset_y = (h - grid_h) / 2;
 
   for (uint i = 0; i < rows; i++) {
     for (uint j = 0; j < cols; j++) {
       square s = game_get_square(env->g, i, j);
-      int x = j * cell_w;
-      int y = i * cell_h;
+      int x = offset_x + j * cell_w;
+      int y = offset_y + i * cell_h;
       SDL_Rect rect = {x, y, cell_w, cell_h};
       if (s == TREE) {
         SDL_RenderCopy(ren, env->tree, NULL, &rect);
@@ -100,13 +106,13 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
 
   for (uint i = 0; i <= cols; i++) {
-    int pos_x = i * cell_w;
-    SDL_RenderDrawLine(ren, pos_x, 0, pos_x, h);
+    int pos_x = offset_x + i * cell_w;
+    SDL_RenderDrawLine(ren, pos_x, offset_y, pos_x, offset_y + grid_h);
   }
 
   for (uint j = 0; j <= rows; j++) {
-    int pos_y = j * cell_h;
-    SDL_RenderDrawLine(ren, 0, pos_y, w, pos_y);
+    int pos_y = offset_y + j * cell_h;
+    SDL_RenderDrawLine(ren, offset_x, pos_y, offset_x + grid_w, pos_y);
   }
 
   if (env->won) {
@@ -132,11 +138,17 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
     uint rows = game_nb_rows(env->g);
     uint cols = game_nb_cols(env->g);
 
-    int cell_w = w / cols;
-    int cell_h = h / rows;
+    int cell_w = (w * 0.8) / cols;
+    int cell_h = (h * 0.8) / rows;
 
-    int col = mouse_x / cell_w;
-    int row = mouse_y / cell_h;
+    int grid_w = w * 0.8;
+    int grid_h = h * 0.8;
+
+    int offset_x = (w - grid_w) / 2;
+    int offset_y = (h - grid_h) / 2;
+
+    int col = (mouse_x - offset_x) / cell_w;
+    int row = (mouse_y - offset_y) / cell_h;
     if (e->button.button == SDL_BUTTON_LEFT) {
 
       square s = game_get_square(env->g, row, col);
