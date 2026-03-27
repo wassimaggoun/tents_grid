@@ -82,4 +82,4 @@ add_test(test_game_save ./game_test_tools game_save)
 add_executable(game_sdl main.c model.c)
 target_link_libraries(game_sdl game ${SDL2_ALL_LIBS} m)
 
-file(COPY res DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY res file DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

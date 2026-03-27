@@ -4,6 +4,7 @@
 #include "game.h"
 #include "game_aux.h"
 #include "game_ext.h"
+#include "game_tools.h"
 #include <SDL.h>
 #include <SDL_image.h> // required to load transparent texture from PNG
 #include <SDL_ttf.h>   // required to use TTF fonts
@@ -37,7 +38,11 @@ struct Env_t {
 Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   Env* env = malloc(sizeof(struct Env_t));
 
-  env->g = game_default();
+  if (argc > 1) {
+    env->g = game_load(argv[1]);
+  } else {
+    env->g = game_random(8, 8, false, 5, 2, false);
+  }
   env->won = false;
 
   env->background = IMG_LoadTexture(ren, BACKGROUND);
@@ -73,7 +78,6 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 
 void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   /* PUT YOUR CODE HERE TO RENDER TEXTURES, ... */
-
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
   SDL_RenderCopy(ren, env->background, NULL, NULL);
@@ -210,6 +214,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
 /* **************************************************************** */
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env* env) {
+  game_delete(env->g);
+
   SDL_DestroyTexture(env->tree);
   SDL_DestroyTexture(env->tent);
   SDL_DestroyTexture(env->bigtree);
