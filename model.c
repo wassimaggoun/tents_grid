@@ -52,6 +52,9 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   env->grass = IMG_LoadTexture(ren, GRASS_IMG);
   if (!env->grass)
     ERROR("IMG_LoadTexture: %s\n", GRASS_IMG);
+  env->bigtree = IMG_LoadTexture(ren, BIGTREE_IMG);
+  if (!env->bigtree)
+    ERROR("IMG_LoadTexture: %s\n", BIGTREE_IMG);
 
   SDL_Color color = {0, 0, 255, 255};
   TTF_Font* font = TTF_OpenFont(FONT, FONTSIZE);
@@ -81,8 +84,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   int cell_w = (w * 0.8) / cols;
   int cell_h = (h * 0.8) / rows;
 
-  int grid_w = w * 0.8;
-  int grid_h = h * 0.8;
+  int grid_w = cols * cell_w;
+  int grid_h = rows * cell_h;
 
   int offset_x = (w - grid_w) / 2;
   int offset_y = (h - grid_h) / 2;
@@ -99,6 +102,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
         SDL_RenderCopy(ren, env->tent, NULL, &rect);
       } else if (s == GRASS) {
         SDL_RenderCopy(ren, env->grass, NULL, &rect);
+      } else if (s == BIGTREE) {
+        SDL_RenderCopy(ren, env->bigtree, NULL, &rect);
       }
     }
   }
@@ -129,6 +134,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
   }
 
   else if (e->type == SDL_MOUSEBUTTONDOWN) {
+    if (env->won)
+      return false;
     int mouse_x, mouse_y;
     SDL_GetMouseState(&mouse_x, &mouse_y);
 
@@ -141,14 +148,18 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
     int cell_w = (w * 0.8) / cols;
     int cell_h = (h * 0.8) / rows;
 
-    int grid_w = w * 0.8;
-    int grid_h = h * 0.8;
+    int grid_w = cols * cell_w;
+    int grid_h = rows * cell_h;
 
     int offset_x = (w - grid_w) / 2;
     int offset_y = (h - grid_h) / 2;
 
     int col = (mouse_x - offset_x) / cell_w;
     int row = (mouse_y - offset_y) / cell_h;
+
+    if (row < 0 || row >= rows || col < 0 || col >= cols)
+      return false;
+
     if (e->button.button == SDL_BUTTON_LEFT) {
 
       square s = game_get_square(env->g, row, col);
@@ -199,7 +210,12 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
 /* **************************************************************** */
 
 void clean(SDL_Window* win, SDL_Renderer* ren, Env* env) {
-  /* PUT YOUR CODE HERE TO CLEAN MEMORY */
+  SDL_DestroyTexture(env->tree);
+  SDL_DestroyTexture(env->tent);
+  SDL_DestroyTexture(env->bigtree);
+  SDL_DestroyTexture(env->grass);
+  SDL_DestroyTexture(env->background);
+  SDL_DestroyTexture(env->text);
 
   free(env);
 }
