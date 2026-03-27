@@ -164,6 +164,21 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
     }
   }
 
+  else if (e->type == SDL_KEYDOWN) {
+    switch (e->key.keysym.sym) {
+    case SDLK_r:
+      game_restart(env->g);
+      env->won = false;
+      break;
+
+    case SDLK_u: game_undo(env->g); break;
+
+    case SDLK_y: game_redo(env->g); break;
+
+    case SDLK_ESCAPE: return true;
+    }
+  }
+
   /* PUT YOUR CODE HERE TO PROCESS EVENTS */
 
   return false;
