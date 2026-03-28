@@ -41,7 +41,7 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   if (argc > 1) {
     env->g = game_load(argv[1]);
   } else {
-    env->g = game_random(8, 8, false, 5, 2, false);
+    env->g = game_default();
   }
   env->won = false;
 
@@ -201,6 +201,12 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
     case SDLK_u: game_undo(env->g); break;
 
     case SDLK_y: game_redo(env->g); break;
+
+    case SDLK_s:
+      if (game_solve(env->g)) {
+        env->won = true;
+      }
+      break;
 
     case SDLK_ESCAPE: return true;
     }
