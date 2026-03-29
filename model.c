@@ -66,13 +66,10 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   if (!env->font)
     ERROR("TTF_OpenFont: %s\n", FONT);
   TTF_SetFontStyle(env->font, TTF_STYLE_BOLD);
-  SDL_Color color = {0, 0, 255, 255};                               
+  SDL_Color color = {0, 0, 255, 255};
   SDL_Surface* surf = TTF_RenderText_Blended(env->font, "CONGRATS!!!", color); // blended rendering for ultra nice text
   env->text = SDL_CreateTextureFromSurface(ren, surf);
   SDL_FreeSurface(surf);
-
-
-
 
   return env;
 }
@@ -105,10 +102,14 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
       int x = offset_x + j * cell_w;
       int y = offset_y + i * cell_h;
       SDL_Rect rect = {x, y, cell_w, cell_h};
-      if      (s == TREE)    SDL_RenderCopy(ren, env->tree,    NULL, &rect);
-      else if (s == TENT)    SDL_RenderCopy(ren, env->tent,    NULL, &rect);
-      else if (s == GRASS)   SDL_RenderCopy(ren, env->grass,   NULL, &rect);
-      else if (s == BIGTREE) SDL_RenderCopy(ren, env->bigtree, NULL, &rect);
+      if (s == TREE)
+        SDL_RenderCopy(ren, env->tree, NULL, &rect);
+      else if (s == TENT)
+        SDL_RenderCopy(ren, env->tent, NULL, &rect);
+      else if (s == GRASS)
+        SDL_RenderCopy(ren, env->grass, NULL, &rect);
+      else if (s == BIGTREE)
+        SDL_RenderCopy(ren, env->bigtree, NULL, &rect);
     }
   }
 
@@ -127,18 +128,19 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
 
   // Compteurs lignes (droite)
   SDL_Color white = {255, 255, 255, 255};
-  SDL_Color red   = {255, 50,  50,  255};
+  SDL_Color red = {255, 50, 50, 255};
   for (uint i = 0; i < rows; i++) {
     uint exp = game_get_expected_nb_tents_row(env->g, i);
     uint cur = game_get_current_nb_tents_row(env->g, i);
     SDL_Color col = (cur == exp) ? white : red;
-    char buf[8]; snprintf(buf, sizeof(buf), "%u", exp);
+    char buf[8];
+    snprintf(buf, sizeof(buf), "%u", exp);
     SDL_Surface* surf = TTF_RenderText_Blended(env->font, buf, col);
-    SDL_Texture* tex  = SDL_CreateTextureFromSurface(ren, surf);
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(ren, surf);
     SDL_FreeSurface(surf);
-    int tw, th; SDL_QueryTexture(tex, NULL, NULL, &tw, &th);
-    SDL_Rect dst = {offset_x + grid_w + (cell_w-tw)/2,
-                    offset_y + i*cell_h + (cell_h-th)/2, tw, th};
+    int tw, th;
+    SDL_QueryTexture(tex, NULL, NULL, &tw, &th);
+    SDL_Rect dst = {offset_x + grid_w + (cell_w - tw) / 2, offset_y + i * cell_h + (cell_h - th) / 2, tw, th};
     SDL_RenderCopy(ren, tex, NULL, &dst);
     SDL_DestroyTexture(tex);
   }
@@ -148,13 +150,14 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
     uint exp = game_get_expected_nb_tents_col(env->g, j);
     uint cur = game_get_current_nb_tents_col(env->g, j);
     SDL_Color col = (cur == exp) ? white : red;
-    char buf[8]; snprintf(buf, sizeof(buf), "%u", exp);
+    char buf[8];
+    snprintf(buf, sizeof(buf), "%u", exp);
     SDL_Surface* surf = TTF_RenderText_Blended(env->font, buf, col);
-    SDL_Texture* tex  = SDL_CreateTextureFromSurface(ren, surf);
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(ren, surf);
     SDL_FreeSurface(surf);
-    int tw, th; SDL_QueryTexture(tex, NULL, NULL, &tw, &th);
-    SDL_Rect dst = {offset_x + j*cell_w + (cell_w-tw)/2,
-                    offset_y + grid_h + (cell_h-th)/2, tw, th};
+    int tw, th;
+    SDL_QueryTexture(tex, NULL, NULL, &tw, &th);
+    SDL_Rect dst = {offset_x + j * cell_w + (cell_w - tw) / 2, offset_y + grid_h + (cell_h - th) / 2, tw, th};
     SDL_RenderCopy(ren, tex, NULL, &dst);
     SDL_DestroyTexture(tex);
   }
@@ -164,10 +167,8 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   SDL_SetRenderDrawColor(ren, 255, 0, 0, 120);
   for (uint i = 0; i < rows; i++) {
     for (uint j = 0; j < cols; j++) {
-      if (game_get_square(env->g, i, j) == TENT &&
-          !game_check_move(env->g, i, j, TENT)) {
-        SDL_Rect rect = {offset_x + (int)j*cell_w,
-                         offset_y + (int)i*cell_h, cell_w, cell_h};
+      if (game_get_square(env->g, i, j) == TENT && !game_check_move(env->g, i, j, TENT)) {
+        SDL_Rect rect = {offset_x + (int)j * cell_w, offset_y + (int)i * cell_h, cell_w, cell_h};
         SDL_RenderFillRect(ren, &rect);
       }
     }
@@ -176,7 +177,7 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
 
   // Victoire
   if (env->won) {
-    SDL_Rect rect = {w/2-100, h/2-25, 200, 50};
+    SDL_Rect rect = {w / 2 - 100, h / 2 - 25, 200, 50};
     SDL_RenderCopy(ren, env->text, NULL, &rect);
   }
 }
@@ -200,8 +201,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
     uint rows = game_nb_rows(env->g);
     uint cols = game_nb_cols(env->g);
 
-    int cell_w = (w) / (cols+1);
-    int cell_h = (h) / (rows+1);
+    int cell_w = (w) / (cols + 1);
+    int cell_h = (h) / (rows + 1);
 
     int grid_w = cols * cell_w;
     int grid_h = rows * cell_h;
@@ -222,9 +223,8 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
       if (s == TENT) {
         game_play_move(env->g, row, col, EMPTY);
       } else {
-        
+
         game_play_move(env->g, row, col, TENT);
-        
       }
     }
     if (e->button.button == SDL_BUTTON_RIGHT) {

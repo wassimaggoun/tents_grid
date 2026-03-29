@@ -123,53 +123,49 @@ error:
 }
 
 /***********************************************************************************************/
-static int opposite_direction(direction d)
-{
+static int opposite_direction(direction d) {
   switch (d) {
-    case UP:
-      return DOWN;
-    case DOWN:
-      return UP;
-    case LEFT:
-      return RIGHT;
-    case RIGHT:
-      return LEFT;
-    case UP_LEFT:
-      return DOWN_RIGHT;
-    case UP_RIGHT:
-      return DOWN_LEFT;
-    case DOWN_LEFT:
-      return UP_RIGHT;
-    case DOWN_RIGHT:
-      return UP_LEFT;
-    case HERE:
-      return HERE;
+  case UP: return DOWN;
+  case DOWN: return UP;
+  case LEFT: return RIGHT;
+  case RIGHT: return LEFT;
+  case UP_LEFT: return DOWN_RIGHT;
+  case UP_RIGHT: return DOWN_LEFT;
+  case DOWN_LEFT: return UP_RIGHT;
+  case DOWN_RIGHT: return UP_LEFT;
+  case HERE: return HERE;
   }
-  return -1;  // to avoid warning
+  return -1; // to avoid warning
 }
 
-static bool try_to_place_tree(game g, bool big)
-{
+static bool try_to_place_tree(game g, bool big) {
   uint nb_rows = game_nb_rows(g);
   uint nb_cols = game_nb_cols(g);
   uint i_tree = rand() % nb_rows;
   uint j_tree = rand() % nb_cols;
-  if (game_get_square(g, i_tree, j_tree) != EMPTY) return false;  // already occupied
-  direction dir = (rand() % 4) + 1;                               // UP,DOWN,LEFT,RIGHT
+  if (game_get_square(g, i_tree, j_tree) != EMPTY)
+    return false;                   // already occupied
+  direction dir = (rand() % 4) + 1; // UP,DOWN,LEFT,RIGHT
   uint i_tent, j_tent;
   bool ok = game_get_adjacent_square(g, i_tree, j_tree, dir, &i_tent, &j_tent);
-  if (!ok) return false;                                           // out of bounds
-  if (game_get_square(g, i_tent, j_tent) != EMPTY) return false;   // already occupied
-  if (game_is_neigh(g, i_tent, j_tent, TENT, true)) return false;  // adjacent to another tent
+  if (!ok)
+    return false; // out of bounds
+  if (game_get_square(g, i_tent, j_tent) != EMPTY)
+    return false; // already occupied
+  if (game_is_neigh(g, i_tent, j_tent, TENT, true))
+    return false; // adjacent to another tent
 
   // for big tree, check square on opposite side for the second tent
   uint i_tent2, j_tent2;
   if (big) {
     direction opposite_dir = opposite_direction(dir);
     bool ok2 = game_get_adjacent_square(g, i_tree, j_tree, opposite_dir, &i_tent2, &j_tent2);
-    if (!ok2) return false;
-    if (game_get_square(g, i_tent2, j_tent2) != EMPTY) return false;   // already occupied
-    if (game_is_neigh(g, i_tent2, j_tent2, TENT, true)) return false;  // adjacent to another tent
+    if (!ok2)
+      return false;
+    if (game_get_square(g, i_tent2, j_tent2) != EMPTY)
+      return false; // already occupied
+    if (game_is_neigh(g, i_tent2, j_tent2, TENT, true))
+      return false; // adjacent to another tent
   }
 
   // place tree & first tent
@@ -191,9 +187,7 @@ static bool try_to_place_tree(game g, bool big)
 
 /* ************************************************************************** */
 
-game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees,
-                 bool solution)
-{
+game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees, bool solution) {
   game g = game_new_empty_ext(nb_rows, nb_cols, wrapping);
   assert(g);
 
@@ -201,28 +195,32 @@ game game_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint 
   uint num_bigtree = 0;
   uint nb_bigtree_tries = 0;
   while (num_bigtree < nb_bigtrees) {
-    if (nb_bigtree_tries >= 10 * nb_bigtrees) break;  // avoid infinite loop
+    if (nb_bigtree_tries >= 10 * nb_bigtrees)
+      break; // avoid infinite loop
     nb_bigtree_tries++;
-    if (try_to_place_tree(g, true)) num_bigtree++;
+    if (try_to_place_tree(g, true))
+      num_bigtree++;
   }
 
-  printf("Placed %d big trees (requested %d) after %d tries\n", num_bigtree, nb_bigtrees,
-         nb_bigtree_tries);
+  printf("Placed %d big trees (requested %d) after %d tries\n", num_bigtree, nb_bigtrees, nb_bigtree_tries);
 
   // then try to place trees
   uint num_tree = 0;
   uint nb_tree_tries = 0;
   while (num_tree < nb_trees) {
-    if (nb_tree_tries >= 10 * nb_trees) break;  // avoid infinite loop
+    if (nb_tree_tries >= 10 * nb_trees)
+      break; // avoid infinite loop
     nb_tree_tries++;
-    if (try_to_place_tree(g, false)) num_tree++;
+    if (try_to_place_tree(g, false))
+      num_tree++;
   }
 
   printf("Placed %d trees (requested %d) after %d tries\n", num_tree, nb_trees, nb_tree_tries);
 
   game_fill_grass(g);
   assert(game_won(g));
-  if (!solution) game_restart(g);
+  if (!solution)
+    game_restart(g);
   return g;
 }
 
