@@ -204,9 +204,6 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
     int cell_w = (w) / (cols + 1);
     int cell_h = (h) / (rows + 1);
 
-    int grid_w = cols * cell_w;
-    int grid_h = rows * cell_h;
-
     int offset_x = 0;
     int offset_y = 0;
 
@@ -252,6 +249,11 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
     case SDLK_u: game_undo(env->g); break;
 
     case SDLK_y: game_redo(env->g); break;
+
+    case SDLK_a:
+      game_save(env->g, "file/gamesave.txt");
+      PRINT("PARTIE SAVE");
+      break;
 
     case SDLK_s:
       if (game_solve(env->g)) {
