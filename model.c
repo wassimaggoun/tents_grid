@@ -31,6 +31,7 @@ struct Env_t {
   SDL_Texture* grass;
   SDL_Texture* background;
   SDL_Texture* text;
+  TTF_Font* font;
 };
 
 /* **************************************************************** */
@@ -61,15 +62,17 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
   if (!env->bigtree)
     ERROR("IMG_LoadTexture: %s\n", BIGTREE_IMG);
 
-  SDL_Color color = {0, 0, 255, 255};
-  TTF_Font* font = TTF_OpenFont(FONT, FONTSIZE);
-  if (!font)
+  env->font = TTF_OpenFont(FONT, FONTSIZE);
+  if (!env->font)
     ERROR("TTF_OpenFont: %s\n", FONT);
-  TTF_SetFontStyle(font, TTF_STYLE_BOLD);                                 // TTF_STYLE_ITALIC | TTF_STYLE_NORMAL
-  SDL_Surface* surf = TTF_RenderText_Blended(font, "CONGRATS!!!", color); // blended rendering for ultra nice text
+  TTF_SetFontStyle(env->font, TTF_STYLE_BOLD);
+  SDL_Color color = {0, 0, 255, 255};                               
+  SDL_Surface* surf = TTF_RenderText_Blended(env->font, "CONGRATS!!!", color); // blended rendering for ultra nice text
   env->text = SDL_CreateTextureFromSurface(ren, surf);
   SDL_FreeSurface(surf);
-  TTF_CloseFont(font);
+
+
+
 
   return env;
 }
@@ -77,7 +80,7 @@ Env* init(SDL_Window* win, SDL_Renderer* ren, int argc, char* argv[]) {
 /* **************************************************************** */
 
 void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
-  /* PUT YOUR CODE HERE TO RENDER TEXTURES, ... */
+
   int w, h;
   SDL_GetWindowSize(win, &w, &h);
   SDL_RenderCopy(ren, env->background, NULL, NULL);
@@ -85,33 +88,31 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   uint rows = game_nb_rows(env->g);
   uint cols = game_nb_cols(env->g);
 
-  int cell_w = (w * 0.8) / cols;
-  int cell_h = (h * 0.8) / rows;
+  // Réserver 1 cellule à droite et en bas pour les compteurs
+  int cell_w = w / (cols + 1);
+  int cell_h = h / (rows + 1);
 
   int grid_w = cols * cell_w;
   int grid_h = rows * cell_h;
 
-  int offset_x = (w - grid_w) / 2;
-  int offset_y = (h - grid_h) / 2;
+  int offset_x = 0;
+  int offset_y = 0;
 
+  // Cases
   for (uint i = 0; i < rows; i++) {
     for (uint j = 0; j < cols; j++) {
       square s = game_get_square(env->g, i, j);
       int x = offset_x + j * cell_w;
       int y = offset_y + i * cell_h;
       SDL_Rect rect = {x, y, cell_w, cell_h};
-      if (s == TREE) {
-        SDL_RenderCopy(ren, env->tree, NULL, &rect);
-      } else if (s == TENT) {
-        SDL_RenderCopy(ren, env->tent, NULL, &rect);
-      } else if (s == GRASS) {
-        SDL_RenderCopy(ren, env->grass, NULL, &rect);
-      } else if (s == BIGTREE) {
-        SDL_RenderCopy(ren, env->bigtree, NULL, &rect);
-      }
+      if      (s == TREE)    SDL_RenderCopy(ren, env->tree,    NULL, &rect);
+      else if (s == TENT)    SDL_RenderCopy(ren, env->tent,    NULL, &rect);
+      else if (s == GRASS)   SDL_RenderCopy(ren, env->grass,   NULL, &rect);
+      else if (s == BIGTREE) SDL_RenderCopy(ren, env->bigtree, NULL, &rect);
     }
   }
 
+  // Grille
   SDL_SetRenderDrawColor(ren, 255, 0, 0, SDL_ALPHA_OPAQUE);
 
   for (uint i = 0; i <= cols; i++) {
@@ -124,8 +125,58 @@ void render(SDL_Window* win, SDL_Renderer* ren, Env* env) {
     SDL_RenderDrawLine(ren, offset_x, pos_y, offset_x + grid_w, pos_y);
   }
 
+  // Compteurs lignes (droite)
+  SDL_Color white = {255, 255, 255, 255};
+  SDL_Color red   = {255, 50,  50,  255};
+  for (uint i = 0; i < rows; i++) {
+    uint exp = game_get_expected_nb_tents_row(env->g, i);
+    uint cur = game_get_current_nb_tents_row(env->g, i);
+    SDL_Color col = (cur == exp) ? white : red;
+    char buf[8]; snprintf(buf, sizeof(buf), "%u", exp);
+    SDL_Surface* surf = TTF_RenderText_Blended(env->font, buf, col);
+    SDL_Texture* tex  = SDL_CreateTextureFromSurface(ren, surf);
+    SDL_FreeSurface(surf);
+    int tw, th; SDL_QueryTexture(tex, NULL, NULL, &tw, &th);
+    SDL_Rect dst = {offset_x + grid_w + (cell_w-tw)/2,
+                    offset_y + i*cell_h + (cell_h-th)/2, tw, th};
+    SDL_RenderCopy(ren, tex, NULL, &dst);
+    SDL_DestroyTexture(tex);
+  }
+
+  // Compteurs colonnes (bas)
+  for (uint j = 0; j < cols; j++) {
+    uint exp = game_get_expected_nb_tents_col(env->g, j);
+    uint cur = game_get_current_nb_tents_col(env->g, j);
+    SDL_Color col = (cur == exp) ? white : red;
+    char buf[8]; snprintf(buf, sizeof(buf), "%u", exp);
+    SDL_Surface* surf = TTF_RenderText_Blended(env->font, buf, col);
+    SDL_Texture* tex  = SDL_CreateTextureFromSurface(ren, surf);
+    SDL_FreeSurface(surf);
+    int tw, th; SDL_QueryTexture(tex, NULL, NULL, &tw, &th);
+    SDL_Rect dst = {offset_x + j*cell_w + (cell_w-tw)/2,
+                    offset_y + grid_h + (cell_h-th)/2, tw, th};
+    SDL_RenderCopy(ren, tex, NULL, &dst);
+    SDL_DestroyTexture(tex);
+  }
+
+  // Overlay rouge sur tentes invalides
+  SDL_SetRenderDrawBlendMode(ren, SDL_BLENDMODE_BLEND);
+  SDL_SetRenderDrawColor(ren, 255, 0, 0, 120);
+  for (uint i = 0; i < rows; i++) {
+    for (uint j = 0; j < cols; j++) {
+      if (game_get_square(env->g, i, j) == TENT &&
+          !game_check_move(env->g, i, j, TENT)) {
+        SDL_Rect rect = {offset_x + (int)j*cell_w,
+                         offset_y + (int)i*cell_h, cell_w, cell_h};
+        SDL_RenderFillRect(ren, &rect);
+      }
+    }
+  }
+  SDL_SetRenderDrawBlendMode(ren, SDL_BLENDMODE_NONE);
+
+  // Victoire
   if (env->won) {
-    SDL_Rect rect = {w / 2 - 100, h / 2 - 25, 200, 50};
+    SDL_Rect rect = {w/2-100, h/2-25, 200, 50};
     SDL_RenderCopy(ren, env->text, NULL, &rect);
   }
 }
@@ -149,14 +200,14 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
     uint rows = game_nb_rows(env->g);
     uint cols = game_nb_cols(env->g);
 
-    int cell_w = (w * 0.8) / cols;
-    int cell_h = (h * 0.8) / rows;
+    int cell_w = (w) / (cols+1);
+    int cell_h = (h) / (rows+1);
 
     int grid_w = cols * cell_w;
     int grid_h = rows * cell_h;
 
-    int offset_x = (w - grid_w) / 2;
-    int offset_y = (h - grid_h) / 2;
+    int offset_x = 0;
+    int offset_y = 0;
 
     int col = (mouse_x - offset_x) / cell_w;
     int row = (mouse_y - offset_y) / cell_h;
@@ -171,9 +222,9 @@ bool process(SDL_Window* win, SDL_Renderer* ren, Env* env, SDL_Event* e) {
       if (s == TENT) {
         game_play_move(env->g, row, col, EMPTY);
       } else {
-        if (game_check_move(env->g, row, col, TENT)) {
-          game_play_move(env->g, row, col, TENT);
-        }
+        
+        game_play_move(env->g, row, col, TENT);
+        
       }
     }
     if (e->button.button == SDL_BUTTON_RIGHT) {
@@ -228,6 +279,7 @@ void clean(SDL_Window* win, SDL_Renderer* ren, Env* env) {
   SDL_DestroyTexture(env->grass);
   SDL_DestroyTexture(env->background);
   SDL_DestroyTexture(env->text);
+  TTF_CloseFont(env->font);
 
   free(env);
 }
