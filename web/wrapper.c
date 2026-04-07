@@ -9,7 +9,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include "game_tools.h"
 #include "game.h"
 #include "game_aux.h"
 #include "game_ext.h"
@@ -77,9 +77,9 @@ void redo(game g) { game_redo(g); }
 /* Add more function wrappers here, if needed... */
 
 // EMSCRIPTEN_KEEPALIVE
-// bool solve(game g) { /* TODO */ }
+bool solve(game g) { return game_solve(g); }
 
 // EMSCRIPTEN_KEEPALIVE
-// game new_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees, bool solution) { /* TODO */ }
+game new_random(uint nb_rows, uint nb_cols, bool wrapping, uint nb_trees, uint nb_bigtrees, bool solution) { return game_random(nb_rows, nb_cols, wrapping, nb_trees, nb_bigtrees, solution); }
 
 // EOF
