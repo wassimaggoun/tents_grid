@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Tents Game A15</title>
+    <style>
+        body {text-align: center; background-color:rgb(255, 255, 255) }
+        canvas { background-color: rgb(75, 21, 162); border: 2px solid #333}
+        .controls { margin: 20px; }
+        button { padding: 8px 16px }
+    </style>
+</head>
+
+<body>
+
+    <!-- ********************* html ********************* -->
+
+    <h1>Tents A15</h1>
+
+    <p>Membres du Projet: Wassim Aggoun , Servan Arda Goksu , Zineddine Ziane</p>
+
+
+
+    <hr>
+    <canvas id='mycanvas' width="500px" height="500px"></canvas>
+
+    <div class="control">
+        <label>Rows: <input type="number" id="inputRows" value="8"></label>
+        <label>Cols: <input type="number" id="inputCols" value="8"></label>
+        <label><input type="checkbox" id="checkWrapping"> Wrapping</label>
+        <button id="btnRandom">Générer Aléatoire</button>
+        <br><br>
+        <button id="restart">Restart</button>
+        <button id="undo">Undo</button>
+        <button id="redo">Redo</button>
+        <button id="solve">Solve</button>
+        <button id="fillgrass">Fill Grass</button>
+    </div>
+
+
+    <!-- ********************* script ********************* -->
+
+    <script src="game.js"></script>
+    <script src="demo.js"> </script>
+
+</body>
+
+</html>

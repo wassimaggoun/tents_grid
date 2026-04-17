@@ -1,42 +1,52 @@
-// demo.js
+var g; 
+var canvas = document.getElementById('mycanvas');
 
-Module.onRuntimeInitialized = () => { start(); }
+const EMPTY = 0;
+const TREE  = 1;
+const TENT  = 2;
+const GRASS = 3;
+const BIGTREE = 4;
 
-const EMPTY = 0;    // empty square 
-const TREE = 1;     // tree square 
-const TENT = 2;     // tent square 
-const GRASS = 3;    // grass square 
-const BIGTREE = 4;  // big tree square 
+const marge = 40; //marge pour les excpected nb tents
 
 
-function drawGame(g) {
-    var text = "";
-    var nb_rows = Module._nb_rows(g);
-    var nb_cols = Module._nb_cols(g);
-    for (var row = 0; row < nb_rows; row++) {
-        for (var col = 0; col < nb_cols; col++) {
-            var s = Module._get_square(g, row, col);
-            text += square2str(s);
-        }
-        text += "\n";
-    }
-
-    // put this text in <div> element with ID 'result'
-    var elm = document.getElementById('result');
-    elm.innerHTML = text;
-}
+Module.onRuntimeInitialized = () => {
+    start();
+};
 
 function start() {
-    console.log("call start routine");
-    g = Module._new_default();
+    console.log("Game started");
+    g = Module._new_default(); 
 
-    document.getElementById('btnRandom').onclick = function () {
-        let row = parseInt(document.getElementById('inputRows').value);
-        let col = parseInt(document.getElementById('inputCols').value);
-    }
-    var canvas = document.getElementById('mycanvas');
-    var ctx = canvas.getContext('2d');
-    Module._play_move(g, 1, 0, TENT);
-    printGame(g);
+    // bouton random
+    document.getElementById('btnRandom').onclick = function() {
+        let rows = parseInt(document.getElementById('inputRows').value);
+        let cols = parseInt(document.getElementById('inputCols').value);
+        let wrapping = document.getElementById('checkWrapping').checked;
+        
+        // les arbres occupent 18.75% de la grille (on a calculé le ration en se basant sur game_default)
+        let totalTrees = Math.max(1, Math.floor((rows * cols) * 0.1875));
+        let nbBigTrees = Math.floor(totalTrees * 0.15);  //15% des arbres seront des BIGTREE
+        let nbTrees = totalTrees - nbBigTrees; //le reste des TREE
+
+        if (g) Module._delete(g); 
+        g = Module._new_random(rows, cols, wrapping, nbTrees, nbBigTrees, false);
+        
+        drawGame();
+    };
+
+    // options du jeu
+    document.getElementById('restart').onclick = () => { Module._restart(g); drawGame(); };
+    document.getElementById('undo').onclick    = () => { Module._undo(g); drawGame(); };
+    document.getElementById('redo').onclick    = () => { Module._redo(g); drawGame(); };
+    document.getElementById('solve').onclick   = () => { Module._solve(g); drawGame(); };
+    document.getElementById('fillgrass').onclick = () => { Module._fill_grass(g); drawGame(); };
+
+    // clicks
+    canvas.addEventListener('click', canvasClick);
+    canvas.addEventListener('contextmenu', (e) => { e.preventDefault(); canvasClick(e); });
+
+    drawGame();
 }
+
 
