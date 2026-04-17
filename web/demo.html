@@ -3,24 +3,36 @@
 
 <head>
     <meta charset="utf-8">
+    <title>Tents Game A15</title>
+    <style>
+        body {text-align: center; background-color:rgb(255, 255, 255) }
+        canvas { background-color: rgb(75, 21, 162); border: 2px solid #333}
+        .controls { margin: 20px; }
+        button { padding: 8px 16px }
+    </style>
 </head>
 
 <body>
 
     <!-- ********************* html ********************* -->
 
-    <h1>Demo Game Web</h1>
-    <h2>sss</h2>
+    <h1>Tents A15</h1>
 
-    <p>This demo shows you the basics to call our game routines using a
-        JavaScript module based on Wasm technology... Here, the default game is
-        created at startup and then it is printed as text within a <em>pre</em>
-        element.</p>
+    <p>Membres du Projet: Wassim Aggoun , Servan Arda Goksu , Zineddine Ziane</p>
 
-    <pre id="result"></pre>
+
 
     <hr>
-    <p><em>aurelien.esnard@u-bordeaux.fr, 2026.</em></p>
+    <canvas id='mycanvas' width="400px" height="400px"></canvas>
+
+    <div class="control">
+        <button id ="restart">Restart</button>
+        <button id ="undo">Undo</button>
+        <button id ="redo">Redo</button>
+        <button id ="solve">Solve</button>
+        <button id ="fillgrass">Fill grass</button>
+    </div>
+
 
     <!-- ********************* script ********************* -->
 
