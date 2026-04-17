@@ -8,13 +8,8 @@ const TENT = 2;     // tent square
 const GRASS = 3;    // grass square 
 const BIGTREE = 4;  // big tree square 
 
-let _square2str = [" ", "x", "*", "-", "#"];
 
-function square2str(s) {
-    return _square2str[s];
-}
-
-function printGame(g) {
+function drawGame(g) {
     var text = "";
     var nb_rows = Module._nb_rows(g);
     var nb_cols = Module._nb_cols(g);
@@ -33,9 +28,15 @@ function printGame(g) {
 
 function start() {
     console.log("call start routine");
-    var g = Module._new_default();
+    g = Module._new_default();
+
+    document.getElementById('btnRandom').onclick = function () {
+        let row = parseInt(document.getElementById('inputRows').value);
+        let col = parseInt(document.getElementById('inputCols').value);
+    }
+    var canvas = document.getElementById('mycanvas');
+    var ctx = canvas.getContext('2d');
     Module._play_move(g, 1, 0, TENT);
     printGame(g);
-    Module._delete(g);
 }
 
