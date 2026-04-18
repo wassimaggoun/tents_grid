@@ -7,7 +7,7 @@ const TENT    = 2;
 const GRASS   = 3;
 const BIGTREE = 4;
  
-/* ── Chargement des images ──────────────────────────────────── */
+
  
 const IMGS = {};
 const IMG_SRCS = {
@@ -29,7 +29,7 @@ function loadImages(callback) {
     }
 }
  
-/* ── Initialisation ─────────────────────────────────────────── */
+
  
 Module.onRuntimeInitialized = () => {
     loadImages(() => { start(); });
@@ -41,7 +41,7 @@ function start() {
     resizeCanvas();
     g = Module._new_default();
  
-    /* boutons */
+  
     document.getElementById('btnRandom').onclick = function () {
         const rows     = parseInt(document.getElementById('inputRows').value)  || 8;
         const cols     = parseInt(document.getElementById('inputCols').value)  || 8;
@@ -71,10 +71,9 @@ function start() {
     drawGame();
 }
  
-/* ── État victoire (comme env->won dans model.c) ────────────── */
+
 var wonState = false;
- 
-/* ── Redimensionnement ─────────────────────────────────────── */
+
  
 function resizeCanvas() {
     const size = Math.max(300, Math.min(
@@ -86,7 +85,7 @@ function resizeCanvas() {
     canvas.height = size;
 }
  
-/* ── Rendu principal (calque model.c / render()) ────────────── */
+
  
 function drawGame() {
     if (!g) return;
@@ -97,14 +96,13 @@ function drawGame() {
     const rows = Module._nb_rows(g);
     const cols = Module._nb_cols(g);
  
-    /* Même calcul que SDL : w/(cols+1), h/(rows+1) */
+   
     const cellW = W / (cols + 1);
     const cellH = H / (rows + 1);
     const gridW = cols * cellW;
     const gridH = rows * cellH;
-    const ox = 0, oy = 0;   /* offset_x, offset_y = 0 comme dans model.c */
- 
-    /* ── 1. Fond (background.png) ── */
+    const ox = 0, oy = 0;   
+
     ctx.clearRect(0, 0, W, H);
     if (IMGS.background && IMGS.background.complete && IMGS.background.naturalWidth) {
         ctx.drawImage(IMGS.background, 0, 0, W, H);
@@ -113,7 +111,7 @@ function drawGame() {
         ctx.fillRect(0, 0, W, H);
     }
  
-    /* ── 2. Images des cases ── */
+   
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
             const sq = Module._get_square(g, i, j);
@@ -132,7 +130,7 @@ function drawGame() {
         }
     }
  
-    /* ── 3. Lignes de grille (rouges, comme model.c) ── */
+    
     ctx.strokeStyle = 'rgb(255, 0, 0)';
     ctx.lineWidth   = 1;
  
@@ -151,7 +149,7 @@ function drawGame() {
         ctx.stroke();
     }
  
-    /* ── 4. Compteurs lignes (à droite, comme model.c) ── */
+  
     const fontSize = Math.max(10, Math.min(cellW * 0.55, cellH * 0.55, 32));
     ctx.font         = 'bold ' + fontSize + 'px Arial';
     ctx.textAlign    = 'center';
@@ -167,7 +165,6 @@ function drawGame() {
         ctx.fillText(String(exp), x, y);
     }
  
-    /* ── 5. Compteurs colonnes (en bas, comme model.c) ── */
     for (let j = 0; j < cols; j++) {
         const exp = Module._get_expected_nb_tents_col(g, j);
         const cur = Module._get_current_nb_tents_col(g, j);
@@ -178,9 +175,9 @@ function drawGame() {
         ctx.fillText(String(exp), x, y);
     }
  
-    /* ── 6. Overlay rouge sur tentes invalides ── */
+
     ctx.save();
-    ctx.globalAlpha = 120 / 255;   /* SDL_ALPHA 120 */
+    ctx.globalAlpha = 120 / 255;   
     ctx.fillStyle   = 'rgb(255, 0, 0)';
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
@@ -191,8 +188,7 @@ function drawGame() {
         }
     }
     ctx.restore();
- 
-    /* ── 7. Message victoire (CONGRATS!!!) ── */
+
     if (wonState) {
         const msgW = Math.min(W * 0.55, 300);
         const msgH = Math.min(H * 0.1, 50);
@@ -207,7 +203,7 @@ function drawGame() {
     }
 }
  
-/* ── Gestion des clics (calque model.c / process()) ─────────── */
+
  
 function canvasClick(e) {
     if (!g || wonState) return;
@@ -232,13 +228,13 @@ function canvasClick(e) {
     const isRight = (e.type === 'contextmenu' || e.button === 2);
  
     if (!isRight) {
-        /* clic gauche : TENT ↔ EMPTY  (comme model.c) */
+       
         const newSq = (sq === TENT) ? EMPTY : TENT;
         if (Module._check_move(g, row, col, newSq) || newSq === EMPTY) {
             Module._play_move(g, row, col, newSq);
         }
     } else {
-        /* clic droit : GRASS ↔ EMPTY  (comme model.c) */
+      
         const newSq = (sq === GRASS) ? EMPTY : GRASS;
         if (Module._check_move(g, row, col, newSq) || newSq === EMPTY) {
             Module._play_move(g, row, col, newSq);
