@@ -2102,6 +2102,12 @@ var _undo = Module["_undo"] = createExportWrapper("undo");
 var _redo = Module["_redo"] = createExportWrapper("redo");
 
 /** @type {function(...*):?} */
+var _solve = Module["_solve"] = createExportWrapper("solve");
+
+/** @type {function(...*):?} */
+var _new_random = Module["_new_random"] = createExportWrapper("new_random");
+
+/** @type {function(...*):?} */
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
 
 /** @type {function(...*):?} */
