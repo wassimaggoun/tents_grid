@@ -24,17 +24,17 @@ const IMG_SRCS = {
 //Charge tous les images, puis appelle callback quand le chargement terminé
 function loadImages(callback) {
     let remaining = Object.keys(IMG_SRCS).length;
-    for (const [key, src] of Object.entries(IMG_SRCS)) {
+    for (const [key, src] of Object.entries(IMG_SRCS)) {//parcours de toutes les images a charger
         const img = new Image();
-        img.onload  = () => { if (--remaining === 0) callback(); };
+        img.onload  = () => { if (--remaining === 0) callback(); };//si l'image etati dernier, on appelle callback
         img.onerror = () => { console.warn('Image introuvable:', src); if (--remaining === 0) callback(); };
         img.src = src;
-        IMGS[key] = img;
+        IMGS[key] = img;//stocke l'image chargee dans IMGS
     }
 }
  
 
- 
+ //Attendre pour wasm, puis charger les images et démarrer le jeu
 Module.onRuntimeInitialized = () => {
     loadImages(() => { start(); });
 };
@@ -42,31 +42,33 @@ Module.onRuntimeInitialized = () => {
 function start() {
     console.log("Jeu démarré");
  
-    resizeCanvas();
-    g = Module._new_default();
+    resizeCanvas();//ajuste la taille du canvas
+    g = Module._new_default();//création du jeu (via wasm)
  
-  
+    //créer une nouvelle grille aléatoire a partir des paramteres saisis
     document.getElementById('btnRandom').onclick = function () {
-        const rows     = parseInt(document.getElementById('inputRows').value)  || 8;
+        const rows     = parseInt(document.getElementById('inputRows').value)  || 8;//on recupere le nb de lignes depuis l'input , ||8 (si c'est empty ou invalid)
         const cols     = parseInt(document.getElementById('inputCols').value)  || 8;
         const wrapping = document.getElementById('checkWrapping').checked;
  
-        const total      = Math.max(1, Math.floor(rows * cols * 0.1875));
-        const nbBigTrees = Math.floor(total * 0.15);
+        const total      = Math.max(1, Math.floor(rows * cols * 0.1875));//dans notre grille, il y aura minimum 1 arbre, on va determiner le nombre d'arbres en fonction de la taille de la grille(18,75%)
+        const nbBigTrees = Math.floor(total * 0.15);//puis calcule la part de grands arbres(15%)
         const nbTrees    = total - nbBigTrees;
  
         if (g) Module._delete(g);
-        g = Module._new_random(rows, cols, wrapping, nbTrees, nbBigTrees, false);
+        g = Module._new_random(rows, cols, wrapping, nbTrees, nbBigTrees, false);//création d'un jeu aléatoire avec les parametres
         resizeCanvas();
         drawGame();
     };
  
+    //associe les boutons aux actions du jeu
     document.getElementById('restart').onclick   = () => { Module._restart(g);    wonState = false; drawGame(); };
     document.getElementById('undo').onclick      = () => { Module._undo(g);       drawGame(); };
     document.getElementById('redo').onclick      = () => { Module._redo(g);       drawGame(); };
     document.getElementById('solve').onclick     = () => { Module._solve(g);      wonState = true;  drawGame(); };
     document.getElementById('fillgrass').onclick = () => { Module._fill_grass(g); drawGame(); };
  
+    //gère les clics gauche et droit sur le canvas(empeche le menu pour le clic droit)
     canvas.addEventListener('click',        canvasClick);
     canvas.addEventListener('contextmenu', (e) => { e.preventDefault(); canvasClick(e); });
  
@@ -75,10 +77,10 @@ function start() {
     drawGame();
 }
  
-
+//état de victoire  
 var wonState = false;
 
- 
+//adapte la taille du canvas a la fenetre avec des limits
 function resizeCanvas() {
     const size = Math.max(300, Math.min(
         window.innerWidth  - 32,
