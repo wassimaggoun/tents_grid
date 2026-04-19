@@ -171,7 +171,7 @@ function drawGame() {
         const ok  = (cur === exp);
         const x   = ox + gridW + cellW / 2;
         const y   = oy + i * cellH + cellH / 2;
-        ctx.fillStyle = ok ? 'white' : 'rgb(84, 2, 2)';//rouge si la condition n'est pas respectée
+        ctx.fillStyle = ok ? 'rgb(19, 78, 6)' : 'rgb(84, 2, 2)';//rouge si la condition n'est pas respectée
         ctx.fillText(String(exp), x, y);
     }
  
@@ -181,7 +181,7 @@ function drawGame() {
         const ok  = (cur === exp);
         const x   = ox + j * cellW + cellW / 2;
         const y   = oy + gridH + cellH / 2;
-        ctx.fillStyle = ok ? 'white' : 'rgb(19, 78, 6)';
+        ctx.fillStyle = ok ? 'rgb(19, 78, 6)' : 'rgb(84, 2, 2)';
         ctx.fillText(String(exp), x, y);
     }
  
