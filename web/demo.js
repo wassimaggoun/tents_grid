@@ -1,15 +1,18 @@
-var g;
+var g;//Déclaration de variable globale g et canvas
 var canvas = document.getElementById('mycanvas');
- 
+
+
+//Types de cases de la grille(les constantes)
 const EMPTY   = 0;
 const TREE    = 1;
 const TENT    = 2;
 const GRASS   = 3;
 const BIGTREE = 4;
- 
+
 
  
-const IMGS = {};
+const IMGS = {};//sert a stocker les images chargees
+//contient les chemins des images dans le dossier res
 const IMG_SRCS = {
     background: 'res/background.png',
     tree:       'res/tree.png',
@@ -18,6 +21,7 @@ const IMG_SRCS = {
     grass:      'res/grass.png',
 };
  
+//Charge tous les images, puis appelle callback quand le chargement terminé
 function loadImages(callback) {
     let remaining = Object.keys(IMG_SRCS).length;
     for (const [key, src] of Object.entries(IMG_SRCS)) {
