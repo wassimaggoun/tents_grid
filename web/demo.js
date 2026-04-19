@@ -139,7 +139,7 @@ function drawGame() {
     }
  
     //couleur et épaisseur des lignes
-    ctx.strokeStyle = 'rgb(255, 0, 0)';
+    ctx.strokeStyle = 'rgb(74, 33, 1)';
     ctx.lineWidth   = 1;
  
     //Dessine la grille en tracant les lignes verticales et horizontales
@@ -171,7 +171,7 @@ function drawGame() {
         const ok  = (cur === exp);
         const x   = ox + gridW + cellW / 2;
         const y   = oy + i * cellH + cellH / 2;
-        ctx.fillStyle = ok ? 'white' : 'rgb(255, 50, 50)';//rouge si la condition n'est pas respectée
+        ctx.fillStyle = ok ? 'white' : 'rgb(84, 2, 2)';//rouge si la condition n'est pas respectée
         ctx.fillText(String(exp), x, y);
     }
  
@@ -181,7 +181,7 @@ function drawGame() {
         const ok  = (cur === exp);
         const x   = ox + j * cellW + cellW / 2;
         const y   = oy + gridH + cellH / 2;
-        ctx.fillStyle = ok ? 'white' : 'rgb(255, 50, 50)';
+        ctx.fillStyle = ok ? 'white' : 'rgb(19, 78, 6)';
         ctx.fillText(String(exp), x, y);
     }
  
@@ -209,8 +209,8 @@ function drawGame() {
         ctx.font         = 'bold ' + Math.min(msgH * 0.7, 36) + 'px Arial';
         ctx.textAlign    = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillStyle    = 'rgb(0, 0, 255)';
-        ctx.fillText('CONGRATS!!!', W / 2, H / 2);
+        ctx.fillStyle    = 'rgb(0, 0, 0)';
+        ctx.fillText('GAME WON', W / 2, H / 2);
     }
 }
  
