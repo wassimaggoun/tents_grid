@@ -96,20 +96,21 @@ function resizeCanvas() {
 function drawGame() {
     if (!g) return;
  
-    const ctx  = canvas.getContext('2d');
+    const ctx  = canvas.getContext('2d');//récupere le contexte 2D pour dessiner sur le canvas
     const W    = canvas.width;
     const H    = canvas.height;
     const rows = Module._nb_rows(g);
     const cols = Module._nb_cols(g);
  
    
-    const cellW = W / (cols + 1);
+    const cellW = W / (cols + 1);//calcule la taille du chaque case(avec espace pour les indices)
     const cellH = H / (rows + 1);
     const gridW = cols * cellW;
     const gridH = rows * cellH;
-    const ox = 0, oy = 0;   
+    const ox = 0, oy = 0;//Position départ de la grille    
 
-    ctx.clearRect(0, 0, W, H);
+    ctx.clearRect(0, 0, W, H);//efface le canvas avant de redessiner
+    //affiche l'image si elle est chargee, sinon on remplit avec une couleur
     if (IMGS.background && IMGS.background.complete && IMGS.background.naturalWidth) {
         ctx.drawImage(IMGS.background, 0, 0, W, H);
     } else {
@@ -117,11 +118,11 @@ function drawGame() {
         ctx.fillRect(0, 0, W, H);
     }
  
-   
+   //parcours toutes les cases de la grille et dessine l'image correspondante
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
             const sq = Module._get_square(g, i, j);
-            const x  = ox + j * cellW;
+            const x  = ox + j * cellW;//position de la case dans le canvas 
             const y  = oy + i * cellH;
  
             let imgKey = null;
@@ -130,16 +131,18 @@ function drawGame() {
             else if (sq === TENT)    imgKey = 'tent';
             else if (sq === GRASS)   imgKey = 'grass';
  
+            //dessine l'image si elle existe et chargée
             if (imgKey && IMGS[imgKey] && IMGS[imgKey].complete) {
                 ctx.drawImage(IMGS[imgKey], x, y, cellW, cellH);
             }
         }
     }
  
-    
+    //couleur et épaisseur des lignes
     ctx.strokeStyle = 'rgb(255, 0, 0)';
     ctx.lineWidth   = 1;
  
+    //Dessine la grille en tracant les lignes verticales et horizontales
     for (let i = 0; i <= cols; i++) {
         const px = ox + i * cellW;
         ctx.beginPath();
@@ -155,19 +158,20 @@ function drawGame() {
         ctx.stroke();
     }
  
-  
+    //configure le style du texte(taille et center)
     const fontSize = Math.max(10, Math.min(cellW * 0.55, cellH * 0.55, 32));
     ctx.font         = 'bold ' + fontSize + 'px Arial';
     ctx.textAlign    = 'center';
     ctx.textBaseline = 'middle';
  
+    //affiche les expected_nb_tents pour chaque ligne et colonne
     for (let i = 0; i < rows; i++) {
         const exp = Module._get_expected_nb_tents_row(g, i);
         const cur = Module._get_current_nb_tents_row(g, i);
         const ok  = (cur === exp);
         const x   = ox + gridW + cellW / 2;
         const y   = oy + i * cellH + cellH / 2;
-        ctx.fillStyle = ok ? 'white' : 'rgb(255, 50, 50)';
+        ctx.fillStyle = ok ? 'white' : 'rgb(255, 50, 50)';//rouge si la condition n'est pas respectée
         ctx.fillText(String(exp), x, y);
     }
  
@@ -181,7 +185,7 @@ function drawGame() {
         ctx.fillText(String(exp), x, y);
     }
  
-
+    //met en évidence les tentes invalides en rouge
     ctx.save();
     ctx.globalAlpha = 120 / 255;   
     ctx.fillStyle   = 'rgb(255, 0, 0)';
@@ -195,6 +199,7 @@ function drawGame() {
     }
     ctx.restore();
 
+    //affiche un message de victoire au centre si le jeu est gagné
     if (wonState) {
         const msgW = Math.min(W * 0.55, 300);
         const msgH = Math.min(H * 0.1, 50);
@@ -210,10 +215,11 @@ function drawGame() {
 }
  
 
- 
+ //gére les clics sur le canvas
 function canvasClick(e) {
     if (!g || wonState) return;
  
+    //convertit la position du clic en coordonnes dans le canvas
     const rect   = canvas.getBoundingClientRect();
     const scaleX = canvas.width  / rect.width;
     const scaleY = canvas.height / rect.height;
@@ -228,11 +234,13 @@ function canvasClick(e) {
     const col = Math.floor(px / cellW);
     const row = Math.floor(py / cellH);
  
+    //ignore le clic si en dehors de la grille
     if (row < 0 || row >= rows || col < 0 || col >= cols) return;
  
     const sq      = Module._get_square(g, row, col);
     const isRight = (e.type === 'contextmenu' || e.button === 2);
  
+    //determine si on va mettre tent ou grass
     if (!isRight) {
        
         const newSq = (sq === TENT) ? EMPTY : TENT;
@@ -247,6 +255,7 @@ function canvasClick(e) {
         }
     }
  
+    //verifie si le jeu est gagné
     if (!wonState && Module._won(g)) {
         wonState = true;
     }
